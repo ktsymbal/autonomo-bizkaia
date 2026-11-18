@@ -359,5 +359,6 @@
  "param.rg.solidarity": "Solidarity contribution",
  "param.salaryWithholding": "Salary withholding table",
  "param.salaryWithholding.shortContractMin": "Minimum for a short contract",
- "param.deadlines": "Filing deadlines"
+ "param.deadlines": "Filing deadlines",
+ "how.sourcesNote": "Sources are cited as published: law names in Spanish."
 }

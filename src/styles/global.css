@@ -314,7 +314,6 @@ td .tag.due { background: var(--accent-soft); color: var(--accent-ink); }
 .persona label { display: grid; }
 .persona span { height: 100%; display: grid; place-items: center; }
 @media (max-width: 640px) {
-  .tabs { grid-template-columns: repeat(6, 1fr); }
 }
 @media (max-width: 640px) { .persona { grid-auto-rows: 1fr; } }
 

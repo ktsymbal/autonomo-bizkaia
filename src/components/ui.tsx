@@ -1,5 +1,5 @@
 import type { ComponentChildren } from 'preact';
-import { useEffect, useId, useState } from 'preact/hooks';
+import { useId, useState } from 'preact/hooks';
 import { ChevronDown, Minus, Plus } from 'lucide-preact';
 
 export function Field(p: { label: string; hint?: ComponentChildren; children: ComponentChildren; id?: string }) {
@@ -28,11 +28,8 @@ export function NumberInput(p: {
 }) {
   const auto = useId();
   const id = p.id ?? auto;
-  const [text, setText] = useState(show(p.value, p.lang));
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    if (!focused) setText(show(p.value, p.lang));
-  }, [p.value, focused, p.lang]);
+  const [draft, setDraft] = useState<string | null>(null); // the user's text while the field has focus
+  const text = draft ?? show(p.value, p.lang);
   const n = parse(text);
   const invalid = Number.isNaN(n) || (n !== null && ((p.min !== undefined && n < p.min) || (p.max !== undefined && n > p.max)));
   const input = (
@@ -45,11 +42,11 @@ export function NumberInput(p: {
       aria-invalid={invalid || undefined}
       placeholder={p.placeholder}
       value={text}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={() => setDraft(show(p.value, p.lang))}
+      onBlur={() => setDraft(null)}
       onInput={(e) => {
         const s = (e.target as HTMLInputElement).value;
-        setText(s);
+        setDraft(s);
         const v = parse(s);
         if (v === null || (!Number.isNaN(v) && (p.min === undefined || v >= p.min) && (p.max === undefined || v <= p.max))) p.onChange(v);
       }}

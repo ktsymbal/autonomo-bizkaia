@@ -359,5 +359,6 @@
  "param.rg.solidarity": "Внесок солідарності",
  "param.salaryWithholding": "Таблиця утримання з зарплати",
  "param.salaryWithholding.shortContractMin": "Мінімум для короткого контракту",
- "param.deadlines": "Терміни подання"
+ "param.deadlines": "Терміни подання",
+ "how.sourcesNote": "Джерела наведено мовою оригіналу: назви законів іспанською, примітки англійською."
 }

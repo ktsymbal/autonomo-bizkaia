@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { LANGS, t, tList, date, type Lang } from '../../i18n/t';
 import { rawParams, type Key } from '../../params';
+import { paramText } from '../../i18n/paramText';
 
 export function getStaticPaths() {
   return LANGS.map((lang) => ({ params: { lang } }));
@@ -42,6 +43,7 @@ const show = (v: unknown): string => {
     </section>
     <section class="card">
       <h2>{t(lang, 'how.sources')}</h2>
+      <p class="note">{t(lang, 'how.sourcesNote')}</p>
       <div class="tablewrap">
         <table>
           <thead><tr><th>{t(lang, 'how.param')}</th><th>{t(lang, 'how.value')}</th><th>{t(lang, 'how.source')}</th><th>{t(lang, 'how.status')}</th><th>{t(lang, 'how.checked')}</th></tr></thead>
@@ -49,7 +51,7 @@ const show = (v: unknown): string => {
             {keys.map((k) => (
               <tr>
                 <td>{t(lang, `param.${k}`)}</td>
-                <td style="max-width:280px">{show(raw[k].value)}</td>
+                <td style="max-width:320px">{paramText(lang, k, raw[k].value)}</td>
                 <td style="min-width:280px">{raw[k].source}</td>
                 <td><span class={`chip ${raw[k].status === 'V' ? '' : 'neutral'}`}>{t(lang, `status.${raw[k].status}`)}</span></td>
                 <td style="white-space:nowrap">{date(lang, raw[k].checked)}</td>
