@@ -1,0 +1,148 @@
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { compute, solveIncomeFor } from '../engine/compute';
+import { defaultInput } from '../engine/activity';
+import type { CalcInput, Persona } from '../engine/types';
+import { decode, encode } from '../state/url';
+import { date, t, type Lang } from '../i18n/t';
+import { rawParams } from '../params';
+import { AboutCard, ExpensesCard, IncomeCard, SalaryCard, SettingsCard } from './Inputs';
+import { Dock, Hero, Notices, Panel } from './Results';
+import { Details } from './Details';
+import { Seg } from './ui';
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+function applyPersona(i: CalcInput, p: Persona): CalcInput {
+  const clients = i.clients.length ? i.clients : defaultInput(i.asOf).clients;
+  const first = clients[0];
+  const next: CalcInput = { ...i, persona: p };
+  if (p === 'abroad') return { ...next, salary: null, clients: [{ ...first, type: first.type.startsWith('es_') ? 'non_eu_company' : first.type }, ...clients.slice(1)] };
+  if (p === 'spain') return { ...next, salary: null, clients: [{ ...first, type: 'es_company' }, ...clients.slice(1)] };
+  if (p === 'pluri') return { ...next, salary: i.salary ?? { grossMonthly: 2500, withheldMonthly: null, shortContract: false } };
+  return { ...next, salary: null, alta: null };
+}
+
+const looksDetailed = (i: CalcInput) => i.clients.length > 1 || i.expenseMode === 'itemized' || i.kidsUnder6 + i.kids6to30 > 0 || i.startup.claim || i.epsv > 0 || i.priorD !== null;
+
+export default function Calculator({ lang }: { lang: Lang }) {
+  const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
+  const [detailed, setDetailed] = useState(false);
+  const [reverse, setReverse] = useState(false);
+  const [target, setTarget] = useState<number | null>(3000);
+  const ready = useRef(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Restore from the URL fragment once on the client.
+  useEffect(() => {
+    const i = decode(location.hash, today());
+    setInput(i);
+    setDetailed(looksDetailed(i));
+    ready.current = true;
+  }, []);
+  // Keep the fragment in sync (never sent to the server).
+  useEffect(() => {
+    if (ready.current) history.replaceState(null, '', encode(input));
+  }, [input]);
+
+  const r = useMemo(() => {
+    try {
+      return compute(input);
+    } catch {
+      return compute(defaultInput(input.asOf));
+    }
+  }, [input]);
+
+  const avgIncome = useMemo(() => input.clients.reduce((s, c) => s + c.months.reduce((a, m) => a + m.amount * (input.fx[c.currency] ?? 1), 0), 0) / 12, [input]);
+  const factor = useMemo(() => (reverse && target && target > 0 && avgIncome > 0 ? solveIncomeFor(target, input) : null), [reverse, target, input, avgIncome]);
+  const solved = factor !== null ? factor * avgIncome : null;
+
+  const set = (fn: (i: CalcInput) => CalcInput) => setInput((i) => fn(i));
+  const checked = rawParams(2026)['irpf.scale'].checked;
+
+  return (
+    <>
+      <section class="pagehead">
+        <h1>{t(lang, 'h1', { year: r.year })}</h1>
+        <p>{t(lang, 'lede')}</p>
+      </section>
+      <div class="layout">
+        <div class="inputs">
+          <div class="field">
+            <span class="lbl">{t(lang, 'persona.label')}</span>
+            <Seg
+              name="persona"
+              class="persona"
+              label={t(lang, 'persona.label')}
+              value={input.persona}
+              options={(['abroad', 'spain', 'pluri', 'plan'] as const).map((v) => ({ value: v, label: t(lang, `persona.${v}`) }))}
+              onChange={(p) => set((i) => applyPersona(i, p))}
+            />
+          </div>
+          <div class="toolbar">
+            <Seg
+              name="mode"
+              label={t(lang, 'mode.simple')}
+              value={detailed ? 'd' : 's'}
+              options={[{ value: 's', label: t(lang, 'mode.simple') }, { value: 'd', label: t(lang, 'mode.detailed') }]}
+              onChange={(v) => setDetailed(v === 'd')}
+            />
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              {input.alta ? (
+                <Seg
+                  name="year"
+                  pill
+                  label={t(lang, 'year.label')}
+                  value={String(input.year) as '2026' | '2027'}
+                  options={[{ value: '2026', label: '2026' }, { value: '2027', label: '2027' }]}
+                  onChange={(v) => set((i) => ({ ...i, year: Number(v) as 2026 | 2027 }))}
+                />
+              ) : null}
+              <button
+                type="button"
+                class="linkbtn"
+                onClick={() => {
+                  setInput(defaultInput(today()));
+                  setDetailed(false);
+                  setReverse(false);
+                }}
+              >
+                {t(lang, 'reset')}
+              </button>
+            </div>
+          </div>
+          <IncomeCard
+            lang={lang}
+            input={input}
+            set={set}
+            detailed={detailed}
+            reverse={reverse}
+            setReverse={setReverse}
+            target={target}
+            setTarget={setTarget}
+            solved={solved}
+            applySolved={() =>
+              factor !== null &&
+              set((i) => ({ ...i, clients: i.clients.map((c) => ({ ...c, months: c.months.map((m) => ({ ...m, amount: Math.round(m.amount * factor) })) })) }))
+            }
+          />
+          {input.salary ? <SalaryCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
+          <div class="cols">
+            <AboutCard lang={lang} input={input} set={set} detailed={detailed} />
+            <ExpensesCard lang={lang} input={input} set={set} detailed={detailed} />
+          </div>
+          {detailed ? <SettingsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
+        </div>
+        <aside class="results" aria-label={t(lang, 'res.headline', { year: r.year })}>
+          <div class="results-pin">
+            <Hero lang={lang} r={r} heroRef={heroRef} />
+            <Panel lang={lang} r={r} />
+          </div>
+          <Notices lang={lang} r={r} />
+          <p class="fine">{t(lang, 'checked', { year: r.year, date: date(lang, checked) })}</p>
+        </aside>
+      </div>
+      <Details lang={lang} r={r} />
+      <Dock lang={lang} r={r} target={heroRef} />
+    </>
+  );
+}

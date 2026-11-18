@@ -1,0 +1,809 @@
+{
+ "irpf.scale": {
+  "value": [
+   [
+    0,
+    0.23
+   ],
+   [
+    18080,
+    0.28
+   ],
+   [
+    36160,
+    0.35
+   ],
+   [
+    54240,
+    0.4
+   ],
+   [
+    77450,
+    0.45
+   ],
+   [
+    107260,
+    0.46
+   ],
+   [
+    142960,
+    0.47
+   ],
+   [
+    208390,
+    0.49
+   ]
+  ],
+  "source": "NF 13/2013 IRPF Bizkaia art. 75; NF 7/2025 art. 49",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.minoracion": {
+  "value": 1615,
+  "source": "NF 13/2013 IRPF Bizkaia art. 77; NF 7/2025 art. 50",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.simplificadaTiers": {
+  "value": [
+   [
+    35000,
+    0.2
+   ],
+   [
+    85000,
+    0.15
+   ],
+   [
+    null,
+    0.1
+   ]
+  ],
+  "source": "NF 13/2013 IRPF Bizkaia art. 28.1.b; RIRPF art. 28",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.firstYearTier": {
+  "value": 0.2,
+  "source": "Common gestoría practice; RIRPF art. 28.1.b refers only to the prior year — no text for year 1",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "irpf.startup": {
+  "value": {
+   "w": 0.15,
+   "m": 0.1
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 25.5 (NF 2/2025 art. 1.Tres)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.descendants": {
+  "value": [
+   682,
+   844,
+   1421,
+   1680,
+   2195
+  ],
+  "source": "NF 13/2013 IRPF Bizkaia art. 79; NF 7/2025 art. 51",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.descendantUnder6": {
+  "value": 394,
+  "source": "NF 13/2013 IRPF Bizkaia art. 79; NF 7/2025 art. 51",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.rent": {
+  "value": {
+   "base": {
+    "rate": 0.2,
+    "cap": 1600
+   },
+   "enhanced": {
+    "rate": 0.35,
+    "cap": 2800
+   },
+   "blCap": 68000,
+   "ageLimit": 36
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 86 (86.2, 86.8)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.epsvCap": {
+  "value": 5000,
+  "source": "NF 13/2013 IRPF Bizkaia art. 71.1.a",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.workBonif": {
+  "value": {
+   "max": 8000,
+   "min": 3000,
+   "lo": 14800,
+   "hi": 23000,
+   "slope": 0.6098,
+   "otherIncomeCap": 7500
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 23 (NF 2/2025 art. 15.Dos)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "p130": {
+  "value": {
+   "startRate": 0.2,
+   "generalRate": 0.05,
+   "lossRate": 0.005,
+   "generalRetShare": 0.25,
+   "waiverShare": 0.7
+  },
+  "source": "RIRPF Bizkaia (DF 47/2014) arts. 109–110; OF 636/2014 (modelo 130)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "p130.simplificadaInside": {
+  "value": false,
+  "source": "OF 636/2014 casilla 09 'ingresos computables − gastos deducibles'; no box for the art. 28 %",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "retencion": {
+  "value": {
+   "std": 0.15,
+   "newcomer": 0.07
+  },
+  "source": "RIRPF Bizkaia art. 94",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "iva.general": {
+  "value": 0.21,
+  "source": "NF IVA Bizkaia art. 90 (mirrors Ley 37/1992)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.rate": {
+  "value": 0.315,
+  "source": "Orden PJC/297/2026 art. 18.2 (BOE-A-2026-7296)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.mei": {
+  "value": 0.009,
+  "source": "Orden PJC/297/2026 art. 18.2.c",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.tarifaPlana": {
+  "value": 80,
+  "source": "LETA (Ley 20/2007) art. 38 ter; RDL 13/2022 DT 5ª — 2026 amount not set by a budget",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "reta.tarifaPlanaMeiBase": {
+  "value": 950.98,
+  "source": "LETA art. 38 ter.5 + LGSS art. 127 bis.2 (MEI on tramo 1 min base)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.genericDeduction": {
+  "value": 0.07,
+  "source": "LGSS art. 308.1.c regla 2ª",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.tramos": {
+  "value": [
+   {
+    "upTo": 670,
+    "minBase": 653.59,
+    "maxBase": 718.94
+   },
+   {
+    "upTo": 900,
+    "minBase": 718.95,
+    "maxBase": 900.0
+   },
+   {
+    "upTo": 1166.7,
+    "minBase": 849.67,
+    "maxBase": 1166.7
+   },
+   {
+    "upTo": 1300,
+    "minBase": 950.98,
+    "maxBase": 1300
+   },
+   {
+    "upTo": 1500,
+    "minBase": 960.78,
+    "maxBase": 1500
+   },
+   {
+    "upTo": 1700,
+    "minBase": 960.78,
+    "maxBase": 1700
+   },
+   {
+    "upTo": 1850,
+    "minBase": 1143.79,
+    "maxBase": 1850
+   },
+   {
+    "upTo": 2030,
+    "minBase": 1209.15,
+    "maxBase": 2030
+   },
+   {
+    "upTo": 2330,
+    "minBase": 1274.51,
+    "maxBase": 2330
+   },
+   {
+    "upTo": 2760,
+    "minBase": 1356.21,
+    "maxBase": 2760
+   },
+   {
+    "upTo": 3190,
+    "minBase": 1437.91,
+    "maxBase": 3190
+   },
+   {
+    "upTo": 3620,
+    "minBase": 1519.61,
+    "maxBase": 3620
+   },
+   {
+    "upTo": 4050,
+    "minBase": 1601.31,
+    "maxBase": 4050
+   },
+   {
+    "upTo": 6000,
+    "minBase": 1732.03,
+    "maxBase": 5101.2
+   },
+   {
+    "upTo": null,
+    "minBase": 1928.1,
+    "maxBase": 5101.2
+   }
+  ],
+  "source": "Orden PJC/297/2026 art. 18.1; RDL 3/2026 art. 3.4",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.ssIncomeReading": {
+  "value": "A",
+  "source": "bizkaia.eus 'rendimiento neto previo' wording — before the 20/15/10 %; not confirmed",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "smi": {
+  "value": 17094,
+  "source": "RD 126/2026 (BOE-A-2026-3815)",
+  "status": "S",
+  "checked": "2026-11-18"
+ },
+ "pluriRefund": {
+  "value": {
+   "cap": 17323.68,
+   "share": 0.5
+  },
+  "source": "LGSS art. 313; Orden PJC/297/2026 art. 18.8",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "rg.employee": {
+  "value": 0.065,
+  "source": "Orden PJC/297/2026 arts. 4, 10, 16 (CC 4.70 + desempleo 1.55 + FP 0.10 + MEI 0.15)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "rg.employer": {
+  "value": 0.3215,
+  "source": "Orden PJC/297/2026 (CC 23.60 + desempleo 5.50 + FOGASA 0.20 + FP 0.60 + MEI 0.75) + AT/EP 1.50 office (LGSS DA 61ª)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "rg.maxBaseMonth": {
+  "value": 5101.2,
+  "source": "RDL 3/2026 art. 3; Orden PJC/297/2026 art. 2.1",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "rg.solidarity": {
+  "value": {
+   "bands": [
+    510.12,
+    2040.48
+   ],
+   "employee": [
+    0.0019,
+    0.0021,
+    0.0024
+   ],
+   "employer": [
+    0.0096,
+    0.0104,
+    0.0122
+   ]
+  },
+  "source": "LGSS art. 19 bis, DT 43ª; Orden PJC/297/2026 art. 17",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "salaryWithholding": {
+  "value": [
+   {
+    "upTo": 20000.0,
+    "pct": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 20510.0,
+    "pct": [
+     7,
+     5,
+     3,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 21300.0,
+    "pct": [
+     8,
+     6,
+     4,
+     1,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 22150.0,
+    "pct": [
+     9,
+     7,
+     5,
+     2,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 23220.0,
+    "pct": [
+     10,
+     9,
+     7,
+     4,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 24050.0,
+    "pct": [
+     11,
+     10,
+     8,
+     5,
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 25410.0,
+    "pct": [
+     12,
+     11,
+     9,
+     6,
+     3,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 27440.0,
+    "pct": [
+     13,
+     12,
+     10,
+     7,
+     4,
+     0,
+     0
+    ]
+   },
+   {
+    "upTo": 29790.0,
+    "pct": [
+     14,
+     13,
+     11,
+     9,
+     6,
+     2,
+     0
+    ]
+   },
+   {
+    "upTo": 32610.0,
+    "pct": [
+     15,
+     14,
+     13,
+     10,
+     8,
+     4,
+     0
+    ]
+   },
+   {
+    "upTo": 36350.0,
+    "pct": [
+     16,
+     15,
+     14,
+     12,
+     9,
+     6,
+     0
+    ]
+   },
+   {
+    "upTo": 40670.0,
+    "pct": [
+     17,
+     16,
+     15,
+     13,
+     11,
+     8,
+     0
+    ]
+   },
+   {
+    "upTo": 44560.0,
+    "pct": [
+     18,
+     17,
+     16,
+     15,
+     13,
+     10,
+     2
+    ]
+   },
+   {
+    "upTo": 48060.0,
+    "pct": [
+     19,
+     18,
+     17,
+     16,
+     14,
+     12,
+     4
+    ]
+   },
+   {
+    "upTo": 52020.0,
+    "pct": [
+     20,
+     19,
+     18,
+     17,
+     15,
+     13,
+     7
+    ]
+   },
+   {
+    "upTo": 56780.0,
+    "pct": [
+     21,
+     20,
+     20,
+     18,
+     17,
+     15,
+     9
+    ]
+   },
+   {
+    "upTo": 61820.0,
+    "pct": [
+     22,
+     21,
+     21,
+     20,
+     18,
+     16,
+     11
+    ]
+   },
+   {
+    "upTo": 65710.0,
+    "pct": [
+     23,
+     22,
+     22,
+     21,
+     19,
+     18,
+     12
+    ]
+   },
+   {
+    "upTo": 70080.0,
+    "pct": [
+     24,
+     23,
+     23,
+     22,
+     21,
+     19,
+     14
+    ]
+   },
+   {
+    "upTo": 75020.0,
+    "pct": [
+     25,
+     25,
+     24,
+     23,
+     22,
+     20,
+     16
+    ]
+   },
+   {
+    "upTo": 80730.0,
+    "pct": [
+     26,
+     26,
+     25,
+     24,
+     23,
+     22,
+     17
+    ]
+   },
+   {
+    "upTo": 86770.0,
+    "pct": [
+     27,
+     27,
+     26,
+     25,
+     24,
+     23,
+     19
+    ]
+   },
+   {
+    "upTo": 92190.0,
+    "pct": [
+     28,
+     28,
+     27,
+     26,
+     25,
+     24,
+     21
+    ]
+   },
+   {
+    "upTo": 98350.0,
+    "pct": [
+     29,
+     29,
+     28,
+     27,
+     27,
+     25,
+     22
+    ]
+   },
+   {
+    "upTo": 105380.0,
+    "pct": [
+     30,
+     30,
+     29,
+     29,
+     28,
+     27,
+     23
+    ]
+   },
+   {
+    "upTo": 113180.0,
+    "pct": [
+     31,
+     31,
+     30,
+     30,
+     29,
+     28,
+     25
+    ]
+   },
+   {
+    "upTo": 122030.0,
+    "pct": [
+     32,
+     32,
+     31,
+     31,
+     30,
+     29,
+     26
+    ]
+   },
+   {
+    "upTo": 132200.0,
+    "pct": [
+     33,
+     33,
+     32,
+     32,
+     31,
+     30,
+     28
+    ]
+   },
+   {
+    "upTo": 144140.0,
+    "pct": [
+     34,
+     34,
+     33,
+     33,
+     32,
+     32,
+     29
+    ]
+   },
+   {
+    "upTo": 157300.0,
+    "pct": [
+     35,
+     35,
+     34,
+     34,
+     33,
+     33,
+     31
+    ]
+   },
+   {
+    "upTo": 172280.0,
+    "pct": [
+     36,
+     36,
+     36,
+     35,
+     35,
+     34,
+     32
+    ]
+   },
+   {
+    "upTo": 190410.0,
+    "pct": [
+     37,
+     37,
+     37,
+     36,
+     36,
+     35,
+     33
+    ]
+   },
+   {
+    "upTo": 212820.0,
+    "pct": [
+     38,
+     38,
+     38,
+     37,
+     37,
+     36,
+     35
+    ]
+   },
+   {
+    "upTo": 236060.0,
+    "pct": [
+     39,
+     39,
+     39,
+     38,
+     38,
+     37,
+     36
+    ]
+   },
+   {
+    "upTo": null,
+    "pct": [
+     40,
+     40,
+     40,
+     39,
+     39,
+     39,
+     37
+    ]
+   }
+  ],
+  "source": "RIRPF Bizkaia art. 88.1; DF 134/2025 (BOB 248, 30/12/2025)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "salaryWithholding.shortContractMin": {
+  "value": 2,
+  "source": "RIRPF Bizkaia art. 88.2.4º",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "deadlines": {
+  "value": {
+   "q130": [
+    "04-25",
+    "07-25",
+    "10-25",
+    "01-31"
+   ],
+   "q303": [
+    "04-25",
+    "07-25",
+    "10-25"
+   ],
+   "m390": "01-31",
+   "rentaEnd": "06-30",
+   "rentaSecond": "11-10"
+  },
+  "source": "RIRPF Bizkaia art. 111; Reglamento de gestión DA 1ª; RIRPF art. 76; bizkaia.eus calendario",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "reta.ccRate": {
+  "value": 0.283,
+  "source": "Orden PJC/297/2026 art. 18.2.a (contingencias comunes 28,30 %)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "rg.cc": {
+  "value": {
+   "employee": 0.047,
+   "employer": 0.236
+  },
+  "source": "Orden PJC/297/2026 art. 4.a (CC 4,70 % / 23,60 %)",
+  "status": "V",
+  "checked": "2026-11-18"
+ }
+}

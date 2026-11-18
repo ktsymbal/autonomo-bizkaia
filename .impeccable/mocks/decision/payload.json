@@ -1,0 +1,90 @@
+{
+  "title": "Choose the visual world for Naruky",
+  "question": "The roll assigned Bilbao Metro. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned", "label": "Bilbao Metro", "kicker": "THE ROLL",
+      "lineage": "Norman Foster's Metro Bilbao wayfinding: red disc, graphite steel, glass",
+      "thesis": "Your tax year as a metro line: every payment is a station you can see coming.",
+      "palette": ["#e30613", "#2a2f33", "#f4f5f4", "#ffffff", "#f0a7ad"],
+      "materials": ["graphite steel", "glass canopy", "red signal disc"],
+      "viewport": "Inputs in a left panel; headline take-home; a red line of the year with 130/303/390/Renta stations and 'you are here'.",
+      "risk": "Reads as a Bilbao transport app if the line is used as decoration instead of the payment schedule.",
+      "raised": [
+        { "from": "challenger-acetate", "raise": "Where each euro goes is one bar whose segment widths are exact shares that always sum to 100 %." },
+        { "from": "challenger-doujin", "raise": "The line and the month table are one space: tapping a station jumps to its row and back." },
+        { "from": "challenger-jcard", "raise": "The split of every payment can't overflow: what you keep + tax + RETA + set-aside = the invoice, to the cent." },
+        { "from": "challenger-tiles", "raise": "Chrome deleted around the headline: the take-home number is the largest thing on screen, no card shell." },
+        { "from": "challenger-zone", "raise": "One graphite tonal ramp carries every neutral; red is reserved for money leaving you." }
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html"
+    },
+    {
+      "id": "model-pick", "label": "Savings passbook", "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Ощадна книжка / BBK libreta de ahorro: dated lines, running balance, guilloche paper",
+      "thesis": "Your set-aside pot printed line by line, like the passbook both your countries grew up with.",
+      "palette": ["#123d36", "#e8f1ea", "#f6faf7", "#a3262a"],
+      "materials": ["guilloche security paper", "dot-matrix entries", "bank stamp"],
+      "viewport": "Inputs left; headline; a dated table of inflows, payments and the running tax-reserve balance.",
+      "risk": "Familiar finance look; easily slides into ruled-ledger costume and feels like a bank.",
+      "html": ".impeccable/mocks/decision/model-pick.html"
+    },
+    {
+      "id": "challenger-transit", "label": "Midnight transit diagram", "verdict": "competitive",
+      "lineage": "enamel rail-map murals",
+      "thesis": "Each obligation (IRPF, RETA, IVA, Renta) is its own coloured line across the year.",
+      "palette": ["#0f1b3d", "#e8433f", "#3f7be8", "#f2b233", "#3fbf7f"],
+      "materials": ["midnight enamel", "porcelain station ticks"],
+      "viewport": "Dark shell; four parallel coloured lines with payment stations.",
+      "case": "Holds clarity (parallel obligations read well) but loses audience identification to the local Bilbao Metro.",
+      "risk": "Dark, dense diagram is harder to read on a phone in daylight.",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-midnight-transit-diagram-hero.webp",
+      "html": ".impeccable/mocks/decision/challenger-transit.html"
+    },
+    {
+      "id": "challenger-tiles", "label": "Metro typographic tiles", "verdict": "declined",
+      "lineage": "Windows Phone Metro", "palette": ["#000000", "#1ba1e2", "#ffffff"], "materials": ["flat tiles", "giant lowercase"],
+      "thesis": "Type is the interface.", "viewport": "Panorama of tiles.", "risk": "Dated phone-OS costume.",
+      "case": "Loses both axes: no tie to Bilbao or Ukraine; panorama hides the schedule.", "kept": "Chrome deleted: the number is the interface.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+    },
+    {
+      "id": "challenger-acetate", "label": "Manual acetate tab board", "verdict": "declined",
+      "lineage": "boxed software manuals", "palette": ["#f2a900", "#ffffff", "#2b2b2b"], "materials": ["acetate", "tab rail"],
+      "thesis": "Sections as tabs sized by extent.", "viewport": "Open manual.", "risk": "Reads as documentation, not a tool.",
+      "case": "Loses both axes.", "kept": "Extent drawn proportionally: shares as exact widths.",
+      "hero": "https://impeccable.style/worlds/cards/rw-manual-acetate-tab-board-hero.webp"
+    },
+    {
+      "id": "challenger-doujin", "label": "Event circle catalog", "verdict": "declined",
+      "lineage": "doujin event catalogs", "palette": ["#111111", "#eeeae0", "#d23"], "materials": ["newsprint", "biro circles"],
+      "thesis": "Map and grid are one space.", "viewport": "Packed thumbnail grid.", "risk": "Illegible density for money.",
+      "case": "Loses both axes.", "kept": "Map and table are one space (station ↔ month row).",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-doujin-event-catalog-hero.webp"
+    },
+    {
+      "id": "challenger-jcard", "label": "Cassette J-card", "verdict": "declined",
+      "lineage": "mixtape inlays", "palette": ["#1f3fbf", "#ffffff", "#c8102e"], "materials": ["ballpoint", "inlay stock"],
+      "thesis": "Sides must not overflow the tape.", "viewport": "Folded tracklist.", "risk": "Nostalgia costume.",
+      "case": "Loses both axes.", "kept": "A fixed budget that can't overflow: the payment split sums exactly.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-cassette-j-card-hero.webp"
+    },
+    {
+      "id": "challenger-zone", "label": "Darkroom exposure record", "verdict": "declined",
+      "lineage": "enlarger record cards", "palette": ["#222222", "#888888", "#e3e3e3", "#c0397a"], "materials": ["tracing paper", "zone ramp"],
+      "thesis": "One tonal ramp as the only tokens.", "viewport": "Stacked translucent sheets.", "risk": "Abstract; users won't read it.",
+      "case": "Loses both axes.", "kept": "A single tonal ramp for all neutrals.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-exposure-record-zone-sheets-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard", "thesis": "A clean fintech calculator: white cards, blue accent, results tiles.",
+    "palette": ["#ffffff", "#0f172a", "#2563eb"], "materials": ["clean grid", "stat tiles"],
+    "viewport": "Form card left, result card with three stat tiles right.",
+    "risk": "Indistinguishable from every other tax calculator by design.",
+    "html": ".impeccable/mocks/decision/canon.html"
+  },
+  "steer": true
+}

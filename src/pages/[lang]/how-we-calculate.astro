@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import { LANGS, t, tList, date, type Lang } from '../../i18n/t';
+import { rawParams, type Key } from '../../params';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const raw = rawParams(2026);
+const keys = Object.keys(raw) as Key[];
+const open = keys.filter((k) => raw[k].status === '?');
+const nf = new Intl.NumberFormat(lang === 'uk' ? 'uk-UA' : 'en-GB', { maximumFractionDigits: 2 });
+const show = (v: unknown): string => {
+  if (typeof v === 'number') return v > 0 && v < 1 ? `${nf.format(v * 100)} %` : nf.format(v);
+  if (typeof v === 'boolean') return v ? 'yes' : 'no';
+  if (typeof v === 'string') return v;
+  if (Array.isArray(v)) return v.length > 8 ? `${v.length} rows` : v.map((x) => (Array.isArray(x) ? x.join(' → ') : typeof x === 'object' ? JSON.stringify(x) : String(x))).join(' · ');
+  return Object.entries(v as object).map(([k, x]) => `${k}: ${typeof x === 'object' ? JSON.stringify(x).replace(/["{}]/g, '') : x}`).join(' · ');
+};
+---
+<Base lang={lang} page="how" title={`${t(lang, 'how.title')} — ${t(lang, 'brand.name')}`}>
+  <section class="pagehead">
+    <h1>{t(lang, 'how.title')}</h1>
+    <p>{t(lang, 'how.lede')}</p>
+  </section>
+  <div class="inputs">
+    <div class="cols">
+      <section class="card"><h2>{t(lang, 'how.covers')}</h2><ul class="list">{tList(lang, 'how.coversList').map((x) => <li>{x}</li>)}</ul></section>
+      <section class="card"><h2>{t(lang, 'how.not')}</h2><ul class="list">{tList(lang, 'how.notList').map((x) => <li>{x}</li>)}</ul></section>
+    </div>
+    <section class="card">
+      <h2>{t(lang, 'how.open')}</h2>
+      <p class="note">{t(lang, 'how.openLede')}</p>
+      <ul class="list">
+        <li>{t(lang, 'settings.r2')}: {t(lang, 'settings.r2.A')} / {t(lang, 'settings.r2.B')}</li>
+        <li>{t(lang, 'settings.s1')}: {t(lang, 'settings.s1.off')} / {t(lang, 'settings.s1.tier')} / {t(lang, 'settings.s1.15')}</li>
+        <li>{t(lang, 'settings.s2')}</li>
+        {open.map((k) => <li><code>{k}</code>: {raw[k].source}</li>)}
+      </ul>
+    </section>
+    <section class="card">
+      <h2>{t(lang, 'how.sources')}</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>{t(lang, 'how.param')}</th><th>{t(lang, 'how.value')}</th><th>{t(lang, 'how.source')}</th><th>{t(lang, 'how.status')}</th><th>{t(lang, 'how.checked')}</th></tr></thead>
+          <tbody>
+            {keys.map((k) => (
+              <tr>
+                <td><code>{k}</code></td>
+                <td style="max-width:280px">{show(raw[k].value)}</td>
+                <td style="min-width:280px">{raw[k].source}</td>
+                <td><span class={`chip ${raw[k].status === 'V' ? '' : 'neutral'}`}>{t(lang, `status.${raw[k].status}`)}</span></td>
+                <td style="white-space:nowrap">{date(lang, raw[k].checked)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <p><a href={`${base}/${lang}/`}>← {t(lang, 'how.back')}</a></p>
+  </div>
+</Base>

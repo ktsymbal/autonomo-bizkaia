@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.impeccable/review/
+.impeccable/mocks/decision/*.png
+.impeccable/mocks/decision/*.webp
+.impeccable/hook.cache.json
+.impeccable/build/

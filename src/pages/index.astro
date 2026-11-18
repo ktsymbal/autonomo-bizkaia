@@ -1,0 +1,18 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${base}/uk/`} />
+    <link rel="canonical" href={`${base}/uk/`} />
+    <title>Autónomo Bizkaia</title>
+    <script is:inline>
+      // Send English browsers to /en/, keep any calculation in the fragment.
+      var l = (navigator.language || '').toLowerCase().startsWith('uk') ? 'uk' : (navigator.language || '').toLowerCase().startsWith('en') ? 'en' : 'uk';
+      location.replace('./' + l + '/' + location.hash);
+    </script>
+  </head>
+  <body><a href={`${base}/uk/`}>Українська</a> · <a href={`${base}/en/`}>English</a></body>
+</html>

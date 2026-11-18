@@ -1,0 +1,44 @@
+{
+  "checked": "2026-11-18",
+  "programs": [
+    {
+      "id": "lanbide-consolidacion",
+      "org": "Lanbide (Gobierno Vasco)",
+      "name": { "uk": "Допомога на консолідацію діяльності", "en": "Business consolidation grant" },
+      "amount": { "uk": "2 500 €; +15 % до 30 років, +15 % для жінок", "en": "€2,500; +15 % if aged 18–30, +15 % for women" },
+      "conditions": {
+        "uk": ["до реєстрації (alta) ви були безробітні й зареєстровані в Lanbide", "alta з 1 листопада 2025", "податкова адреса й місце роботи в Країні Басків", "покриває RETA, gestoría, сайт, навчання на 10 місяців"],
+        "en": ["you were unemployed and registered with Lanbide before your alta", "alta from 1 November 2025", "tax address and workplace in the Basque Country", "covers RETA, gestoría, website, training for 10 months"]
+      },
+      "from": "2026-10-01", "to": "2026-10-30",
+      "url": "https://www.euskadi.eus/ayuda_subvencion/2026/apec-2026/web01-tramite/es/",
+      "status": "V"
+    },
+    {
+      "id": "dfb-fomento",
+      "org": "Diputación Foral de Bizkaia",
+      "name": { "uk": "Fomento de Iniciativas Emprendedoras (запуск)", "en": "Fomento de Iniciativas Emprendedoras (start-up)" },
+      "amount": { "uk": "5 000 € (+2 000 € за кожного наступного засновника, до 15 000 €)", "en": "€5,000 (+€2,000 per extra founder, up to €15,000)" },
+      "conditions": {
+        "uk": ["alta в Hacienda Foral de Bizkaia між 31.07.2025 і 30.07.2026", "до alta ви були безробітні", "консультації й навчання за програмою Diputación до alta, бізнес-план", "адреса й місце роботи в Біскаї; «цифрові бізнеси», за повідомленнями, виключені"],
+        "en": ["alta at Hacienda Foral de Bizkaia between 31.07.2025 and 30.07.2026", "you were unemployed before the alta", "Diputación advisory and training before the alta, a business plan", "address and workplace in Bizkaia; \"digital businesses\" reportedly excluded"]
+      },
+      "from": "2026-07-15", "to": "2026-07-30",
+      "url": "https://leartibaifundazioa.eus/es/ekintzailetza_dirulaguntzak/fomento-de-iniciativas-emprendedoras-ayudas-a-la-puesta-en-marcha-y-creacion-de-empresas/",
+      "status": "S"
+    },
+    {
+      "id": "spri-ekintzaile",
+      "org": "SPRI (Gobierno Vasco)",
+      "name": { "uk": "Ekintzaile", "en": "Ekintzaile" },
+      "amount": { "uk": "до 30 000 €, без повернення", "en": "up to €30,000, non-repayable" },
+      "conditions": {
+        "uk": ["інноваційний або промисловий проєкт", "під наставництвом BIC (напр. BIC Bizkaia / BEAZ)"],
+        "en": ["an innovative or industrial project", "mentored by a BIC (e.g. BIC Bizkaia / BEAZ)"]
+      },
+      "from": "2026-03-17", "to": "2026-12-11",
+      "url": "https://www.spri.eus/es/ayudas/ekintzaile/",
+      "status": "S"
+    }
+  ]
+}
