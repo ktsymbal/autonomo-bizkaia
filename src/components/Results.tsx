@@ -71,7 +71,7 @@ export function Notices({ lang, r }: R) {
   );
 }
 
-export function Hero({ lang, r, heroRef }: R & { heroRef?: preact.Ref<HTMLDivElement> }) {
+export function Hero({ lang, r, heroRef, onExplain }: R & { heroRef?: preact.Ref<HTMLDivElement>; onExplain?: () => void }) {
   const d = r.denominator;
   const a = r.annual;
   const total = a.income + a.salaryGross;
@@ -110,6 +110,7 @@ export function Hero({ lang, r, heroRef }: R & { heroRef?: preact.Ref<HTMLDivEle
           </div>
         </>
       ) : null}
+      {onExplain ? <button type="button" class="ex-open" onClick={onExplain}>{t(lang, 'ex.open')}</button> : null}
     </div>
   );
 }

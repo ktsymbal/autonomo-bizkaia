@@ -13,6 +13,20 @@ export function scale(bl: number, p: Params): number {
   return tax;
 }
 
+/** How the base splits across the scale's brackets (for the explainer). */
+export function brackets(bl: number, p: Params): { from: number; to: number | null; rate: number; amount: number; tax: number }[] {
+  const s = p.get('irpf.scale');
+  const out = [];
+  for (let i = 0; i < s.length; i++) {
+    const [from, rate] = s[i];
+    const to = i + 1 < s.length ? s[i + 1][0] : null;
+    if (bl <= from) break;
+    const amount = Math.min(bl, to ?? Infinity) - from;
+    out.push({ from, to, rate, amount, tax: amount * rate });
+  }
+  return out;
+}
+
 /** Simplificada % by the prior year's ingresos − gastos (art. 28.1.b). null = first year [?]. */
 export function tier(priorD: number | null, p: Params): number {
   if (priorD === null) return p.get('irpf.firstYearTier');

@@ -8,6 +8,7 @@ import { rawParams } from '../params';
 import { AboutCard, ExpensesCard, IncomeCard, SalaryCard, SettingsCard } from './Inputs';
 import { Dock, Hero, Notices, Panel } from './Results';
 import { Details } from './Details';
+import { Explainer } from './Explainer';
 import { Seg } from './ui';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -28,6 +29,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
   const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
   const [detailed, setDetailed] = useState(false);
   const [reverse, setReverse] = useState(false);
+  const [explaining, setExplaining] = useState(false);
   const [target, setTarget] = useState<number | null>(null);
   const ready = useRef(false);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -140,7 +142,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
           {hasIncome ? (
             <>
               <div class="results-pin">
-                <Hero lang={lang} r={r} heroRef={heroRef} />
+                <Hero lang={lang} r={r} heroRef={heroRef} onExplain={() => setExplaining(true)} />
                 <Panel lang={lang} r={r} />
               </div>
               <Notices lang={lang} r={r} />
@@ -160,6 +162,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
       {hasIncome ? (
         <>
           <Details lang={lang} r={r} />
+          <Explainer lang={lang} input={input} r={r} open={explaining} onClose={() => setExplaining(false)} />
           <Dock lang={lang} r={r} target={heroRef} />
         </>
       ) : null}

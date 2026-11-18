@@ -51,7 +51,7 @@ export type CalcResult = {
   firstPayment: Payment | null;
   nextPayment: Payment | null;
   after: Payment[]; // due after the year ends
-  nextYear: { year: number; keptMonthly: number; m130Quarter: number | null; m130Switch: boolean; tpEndsThisYear: boolean; extensionEligible: boolean } | null;
+  nextYear: { year: number; keptMonthly: number; m130Quarter: number | null; m130Switch: boolean; tpEndsThisYear: boolean; extensionEligible: boolean; retaMonthly: number; tier: number } | null;
   compare: { noTarifaPlanaMonthly: number | null; employeeGross: number; employerCost: number } | null;
   pluri: { refund: number; refundYear: number } | null;
   warnings: Warning[];
@@ -204,6 +204,8 @@ export function compute(rawInput: CalcInput, opts: CalcOptions = {}): CalcResult
       m130Switch: ny.yi === 2,
       tpEndsThisYear: c.reta.tpEnd !== null && c.reta.tpEnd.year === year,
       extensionEligible: c.reta.extensionEligible,
+      retaMonthly: ny.activeMonths ? ny.annual.reta / ny.activeMonths : 0,
+      tier: ny.annual.tier,
     };
   }
   if (!opts.nested) {

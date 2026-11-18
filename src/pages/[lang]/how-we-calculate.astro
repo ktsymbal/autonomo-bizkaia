@@ -49,7 +49,7 @@ const show = (v: unknown): string => {
           <thead><tr><th>{t(lang, 'how.param')}</th><th>{t(lang, 'how.value')}</th><th>{t(lang, 'how.source')}</th><th>{t(lang, 'how.status')}</th><th>{t(lang, 'how.checked')}</th></tr></thead>
           <tbody>
             {keys.map((k) => (
-              <tr>
+              <tr id={`p-${k}`}>
                 <td>{t(lang, `param.${k}`)}</td>
                 <td style="max-width:320px">{paramText(lang, k, raw[k].value)}</td>
                 <td style="min-width:280px">{raw[k].source}</td>

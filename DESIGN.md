@@ -30,45 +30,45 @@ colors:
   bad: "#b3261e"
 typography:
   display:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "3.25rem"
     fontWeight: 700
     lineHeight: 1.05
     letterSpacing: "-0.035em"
     fontFeature: "tnum"
   headline:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "clamp(1.6rem, 1.2rem + 1.4vw, 2.25rem)"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.015em"
   headline-section:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.75rem"
     fontWeight: 700
     letterSpacing: "-0.015em"
   title:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.25rem"
     fontWeight: 700
     letterSpacing: "-0.015em"
   value:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 650
     fontFeature: "tnum"
   body:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.5
     fontFeature: "tnum"
   label:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "0.8125rem"
     fontWeight: 500
   micro:
-    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL, Fixel, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 400
 rounded:
@@ -151,7 +151,7 @@ components:
 
 **Creative North Star: "The Quiet Ledger"**
 
-A light, neutral working tool that people open right after an invoice is paid. Everything is warm-grey and white, set in one sans (Onest) with tabular figures, so the numbers read like a receipt. Colour is rationed: one light-peach gradient carries the answer (the monthly take-home), and a single burnt-coral accent appears only as a small signal (where you are, what is next, what is clickable, where your cursor is). The rest is ink, greys and hairlines.
+A light, neutral working tool that people open right after an invoice is paid. Everything is warm-grey and white, set in one sans (Fixel) with tabular figures, so the numbers read like a receipt. Colour is rationed: one light-peach gradient carries the answer (the monthly take-home), and a single burnt-coral accent appears only as a small signal (where you are, what is next, what is clickable, where your cursor is). The rest is ink, greys and hairlines.
 
 Depth is quiet. Input cards are solid white with a soft neutral shadow; glass (backdrop blur with an inner top highlight) is used only where page content actually scrolls underneath: the sticky header pill, the sticky result panel and the mobile dock. There is one faint peach wash in the top-left corner of the page and nothing else decorative. The product has no logo: the name is set in type.
 
@@ -163,7 +163,7 @@ The layout is the familiar calculator shape: inputs on the left, a sticky result
 - One gradient (the result card, light peach), one wash, one accent.
 - Coral is a signal, not a fill: buttons, chips and info icons stay neutral.
 - Glass only over scrolling content; solid cards everywhere else.
-- Tabular numerals everywhere; Cyrillic and Latin both set in Onest.
+- Tabular numerals everywhere; Cyrillic and Latin both set in Fixel.
 
 ## Colors
 
@@ -205,7 +205,7 @@ A warm-neutral greyscale with one light-peach gradient for the result and a sing
 
 ## Typography
 
-**Display Font:** Onest Variable (self-hosted via @fontsource-variable/onest, with Onest, system-ui, -apple-system, Segoe UI, sans-serif)
+**Display Font:** Fixel Text (headings and big figures: Fixel Display), by MacPaw, SIL OFL (self-hosted via @fontsource-variable/onest, with Fixel, system-ui, -apple-system, Segoe UI, sans-serif)
 **Body Font:** the same family
 **Label/Mono Font:** the same family; numbers use tabular figures, not a mono face
 
@@ -224,7 +224,7 @@ A warm-neutral greyscale with one light-peach gradient for the result and a sing
 ### Named Rules
 **The Tabular Figures Rule.** `font-variant-numeric: tabular-nums` is set on the body and inherited everywhere. People compare these numbers with payment receipts.
 
-**The Name-in-Type Rule.** The product name is set in Onest (Title-ish 1.0625rem bold) with a Label-size subtitle. No logo mark, monogram or glyph sits beside it.
+**The Name-in-Type Rule.** The product name is set in Fixel (Title-ish 1.0625rem bold) with a Label-size subtitle. No logo mark, monogram or glyph sits beside it.
 
 ## Layout
 
@@ -307,7 +307,7 @@ A Sunk Grey tab track (14px radius) above one solid panel. Tables use hairline r
 - **Do** put all notices in one container with hairline dividers, tinting only the warn and good rows.
 - **Do** open the calculator empty, with the result card explaining what will appear once income is entered.
 - **Do** set the product name in type, with a Label-size subtitle.
-- **Do** use tabular numerals and Onest for every script.
+- **Do** use tabular numerals and Fixel for every script.
 - **Do** write UI copy only in Ukrainian or English, with Spanish form terms (modelo 130, RETA, tarifa plana) alongside.
 
 ### Don't:
