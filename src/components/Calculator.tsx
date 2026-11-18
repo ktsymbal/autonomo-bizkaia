@@ -106,7 +106,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
                   onChange={(v) => set((i) => ({ ...i, year: Number(v) as 2026 | 2027 }))}
                 />
               ) : null}
-              <button
+              {hasIncome ? <button
                 type="button"
                 class="linkbtn"
                 onClick={() => {
@@ -116,7 +116,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
                 }}
               >
                 {t(lang, 'reset')}
-              </button>
+              </button> : null}
             </div>
           </div>
           <IncomeCard
