@@ -6,7 +6,7 @@
  "nav.calc": "Calculator",
  "nav.how": "How we calculate",
  "lang.label": "Language",
- "h1": "How much an autónomo in Bizkaia keeps in {year}",
+ "h1": "Autónomo tax calculator for Bizkaia",
  "lede": "Using Bizkaia's own tax rules (Norma Foral 13/2013), not the rules for the rest of Spain. Calculated in your browser; your numbers never leave it.",
  "privacy": "Calculated in your browser. Your numbers are never sent anywhere.",
  "disclaimer": "This is an estimate, not tax advice. Check it with your gestoría.",
