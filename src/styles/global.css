@@ -332,3 +332,5 @@ td .tag.due { background: var(--accent-soft); color: var(--accent-ink); }
 .hero { color: var(--hero-ink); }
 .hero .k, .hero .big small, .hero .sub, .legend span { color: var(--hero-ink-2); }
 .split { background: rgba(59, 32, 22, 0.1); }
+
+.cols2 { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }

@@ -275,7 +275,7 @@ export function AboutCard({ lang, input, set, detailed }: P) {
   return (
     <section class="card" aria-labelledby="h-about">
       <h2 id="h-about">{t(lang, 'about.title')}</h2>
-      <div class="cols">
+      <div style="display:grid;gap:14px">
         <Field label={t(lang, 'about.status')}>
           <Select
             value={input.alta ? 'since' : 'notYet'}
@@ -285,7 +285,7 @@ export function AboutCard({ lang, input, set, detailed }: P) {
           />
         </Field>
         {input.alta ? (
-          <div class="cols" style="gap:10px">
+          <div class="cols2">
             <Field label={t(lang, 'about.altaMonth')}>
               <Select value={input.alta.month} label={t(lang, 'about.altaMonth')} options={long.map((l, k) => ({ value: k + 1, label: l }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, month: v } }))} />
             </Field>
@@ -294,7 +294,7 @@ export function AboutCard({ lang, input, set, detailed }: P) {
             </Field>
           </div>
         ) : (
-          <p class="note" style="align-self:end">{t(lang, 'about.notYetNote', { month: `${long[a.month - 1]} ${a.year}` })}</p>
+          <p class="note">{t(lang, 'about.notYetNote', { month: `${long[a.month - 1]} ${a.year}` })}</p>
         )}
       </div>
       <Field label={t(lang, 'about.rent')} hint={t(lang, 'about.rentHint')}>
