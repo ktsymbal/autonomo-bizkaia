@@ -41,29 +41,64 @@ export function activityRN(D: number, tierPct: number, input: CalcInput, p: Para
   return rn;
 }
 
-export type AnnualIRPF = { bi: number; bl: number; ci: number; deductions: { descendants: number; rent: number }; cl: number };
+export type Deductions = {
+  descendants: number; rent: number; purchase: number; disability: number; ascendants: number;
+  age: number; widow: number; carer: number; womenReturn: number; menChildcare: number;
+};
+export type AnnualIRPF = { bi: number; bl: number; ci: number; deductions: Deductions; cl: number };
+
+const taper = (full: number, base: number, lo: number, hi: number) =>
+  base <= lo ? full : base >= hi ? 0 : full - (full / (hi - lo)) * (base - lo);
+
+/** Credits off the tax (cuota). `joint` = joint filing: children not split, purchase caps doubled. */
+export function credits(input: CalcInput, p: Params, bl: number, joint = false): Deductions {
+  const amounts = p.get('irpf.descendants');
+  const n = input.kidsUnder6 + input.kids6to30;
+  let descendants = 0;
+  for (let i = 0; i < n; i++) descendants += amounts[Math.min(i, amounts.length - 1)];
+  if (n) descendants += input.kidsUnder6 * p.get('irpf.descendantUnder6');
+  if (input.partner && !joint) descendants /= 2;
+
+  const enhanced = input.under36 || input.largeFamily;
+  let rent = 0;
+  if (input.rentMonthly > 0) {
+    const r = p.get('irpf.rent');
+    const t = enhanced ? r.enhanced : r.base;
+    rent = Math.min(t.rate * input.rentMonthly * 12, t.cap);
+    if (input.leaseFrom2026 && bl > r.blCap) rent = 0;
+  }
+
+  let purchase = 0;
+  if (input.purchaseAnnual > 0) {
+    const h = p.get('irpf.purchase');
+    const t = enhanced ? h.enhanced : h.base;
+    const cap = enhanced && input.under36 && input.purchaseThisYear ? Infinity : t.cap * (joint ? 2 : 1);
+    purchase = Math.min(t.rate * input.purchaseAnnual, cap, h.lifetimeCap);
+    if (input.purchaseFrom2026 && bl > h.blCap) purchase = 0;
+  }
+
+  const dis = p.get('irpf.disability');
+  const disability = input.disability > 0 ? dis[input.disability - 1] : 0;
+  const ascendants = input.ascendants * p.get('irpf.ascendant');
+  const ag = p.get('irpf.age');
+  const age = input.age65 === 'no' ? 0 : taper(input.age65 === '75' ? ag.over75 : ag.over65, bl, ag.lo, ag.hi);
+  const w = p.get('irpf.widow');
+  const widow = input.widow && input.age65 === 'no' ? taper(w.amount, bl, w.lo, w.hi) : 0;
+  const c = p.get('irpf.carer');
+  const carer = input.carer === 'none' ? 0 : input.carer === 'professional' ? c.professional : c.domestic;
+  const womenReturn = input.womenReturnYears > 0 ? input.womenReturnYears * p.get('irpf.womenReturn') : 0;
+  const menChildcare = input.menChildcare ? p.get('irpf.menChildcare') : 0;
+  return { descendants, rent, purchase, disability, ascendants, age, widow, carer, womenReturn, menChildcare };
+}
+
+export const sumCredits = (d: Deductions) => Object.values(d).reduce((s, x) => s + x, 0);
 
 export function annualIRPF(a: { rnAct: number; rnTrab: number; input: CalcInput; p: Params }): AnnualIRPF {
   const { input, p } = a;
   const bi = Math.max(0, a.rnAct) + Math.max(0, a.rnTrab); // activity losses are ring-fenced (art. 65.b)
   const bl = bi - Math.min(input.epsv, p.get('irpf.epsvCap'), bi);
   const ci = Math.max(0, scale(bl, p) - p.get('irpf.minoracion'));
-
-  const amounts = p.get('irpf.descendants');
-  const n = input.kidsUnder6 + input.kids6to30;
-  let descendants = 0;
-  for (let i = 0; i < n; i++) descendants += amounts[Math.min(i, amounts.length - 1)];
-  if (n) descendants += input.kidsUnder6 * p.get('irpf.descendantUnder6');
-  if (input.partner) descendants /= 2;
-
-  let rent = 0;
-  if (input.rentMonthly > 0) {
-    const r = p.get('irpf.rent');
-    const tierR = input.under36 || input.largeFamily ? r.enhanced : r.base;
-    rent = Math.min(tierR.rate * input.rentMonthly * 12, tierR.cap);
-    if (input.leaseFrom2026 && bl > r.blCap) rent = 0;
-  }
-
-  const cl = Math.max(0, ci - descendants - rent);
-  return { bi, bl, ci, deductions: { descendants, rent }, cl };
+  const deductions = credits(input, p, bl);
+  const cl = Math.max(0, ci - sumCredits(deductions));
+  return { bi, bl, ci, deductions, cl };
 }

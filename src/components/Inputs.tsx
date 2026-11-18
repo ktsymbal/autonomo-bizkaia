@@ -395,3 +395,42 @@ export function SettingsCard({ lang, input, set }: P) {
     </section>
   );
 }
+
+export function DeductionsCard({ lang, input, set }: P) {
+  const upd = (patch: Partial<CalcInput>) => set((i) => ({ ...i, ...patch }));
+  return (
+    <section class="card" aria-labelledby="h-ded">
+      <h2 id="h-ded">{t(lang, 'ded.title')}</h2>
+      <p class="note">{t(lang, 'ded.lede')}</p>
+      <Field label={t(lang, 'ded.buy')} hint={t(lang, 'ded.buyHint')}>
+        <NumberInput lang={lang} min={0} value={input.purchaseAnnual || null} placeholder="0" unit="€" onChange={(v) => upd({ purchaseAnnual: v ?? 0 })} />
+      </Field>
+      {input.purchaseAnnual > 0 ? (
+        <>
+          <Check checked={input.purchaseThisYear} onChange={(v) => upd({ purchaseThisYear: v })}>{t(lang, 'ded.buyThisYear')}</Check>
+          <Check checked={input.purchaseFrom2026} onChange={(v) => upd({ purchaseFrom2026: v })}>{t(lang, 'ded.buyFrom2026')}</Check>
+        </>
+      ) : null}
+      <div class="cols">
+        <Field label={t(lang, 'ded.dis')}>
+          <Select value={input.disability} label={t(lang, 'ded.dis')} options={[0, 1, 2, 3, 4].map((v) => ({ value: v as CalcInput['disability'], label: t(lang, `ded.dis${v}`) }))} onChange={(v) => upd({ disability: v })} />
+        </Field>
+        <Field label={t(lang, 'ded.age')}>
+          <Select value={input.age65} label={t(lang, 'ded.age')} options={(['no', '65', '75'] as const).map((v) => ({ value: v, label: t(lang, `ded.age.${v}`) }))} onChange={(v) => upd({ age65: v })} />
+        </Field>
+      </div>
+      <Stepper label={t(lang, 'ded.asc')} fewer={t(lang, 'fewer')} more={t(lang, 'more')} value={input.ascendants} onChange={(v) => upd({ ascendants: v })} />
+      <Field label={t(lang, 'ded.carer')}>
+        <Select value={input.carer} label={t(lang, 'ded.carer')} options={(['none', 'domestic', 'professional'] as const).map((v) => ({ value: v, label: t(lang, `ded.carer.${v}`) }))} onChange={(v) => upd({ carer: v })} />
+      </Field>
+      <Check checked={input.widow} onChange={(v) => upd({ widow: v })}>{t(lang, 'ded.widow')}</Check>
+      <Stepper label={t(lang, 'ded.women')} fewer={t(lang, 'fewer')} more={t(lang, 'more')} value={input.womenReturnYears} max={10} onChange={(v) => upd({ womenReturnYears: v })} />
+      <Check checked={input.menChildcare} onChange={(v) => upd({ menChildcare: v })}>{t(lang, 'ded.men')}</Check>
+      {input.partner ? (
+        <Field label={t(lang, 'ded.partnerGross')} hint={t(lang, 'ded.partnerHint')}>
+          <NumberInput lang={lang} min={0} value={input.partnerGross} unit="€" onChange={(v) => upd({ partnerGross: v })} />
+        </Field>
+      ) : null}
+    </section>
+  );
+}

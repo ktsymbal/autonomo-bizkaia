@@ -54,4 +54,19 @@ describe('explainer steps', () => {
     expect(titles).toContain('Plus your salary');
     expect(titles).toContain('Minus the children deduction');
   });
+  it('new deductions each get a step, and the tax ends at the engine\'s figure', () => {
+    const i = base({ purchaseAnnual: 6000, ascendants: 1, disability: 1, carer: 'domestic' });
+    const r = compute(i);
+    const steps = explain('en', i, r);
+    const titles = steps.map((x) => x.title);
+    for (const t of ['Minus buying your home', 'Minus parents living with you', 'Minus disability', 'Minus a carer at home']) expect(titles).toContain(t);
+    const lastTaxStep = [...steps].reverse().find((x) => x.ch === 1)!;
+    expect(lastTaxStep.ledger.tax).toBeCloseTo(r.annual.irpf.cl, 2);
+  });
+  it('joint filing comparison is in the result when a partner salary is given', () => {
+    const r = compute(base({ partner: true, partnerGross: 0 }));
+    expect(r.joint).not.toBeNull();
+    expect(r.joint!.joint).toBeLessThan(r.joint!.separate);
+    expect(compute(base()).joint).toBeNull();
+  });
 });

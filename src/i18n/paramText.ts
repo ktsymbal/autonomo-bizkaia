@@ -28,6 +28,12 @@ export function paramText(lang: Lang, k: Key, v: Values[Key]): string {
     case 'salaryWithholding': return L(`таблиця, ${(val as unknown[]).length} рядків`, `table, ${(val as unknown[]).length} rows`);
     case 'salaryWithholding.shortContractMin': return `${n(val)} %`;
     case 'deadlines': return `130 / 303: ${(val.q303 as string[]).map((d: string) => d.split('-').reverse().join('.')).join(', ')} · ${L('4-й квартал і 390', 'Q4 and 390')}: ${val.m390.split('-').reverse().join('.')} · Renta ${L('до', 'by')} ${val.rentaEnd.split('-').reverse().join('.')}`;
+    case 'irpf.purchase': return `${p(val.base.rate)} ${L('до', 'up to')} ${e(val.base.cap)} · ${L('до 36 років', 'under 36')}: ${p(val.enhanced.rate)} ${L('до', 'up to')} ${e(val.enhanced.cap)} · ${L('не діє вище бази', 'lost above a base of')} ${e(val.blCap)}`;
+    case 'irpf.disability': return (val as number[]).map(e).join(' · ');
+    case 'irpf.age': return `65+: ${e(val.over65)} · 75+: ${e(val.over75)} · ${L('зменшується між', 'tapers between')} ${e(val.lo)} ${L('і', 'and')} ${e(val.hi)}`;
+    case 'irpf.widow': return `${e(val.amount)} · ${L('зменшується між', 'tapers between')} ${e(val.lo)} ${L('і', 'and')} ${e(val.hi)}`;
+    case 'irpf.carer': return `${e(val.domestic)} · ${L('професійна', 'professional')}: ${e(val.professional)}`;
+    case 'irpf.womenReturn': return `${e(val)} ${L('за рік перерви', 'per year away')}`;
     default:
       if (typeof val === 'number') return val > 0 && val < 1 ? p(val) : e(val);
       return String(val);

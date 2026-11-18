@@ -31,6 +31,17 @@ export type CalcInput = {
   startup: { claim: boolean; sex: 'w' | 'm' };
   priorD: number | null; // user-entered previous-year ingresos − gastos; null = derive / first year
   epsv: number;
+  purchaseAnnual: number; // mortgage capital + interest + purchase costs paid this year for your main home
+  purchaseThisYear: boolean; // bought this year (no yearly cap if under 36)
+  purchaseFrom2026: boolean; // acquired from 1 Jan 2026 → €68k base cap
+  disability: 0 | 1 | 2 | 3 | 4; // none, 33–65 %, ≥65 % or grade I, grade II, grade III
+  ascendants: number; // parents/grandparents living with you, income ≤ SMI
+  age65: 'no' | '65' | '75';
+  widow: boolean;
+  carer: 'none' | 'domestic' | 'professional';
+  womenReturnYears: number;
+  menChildcare: boolean;
+  partnerGross: number | null; // partner's gross salary a year, for the joint-filing comparison
   salary: { grossMonthly: number; withheldMonthly: number | null; shortContract: boolean } | null;
   retaBase: number | null; // null = minimum of forecast tramo
   tpEligible: boolean; // no RETA in the last 2 years (3 if had tarifa plana before)

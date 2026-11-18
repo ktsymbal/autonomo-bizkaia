@@ -5,7 +5,7 @@ import type { CalcInput, Persona } from '../engine/types';
 import { decode, encode } from '../state/url';
 import { date, t, type Lang } from '../i18n/t';
 import { rawParams } from '../params';
-import { AboutCard, ExpensesCard, IncomeCard, SalaryCard, SettingsCard } from './Inputs';
+import { AboutCard, DeductionsCard, ExpensesCard, IncomeCard, SalaryCard, SettingsCard } from './Inputs';
 import { Dock, Hero, Notices, Panel } from './Results';
 import { Details } from './Details';
 import { Explainer } from './Explainer';
@@ -23,7 +23,7 @@ function applyPersona(i: CalcInput, p: Persona): CalcInput {
   return { ...next, salary: null, alta: null };
 }
 
-const looksDetailed = (i: CalcInput) => i.clients.length > 1 || i.expenseMode === 'itemized' || i.kidsUnder6 + i.kids6to30 > 0 || i.startup.claim || i.epsv > 0 || i.priorD !== null;
+const looksDetailed = (i: CalcInput) => i.purchaseAnnual > 0 || i.disability > 0 || i.ascendants > 0 || i.age65 !== 'no' || i.widow || i.carer !== 'none' || i.womenReturnYears > 0 || i.menChildcare || i.partnerGross !== null || i.clients.length > 1 || i.expenseMode === 'itemized' || i.kidsUnder6 + i.kids6to30 > 0 || i.startup.claim || i.epsv > 0 || i.priorD !== null;
 
 export default function Calculator({ lang }: { lang: Lang }) {
   const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
@@ -136,6 +136,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
             <AboutCard lang={lang} input={input} set={set} detailed={detailed} />
             <ExpensesCard lang={lang} input={input} set={set} detailed={detailed} />
           </div>
+          {detailed ? <DeductionsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
           {detailed ? <SettingsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
         </div>
         <aside class="results" aria-label={t(lang, 'res.headline', { year: r.year })}>

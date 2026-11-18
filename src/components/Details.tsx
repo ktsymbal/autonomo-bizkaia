@@ -212,6 +212,17 @@ function WhatIf({ lang, r }: R) {
           </div>
         ) : null}
       </div>
+      {r.joint ? (
+        <div>
+          <h3 style="font-size:var(--step-1);margin-bottom:8px">{t(lang, 'wi.joint')}</h3>
+          <div class="compare">
+            <div class={`cmp${r.joint.separate <= r.joint.joint ? ' mine' : ''}`}><span class="lbl">IRPF</span><span class="val">{t(lang, 'wi.jointSep', { x: eur(lang, r.joint.separate) })}</span></div>
+            <div class={`cmp${r.joint.joint < r.joint.separate ? ' mine' : ''}`}><span class="lbl">IRPF</span><span class="val">{t(lang, 'wi.jointTog', { x: eur(lang, r.joint.joint) })}</span></div>
+          </div>
+          <p style="margin-top:8px"><b>{r.joint.joint < r.joint.separate ? t(lang, 'wi.jointBetter', { x: eur(lang, r.joint.separate - r.joint.joint) }) : t(lang, 'wi.jointWorse', { x: eur(lang, r.joint.joint - r.joint.separate) })}</b></p>
+          <p class="fine">{t(lang, 'wi.jointNote')}</p>
+        </div>
+      ) : null}
       {n ? (
         <div>
           <h3 style="font-size:var(--step-1);margin-bottom:8px">{t(lang, 'wi.next', { year: n.year })}</h3>

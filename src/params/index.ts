@@ -17,6 +17,15 @@ export type Values = {
   'irpf.descendantUnder6': number;
   'irpf.rent': { base: { rate: number; cap: number }; enhanced: { rate: number; cap: number }; blCap: number; ageLimit: number };
   'irpf.epsvCap': number;
+  'irpf.purchase': { base: { rate: number; cap: number }; enhanced: { rate: number; cap: number }; blCap: number; lifetimeCap: number };
+  'irpf.disability': number[];
+  'irpf.ascendant': number;
+  'irpf.age': { over65: number; over75: number; lo: number; hi: number };
+  'irpf.widow': { amount: number; lo: number; hi: number };
+  'irpf.carer': { domestic: number; professional: number };
+  'irpf.womenReturn': number;
+  'irpf.menChildcare': number;
+  'irpf.jointReduction': number;
   'irpf.workBonif': { max: number; min: number; lo: number; hi: number; slope: number; otherIncomeCap: number };
   p130: { startRate: number; generalRate: number; lossRate: number; generalRetShare: number; waiverShare: number };
   'p130.simplificadaInside': boolean;

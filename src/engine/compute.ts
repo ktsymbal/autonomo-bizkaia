@@ -1,6 +1,6 @@
 import { getParams, type Key, type Params, type Year } from '../params';
 import { activityLedger, effectiveAlta } from './activity';
-import { employeeSS, employerCost, equivalentGross, pluriRefund, salaryWithholdingPct, workRN } from './employment';
+import { employeeSS, employerCost, equivalentGross, jointCompare, pluriRefund, salaryWithholdingPct, workRN } from './employment';
 import { activityRN, annualIRPF, tier, type AnnualIRPF } from './irpf';
 import { ivaYear, type IvaYear } from './iva';
 import { m130, type Q130, type QuarterAgg } from './m130';
@@ -54,6 +54,7 @@ export type CalcResult = {
   nextYear: { year: number; keptMonthly: number; m130Quarter: number | null; m130Switch: boolean; tpEndsThisYear: boolean; extensionEligible: boolean; retaMonthly: number; tier: number } | null;
   compare: { noTarifaPlanaMonthly: number | null; employeeGross: number; employerCost: number } | null;
   pluri: { refund: number; refundYear: number } | null;
+  joint: { separate: number; joint: number } | null;
   warnings: Warning[];
   provenance: Key[];
   unverified: Key[];
@@ -228,6 +229,7 @@ export function compute(rawInput: CalcInput, opts: CalcOptions = {}): CalcResult
       irpf, prepaid130, retencion: c.retencion, prepaid, renta,
     },
     months, q130, iva, reta: c.reta, setAside, firstPayment, nextPayment, after, nextYear, compare, pluri,
+    joint: input.partner && input.partnerGross !== null ? jointCompare(input, c.rnAct, work.rn, p) : null,
     warnings: [], provenance: usedKeys as Key[], unverified: unverified as Key[],
   };
   result.warnings = buildWarnings(input, result, c, p);

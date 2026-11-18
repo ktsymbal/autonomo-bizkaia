@@ -34,7 +34,7 @@ export function warningText(lang: Lang, w: Warning, r: CalcResult): string {
     case 'W13': return t(lang, 'w.W13', { form: t(lang, FORM_KEY[String(p.form)] ?? 'form.130'), due: date(lang, String(p.due), r.year), amount: eur(lang, n('amount')) });
     case 'W14': return t(lang, 'w.W14', { cap: eur(lang, n('cap')) });
     case 'W16': {
-      const labels = String(p.keys).split(',').map((k) => (r.year >= 2027 && !['irpf.firstYearTier', 'reta.tarifaPlana', 'p130.simplificadaInside', 'reta.ssIncomeReading', 'smi'].includes(k) ? 'pk.2027' : `pk.${k}`));
+      const labels = String(p.keys).split(',').map((k) => (r.year >= 2027 && !['irpf.firstYearTier', 'reta.tarifaPlana', 'p130.simplificadaInside', 'reta.ssIncomeReading', 'smi', 'irpf.womenReturn', 'irpf.menChildcare'].includes(k) ? 'pk.2027' : `pk.${k}`));
       const uniq = [...new Set(labels)].map((k) => t(lang, k)).filter((x) => !x.startsWith('pk.'));
       return t(lang, 'w.W16', { keys: uniq.join(', ') });
     }

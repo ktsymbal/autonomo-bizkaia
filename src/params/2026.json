@@ -805,5 +805,87 @@
   "source": "Orden PJC/297/2026 art. 4.a (CC 4,70 % / 23,60 %)",
   "status": "V",
   "checked": "2026-11-18"
+ },
+ "irpf.purchase": {
+  "value": {
+   "base": {
+    "rate": 0.18,
+    "cap": 1530
+   },
+   "enhanced": {
+    "rate": 0.23,
+    "cap": 1955
+   },
+   "blCap": 68000,
+   "lifetimeCap": 36000
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 87 (87.1–4, 87.10); NF 2/2025 DF 3ª",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.disability": {
+  "value": [
+   906,
+   1294,
+   1552,
+   1935
+  ],
+  "source": "NF 13/2013 IRPF Bizkaia art. 82; NF 7/2025 art. 53",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.ascendant": {
+  "value": 328,
+  "source": "NF 13/2013 IRPF Bizkaia art. 81; NF 7/2025 art. 52",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.age": {
+  "value": {
+   "over65": 393,
+   "over75": 714,
+   "lo": 20000,
+   "hi": 30000
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 83; NF 7/2025 art. 54",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.widow": {
+  "value": {
+   "amount": 200,
+   "lo": 20000,
+   "hi": 30000
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 quinquies (NF 2/2025)",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.carer": {
+  "value": {
+   "domestic": 250,
+   "professional": 500
+  },
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 bis",
+  "status": "V",
+  "checked": "2026-11-18"
+ },
+ "irpf.womenReturn": {
+  "value": 1500,
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 ter — €1,500 per year away from work; multiples and carry-forward not verified",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "irpf.menChildcare": {
+  "value": 200,
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 quater — up to €200/year; conditions not verified",
+  "status": "?",
+  "checked": "2026-11-18"
+ },
+ "irpf.jointReduction": {
+  "value": 4896,
+  "source": "NF 13/2013 IRPF Bizkaia art. 73; NF 7/2025",
+  "status": "V",
+  "checked": "2026-11-18"
  }
 }

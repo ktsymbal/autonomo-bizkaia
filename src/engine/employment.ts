@@ -1,5 +1,5 @@
 import type { Params } from '../params';
-import { annualIRPF } from './irpf';
+import { annualIRPF, credits, scale, sumCredits } from './irpf';
 import type { CalcInput } from './types';
 
 /** Monthly excess over the max base split into the 3 solidarity bands. */
@@ -68,4 +68,22 @@ export function equivalentGross(targetNetYear: number, input: CalcInput, p: Para
     else hi = mid;
   }
   return (lo + hi) / 2;
+}
+
+/**
+ * Joint filing (tributación conjunta, NF arts. 97–99) vs separate returns, for you + a salaried partner.
+ * Your base is passed in; the partner's comes from their gross salary. Not applied to the main result.
+ */
+export function jointCompare(input: CalcInput, myRnAct: number, myRnTrab: number, p: Params): { separate: number; joint: number; mine: number; partners: number } {
+  const g = input.partnerGross ?? 0;
+  const pSS = g > 0 ? employeeSS(g, p) : 0;
+  const pRn = g > 0 ? workRN(g, pSS, 0, p).rn : 0;
+  const mine = annualIRPF({ rnAct: myRnAct, rnTrab: myRnTrab, input, p }).cl;
+  const partnerInput: CalcInput = { ...input, rentMonthly: 0, purchaseAnnual: 0, epsv: 0, disability: 0, ascendants: 0, age65: 'no', widow: false, carer: 'none', womenReturnYears: 0, menChildcare: false };
+  const partners = g > 0 ? annualIRPF({ rnAct: 0, rnTrab: pRn, input: partnerInput, p }).cl : 0;
+  const bi = Math.max(0, myRnAct) + Math.max(0, myRnTrab) + pRn;
+  const bl = Math.max(0, bi - Math.min(input.epsv, p.get('irpf.epsvCap'), bi) - p.get('irpf.jointReduction'));
+  const ci = Math.max(0, scale(bl, p) - p.get('irpf.minoracion'));
+  const joint = Math.max(0, ci - sumCredits(credits(input, p, bl, true)));
+  return { separate: mine + partners, joint, mine, partners };
 }

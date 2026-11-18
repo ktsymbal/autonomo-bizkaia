@@ -141,27 +141,49 @@ export function explain(lang: Lang, input: CalcInput, r: CalcResult): Step[] {
       }),
     });
   }
-  const kids = Math.min(a.irpf.deductions.descendants, Math.max(0, a.irpf.ci));
-  if (kids > 0.5) {
-    credits.push({
-      key: 'kids', amount: kids,
-      build: (from, to) => ({
-        ch: 1, focus: 'tax', title: t(lang, 'ex.kids.t'), amount: -kids, line: t(lang, input.partner ? 'ex.kids.lHalf' : 'ex.kids.l'),
-        formula: `${e(from)} − ${e(kids)} = <b>${e(to)}</b>`,
-        src: { label: 'NF 13/2013, art. 79', key: 'irpf.descendants' },
-      }),
-    });
+  // Each credit is applied to what's left of the tax, in this order.
+  let room = Math.max(0, a.irpf.ci);
+  const take = (x: number) => { const v = Math.min(x, room); room -= v; return v; };
+  const d = a.irpf.deductions;
+  const simple = (key: keyof typeof d, title: string, line: string, src: { label: string; key: Key }) => {
+    const amt = take(d[key]);
+    if (amt > 0.5) credits.push({ key, amount: amt, build: (from, to) => ({ ch: 1, focus: 'tax', title, amount: -amt, line, formula: `${e(from)} − ${e(amt)} = <b>${e(to)}</b>`, src }) });
+  };
+  simple('descendants', t(lang, 'ex.kids.t'), t(lang, input.partner ? 'ex.kids.lHalf' : 'ex.kids.l'), { label: 'NF 13/2013, art. 79', key: 'irpf.descendants' });
+  simple('ascendants', t(lang, 'ex.asc.t'), t(lang, 'ex.asc.l', { n: input.ascendants }), { label: 'NF 13/2013, art. 81', key: 'irpf.ascendant' });
+  simple('disability', t(lang, 'ex.dis.t'), t(lang, 'ex.dis.l'), { label: 'NF 13/2013, art. 82', key: 'irpf.disability' });
+  simple('age', t(lang, 'ex.age.t'), t(lang, 'ex.age.l'), { label: 'NF 13/2013, art. 83', key: 'irpf.age' });
+  simple('widow', t(lang, 'ex.widow.t'), t(lang, 'ex.widow.l'), { label: 'NF 13/2013, art. 83 quinquies', key: 'irpf.widow' });
+  simple('carer', t(lang, 'ex.carer.t'), t(lang, 'ex.carer.l'), { label: 'NF 13/2013, art. 83 bis', key: 'irpf.carer' });
+  simple('womenReturn', t(lang, 'ex.women.t'), t(lang, 'ex.women.l', { n: input.womenReturnYears }), { label: 'NF 13/2013, art. 83 ter', key: 'irpf.womenReturn' });
+  simple('menChildcare', t(lang, 'ex.men.t'), t(lang, 'ex.men.l'), { label: 'NF 13/2013, art. 83 quater', key: 'irpf.menChildcare' });
+  const enhancedRate = input.under36 || input.largeFamily;
+  const whoRate = (rate: number) => (input.largeFamily && !input.under36 ? t(lang, 'ex.rent.large', { rate: pct(lang, rate, 0) }) : t(lang, enhancedRate ? 'ex.rent.young' : 'ex.rent.old', { rate: pct(lang, rate, 0) }));
+  if (input.purchaseAnnual > 0) {
+    const hp = p.get('irpf.purchase');
+    const tierH = enhancedRate ? hp.enhanced : hp.base;
+    const raw = tierH.rate * input.purchaseAnnual;
+    const lost = input.purchaseFrom2026 && a.irpf.bl > hp.blCap;
+    const noCap = enhancedRate && input.under36 && input.purchaseThisYear;
+    const amt = take(d.purchase);
+    const items: { mark: '✓' | '✗' | '=' | '↓'; text: string }[] = [
+      { mark: '✓', text: whoRate(tierH.rate) },
+      { mark: '=', text: t(lang, 'ex.buy.calc', { rate: pct(lang, tierH.rate, 0), paid: e(input.purchaseAnnual), x: e(raw) }) },
+    ];
+    if (noCap) items.push({ mark: '✓', text: t(lang, 'ex.buy.noCap') });
+    else if (raw > tierH.cap) items.push({ mark: '↓', text: t(lang, 'ex.rent.cap', { cap: e(tierH.cap) }) });
+    if (input.purchaseFrom2026) items.push(lost ? { mark: '✗', text: t(lang, 'ex.rent.over', { bl: e(a.irpf.bl), lim: e(hp.blCap) }) } : { mark: '✓', text: t(lang, 'ex.rent.under', { bl: e(a.irpf.bl), lim: e(hp.blCap) }) });
+    credits.push({ key: 'purchase', amount: amt, build: (from, to) => ({ ch: 1, focus: 'tax', title: t(lang, 'ex.buy.t'), amount: -amt, line: t(lang, lost ? 'ex.buy.lLost' : 'ex.buy.l'), viz: [{ kind: 'checks', items }], formula: `${e(from)} − ${e(amt)} = <b>${e(to)}</b>`, src: { label: 'NF 13/2013, art. 87', key: 'irpf.purchase' } }) });
   }
   if (input.rentMonthly > 0) {
     const rp = p.get('irpf.rent');
-    const enhanced = input.under36 || input.largeFamily;
-    const tierR = enhanced ? rp.enhanced : rp.base;
+    const tierR = enhancedRate ? rp.enhanced : rp.base;
     const rentYear = input.rentMonthly * 12;
     const raw = tierR.rate * rentYear;
     const lost = input.leaseFrom2026 && a.irpf.bl > rp.blCap;
-    const rentCredit = Math.min(a.irpf.deductions.rent, Math.max(0, a.irpf.ci - kids));
+    const rentCredit = take(d.rent);
     const items: { mark: '✓' | '✗' | '=' | '↓'; text: string }[] = [
-      { mark: '✓', text: input.largeFamily && !input.under36 ? t(lang, 'ex.rent.large', { rate: pct(lang, tierR.rate, 0) }) : t(lang, enhanced ? 'ex.rent.young' : 'ex.rent.old', { rate: pct(lang, tierR.rate, 0) }) },
+      { mark: '✓', text: whoRate(tierR.rate) },
       { mark: '=', text: t(lang, 'ex.rent.calc', { rate: pct(lang, tierR.rate, 0), rent: e(rentYear), x: e(raw) }) },
     ];
     if (raw > tierR.cap) items.push({ mark: '↓', text: t(lang, 'ex.rent.cap', { cap: e(tierR.cap) }) });
