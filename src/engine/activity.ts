@@ -9,7 +9,7 @@ export function defaultFx(): { fx: Record<Currency, number>; fxDate: string } {
 
 const months = (amount: number, actual = false) => Array.from({ length: 12 }, () => ({ amount, actual }));
 
-export function defaultClient(type: Client['type'] = 'non_eu_company', amount = 3000, name = ''): Client {
+export function defaultClient(type: Client['type'] = 'non_eu_company', amount = 0, name = ''): Client {
   return { name, type, currency: 'EUR', months: months(amount), newcomer7: false };
 }
 

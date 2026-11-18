@@ -14,9 +14,9 @@ const open = keys.filter((k) => raw[k].status === '?');
 const nf = new Intl.NumberFormat(lang === 'uk' ? 'uk-UA' : 'en-GB', { maximumFractionDigits: 2 });
 const show = (v: unknown): string => {
   if (typeof v === 'number') return v > 0 && v < 1 ? `${nf.format(v * 100)} %` : nf.format(v);
-  if (typeof v === 'boolean') return v ? 'yes' : 'no';
+  if (typeof v === 'boolean') return t(lang, v ? 'how.yes' : 'how.no');
   if (typeof v === 'string') return v;
-  if (Array.isArray(v)) return v.length > 8 ? `${v.length} rows` : v.map((x) => (Array.isArray(x) ? x.join(' → ') : typeof x === 'object' ? JSON.stringify(x) : String(x))).join(' · ');
+  if (Array.isArray(v)) return v.length > 8 ? `${v.length} ${lang === 'uk' ? 'рядків' : 'rows'}` : v.map((x) => (Array.isArray(x) ? x.join(' → ') : typeof x === 'object' ? JSON.stringify(x) : String(x))).join(' · ');
   return Object.entries(v as object).map(([k, x]) => `${k}: ${typeof x === 'object' ? JSON.stringify(x).replace(/["{}]/g, '') : x}`).join(' · ');
 };
 ---
@@ -37,7 +37,7 @@ const show = (v: unknown): string => {
         <li>{t(lang, 'settings.r2')}: {t(lang, 'settings.r2.A')} / {t(lang, 'settings.r2.B')}</li>
         <li>{t(lang, 'settings.s1')}: {t(lang, 'settings.s1.off')} / {t(lang, 'settings.s1.tier')} / {t(lang, 'settings.s1.15')}</li>
         <li>{t(lang, 'settings.s2')}</li>
-        {open.map((k) => <li><code>{k}</code>: {raw[k].source}</li>)}
+        {open.map((k) => <li>{t(lang, `param.${k}`)}: {raw[k].source}</li>)}
       </ul>
     </section>
     <section class="card">
@@ -48,7 +48,7 @@ const show = (v: unknown): string => {
           <tbody>
             {keys.map((k) => (
               <tr>
-                <td><code>{k}</code></td>
+                <td>{t(lang, `param.${k}`)}</td>
                 <td style="max-width:280px">{show(raw[k].value)}</td>
                 <td style="min-width:280px">{raw[k].source}</td>
                 <td><span class={`chip ${raw[k].status === 'V' ? '' : 'neutral'}`}>{t(lang, `status.${raw[k].status}`)}</span></td>
@@ -59,6 +59,6 @@ const show = (v: unknown): string => {
         </table>
       </div>
     </section>
-    <p><a href={`${base}/${lang}/`}>← {t(lang, 'how.back')}</a></p>
+    <p><a href={`${base}/${lang}/`} style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>{t(lang, 'how.back')}</a></p>
   </div>
 </Base>

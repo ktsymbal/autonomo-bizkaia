@@ -18,7 +18,7 @@ function applyPersona(i: CalcInput, p: Persona): CalcInput {
   const next: CalcInput = { ...i, persona: p };
   if (p === 'abroad') return { ...next, salary: null, clients: [{ ...first, type: first.type.startsWith('es_') ? 'non_eu_company' : first.type }, ...clients.slice(1)] };
   if (p === 'spain') return { ...next, salary: null, clients: [{ ...first, type: 'es_company' }, ...clients.slice(1)] };
-  if (p === 'pluri') return { ...next, salary: i.salary ?? { grossMonthly: 2500, withheldMonthly: null, shortContract: false } };
+  if (p === 'pluri') return { ...next, salary: i.salary ?? { grossMonthly: 0, withheldMonthly: null, shortContract: false } };
   return { ...next, salary: null, alta: null };
 }
 
@@ -28,7 +28,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
   const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
   const [detailed, setDetailed] = useState(false);
   const [reverse, setReverse] = useState(false);
-  const [target, setTarget] = useState<number | null>(3000);
+  const [target, setTarget] = useState<number | null>(null);
   const ready = useRef(false);
   const heroRef = useRef<HTMLDivElement>(null);
 

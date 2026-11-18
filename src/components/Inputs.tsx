@@ -75,7 +75,7 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
       />
       {mode === 'monthly' ? (
         <Field label={t(lang, 'income.amount')} hint={t(lang, 'income.amountHint')}>
-          <NumberInput lang={lang} value={c.months[0]?.amount || null} placeholder={t(lang, 'income.placeholder')} min={0} unit={c.currency} onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
+          <NumberInput lang={lang} value={c.months[0]?.amount || null} min={0} unit={c.currency} onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
         </Field>
       ) : null}
       {mode === 'hourly' ? (
@@ -157,8 +157,7 @@ export function IncomeCard(p: P & { reverse: boolean; setReverse: (v: boolean) =
                   lang={lang}
                   min={0}
                   label={t(lang, 'income.amount')}
-                  placeholder={t(lang, 'income.placeholder')}
-                  value={c0 && entryAmount(c0) ? entryAmount(c0) : null}
+                                    value={c0 && entryAmount(c0) ? entryAmount(c0) : null}
                   onChange={(v) => set((i) => ({ ...i, clients: [{ ...(i.clients[0] ?? defaultClient()), entry: { mode: 'monthly' }, months: monthsOf(v ?? 0, i.clients[0]?.months) }, ...i.clients.slice(1)] }))}
                 />
                 <select
@@ -357,7 +356,7 @@ export function SalaryCard({ lang, input, set }: P) {
       <h2 id="h-sal">{t(lang, 'salary.title')}</h2>
       <div class="cols">
         <Field label={t(lang, 'salary.gross')} hint={t(lang, 'salary.grossHint')}>
-          <NumberInput lang={lang} min={0} value={s.grossMonthly} unit="€" onChange={(v) => upd({ grossMonthly: v ?? 0 })} />
+          <NumberInput lang={lang} min={0} value={s.grossMonthly || null} unit="€" onChange={(v) => upd({ grossMonthly: v ?? 0 })} />
         </Field>
         <Field label={t(lang, 'salary.withheld')} hint={t(lang, 'salary.withheldHint', { pct: est })}>
           <NumberInput lang={lang} min={0} value={s.withheldMonthly} unit="€" onChange={(v) => upd({ withheldMonthly: v })} />

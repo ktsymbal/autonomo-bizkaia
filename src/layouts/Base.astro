@@ -21,11 +21,10 @@ const hrefFor = (l: Lang) => `${base}/${l}/${page === 'how' ? 'how-we-calculate/
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
   </head>
   <body>
-    <div class="washes" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="washes" aria-hidden="true"><i></i></div>
     <div class="shell">
       <header class="topbar">
         <a class="brand" href={`${base}/${lang}/`}>
-          <span class="brand-mark" aria-hidden="true"></span>
           <span><b>{t(lang, 'brand.name')}</b><small>{t(lang, 'brand.sub')}</small></span>
         </a>
         <nav class="topnav" aria-label="Main">

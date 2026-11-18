@@ -169,7 +169,7 @@ export function Panel({ lang, r }: R) {
         </div>
       </div>
       <div class="actions">
-        <button type="button" class="btn primary" onClick={share}>
+        <button type="button" class="btn" onClick={share}>
           {copied ? <CheckIcon size={16} aria-hidden="true" /> : <Link2 size={16} aria-hidden="true" />}
           {copied ? t(lang, 'res.copied') : t(lang, 'res.share')}
         </button>
