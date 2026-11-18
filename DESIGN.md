@@ -1,54 +1,33 @@
 ---
 name: Autónomo Bizkaia
-description: A light working tool for Bizkaia autónomos. Solid input cards on a pale washed ground, glass only where content scrolls under it, one gradient for the result.
+description: A light, neutral working tool for Bizkaia autónomos. White input cards on a warm-grey ground, glass only where content scrolls under it, one light-peach gradient for the result.
 colors:
-  accent: "#c2502a"
-
-> **Light only.** On 2026-11-18 the owner chose a light-only site: there is no dark theme. Any dark tokens described below are historical and are no longer shipped.
-  accent-ink: "#a5421f"
-  accent-soft: "rgba(53, 82, 232, 0.1)"
-  button-fill: "#c2502a"
-  on-accent: "#ffffff"
-  gradient-peach-light: "#fff0e4"
-  gradient-peach: "#ffd2b8"
-  gradient-peach-deep: "#ff9478"
-  hero-ink: "#3b2016"
-  on-gradient-irpf: "#ffc9b3"
-  on-gradient-reta: "#c8c2ff"
-  wash-blue: "#ffd6bf"
-  wash-lilac: "#f6d3df"
-  wash-peach: "#ffd6bf"
   ground: "#f6f5f4"
   surface: "#ffffff"
-  surface-sunk: "#f0f2f8"
+  surface-sunk: "#efedeb"
   glass: "rgba(255, 255, 255, 0.36)"
   glass-line: "rgba(255, 255, 255, 0.85)"
-  ink: "#141a2e"
-  ink-muted: "#4d5572"
-  line: "rgba(20, 26, 46, 0.1)"
-  line-strong: "rgba(20, 26, 46, 0.18)"
+  ink: "#1d1b1a"
+  ink-muted: "#5d5753"
+  line: "rgba(29, 27, 26, 0.1)"
+  line-strong: "rgba(29, 27, 26, 0.18)"
+  accent: "#c2502a"
+  accent-ink: "#a5421f"
+  accent-soft: "rgba(224, 102, 62, 0.12)"
+  peach-light: "#ffeadc"
+  peach: "#ffd3bc"
+  peach-deep: "#ffb998"
+  wash-peach: "#ffd6bf"
+  hero-ink: "#3b2016"
+  hero-ink-muted: "#5a3829"
+  split-irpf: "#e0663e"
+  split-reta: "#b9897a"
+  split-expenses: "rgba(59, 32, 22, 0.22)"
   ok: "#157a4c"
   ok-soft: "rgba(21, 122, 76, 0.1)"
   warn: "#8a5a00"
   warn-soft: "rgba(214, 150, 20, 0.14)"
   bad: "#b3261e"
-  bad-soft: "rgba(179, 38, 30, 0.09)"
-  dark-ground: "#0f1220"
-  dark-surface: "#181c2d"
-  dark-surface-sunk: "#20253a"
-  dark-glass: "rgba(24, 28, 45, 0.55)"
-  dark-glass-line: "rgba(255, 255, 255, 0.08)"
-  dark-ink: "#eef0f8"
-  dark-ink-muted: "#a8afc8"
-  dark-accent: "#8ea2ff"
-  dark-accent-ink: "#b3c0ff"
-  dark-button-fill: "#4b62f0"
-  dark-wash-blue: "#1d3a7a"
-  dark-wash-lilac: "#3b2a76"
-  dark-wash-plum: "#3a2a5e"
-  dark-ok: "#5fd39c"
-  dark-warn: "#f2c25c"
-  dark-bad: "#ff8b80"
 typography:
   display:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
@@ -67,19 +46,16 @@ typography:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.75rem"
     fontWeight: 700
-    lineHeight: 1.2
     letterSpacing: "-0.015em"
   title:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.25rem"
     fontWeight: 700
-    lineHeight: 1.3
     letterSpacing: "-0.015em"
   value:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 650
-    lineHeight: 1.5
     fontFeature: "tnum"
   body:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
@@ -91,257 +67,259 @@ typography:
     fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "0.8125rem"
     fontWeight: 500
-    lineHeight: 1.45
-    fontFeature: "tnum"
+  micro:
+    fontFamily: "Onest Variable, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 400
 rounded:
+  xs: "8px"
+  sm: "10px"
+  md: "12px"
+  lg: "18px"
+  xl: "22px"
   pill: "999px"
-  hero: "22px"
-  card: "18px"
-  track: "14px"
-  control: "12px"
-  inner: "10px"
-  mark: "8px"
 spacing:
-  xs: "4px"
+  xs: "6px"
   sm: "8px"
   md: "12px"
   lg: "16px"
   xl: "24px"
   section: "48px"
 components:
-  button-primary:
-    backgroundColor: "{colors.button-fill}"
-    textColor: "{colors.on-accent}"
-    typography: "{typography.body}"
-    rounded: "{rounded.control}"
-    padding: "11px 16px"
-  button-secondary:
+  card:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.control}"
-    padding: "11px 16px"
-  button-secondary-hover:
-    textColor: "{colors.accent-ink}"
-  button-link:
-    textColor: "{colors.accent-ink}"
-    padding: "6px 4px"
-  input-control:
+    rounded: "{rounded.lg}"
+    padding: "22px 24px"
+  result-card:
+    backgroundColor: "{colors.peach}"
+    textColor: "{colors.hero-ink}"
+    rounded: "{rounded.xl}"
+    padding: "24px"
+  result-panel:
+    backgroundColor: "{colors.glass}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.lg}"
+    padding: "14px 18px"
+  control:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    typography: "{typography.value}"
-    rounded: "{rounded.control}"
+    rounded: "{rounded.md}"
     padding: "0 12px"
     height: "46px"
-  segmented-track:
+  button:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+    padding: "11px 16px"
+  segmented:
     backgroundColor: "{colors.surface-sunk}"
-    rounded: "{rounded.control}"
-    padding: "3px"
-  segmented-option:
     textColor: "{colors.ink-muted}"
-    rounded: "9px"
-    padding: "7px 14px"
+    rounded: "{rounded.md}"
+    padding: "3px"
   segmented-option-selected:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+    padding: "7px 14px"
   chip:
-    backgroundColor: "{colors.accent-soft}"
-    textColor: "{colors.accent-ink}"
+    backgroundColor: "{colors.surface-sunk}"
+    textColor: "{colors.ink-muted}"
     typography: "{typography.label}"
     rounded: "{rounded.pill}"
     padding: "4px 10px"
-  chip-neutral:
-    backgroundColor: "{colors.surface-sunk}"
-    textColor: "{colors.ink-muted}"
-  card:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.card}"
-    padding: "22px 24px"
-  glass-panel:
-    backgroundColor: "{colors.glass}"
-    rounded: "{rounded.card}"
-    padding: "14px 18px"
-  result-hero:
-    textColor: "{colors.on-accent}"
-    rounded: "{rounded.hero}"
-    padding: "24px"
   nav-link:
     textColor: "{colors.ink-muted}"
     rounded: "{rounded.pill}"
     padding: "8px 14px"
-  nav-link-current:
+  nav-link-active:
     backgroundColor: "{colors.accent-soft}"
     textColor: "{colors.accent-ink}"
-  notice:
+    rounded: "{rounded.pill}"
+    padding: "8px 14px"
+  notices:
     backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
     typography: "{typography.label}"
-    rounded: "{rounded.control}"
+    rounded: "{rounded.md}"
     padding: "10px 12px"
-  notice-warn:
-    backgroundColor: "{colors.warn-soft}"
-  notice-good:
-    backgroundColor: "{colors.ok-soft}"
 ---
 
 # Design System: Autónomo Bizkaia
 
 ## Overview
 
-**Creative North Star: "The Bright Workbench"**
+**Creative North Star: "The Quiet Ledger"**
 
-A light working tool, not a dashboard. The page is a pale cool ground (`ground`) tinted by three large blurred colour washes (blue top-left, lilac right, peach bottom), with an extra lilac pool behind the result column. On that ground sit solid white input cards that behave like paper: opaque, softly shadowed, never translucent. Glass appears only on surfaces that stay put while content scrolls beneath them: the sticky header pill, the sticky result panel, and the mobile dock. The single gradient (light peach only — owner decision; dark warm ink #3b2016 on it, no white text) belongs to the result card, which is the one loud object on the page.
+A light, neutral working tool that people open right after an invoice is paid. Everything is warm-grey and white, set in one sans (Onest) with tabular figures, so the numbers read like a receipt. Colour is rationed: one light-peach gradient carries the answer (the monthly take-home), and a single burnt-coral accent appears only as a small signal (where you are, what is next, what is clickable, where your cursor is). The rest is ink, greys and hairlines.
 
-Density is moderate and form-led: labelled fields, segmented controls, and tables of figures. Every number is set in tabular figures because users compare these amounts against payment receipts. Motion is small and functional: state changes ease over 160ms, the result headline "settles" (a 260ms blur-to-sharp) whenever the inputs change, and the mobile dock slides up once the result card has scrolled away.
+Depth is quiet. Input cards are solid white with a soft neutral shadow; glass (backdrop blur with an inner top highlight) is used only where page content actually scrolls underneath: the sticky header pill, the sticky result panel and the mobile dock. There is one faint peach wash in the top-left corner of the page and nothing else decorative. The product has no logo: the name is set in type.
 
-Light is the default. Dark is a faithful mirror of the same world (deep navy ground, dimmed washes, translucent navy glass), selected by `prefers-color-scheme` or `[data-theme='dark']`. The direction refused a dark, heavy fintech dashboard; dark mode exists for comfort, not as the identity. Per PRODUCT.md, the surface must never borrow official or government cues (no Foru, Hacienda, or coat-of-arms imagery).
+The layout is the familiar calculator shape: inputs on the left, a sticky result column on the right; on mobile the result comes first. The calculator opens empty and says what will appear once income is entered. It never shows invented example figures.
 
 **Key Characteristics:**
-- Pale cool ground with three blurred colour washes behind everything.
-- Solid white cards for input; glass only where content moves underneath.
-- Exactly one gradient: the result card.
-- Onest variable, self-hosted, tabular figures everywhere.
-- Selected state is "raised": a white chip lifted out of a sunken track.
-- Lucide line icons at 16px, always paired with text.
+- Light only. No dark theme exists or is planned.
+- Neutral ink and greys: warm-neutral, never navy, never cream.
+- One gradient (the result card, light peach), one wash, one accent.
+- Coral is a signal, not a fill: buttons, chips and info icons stay neutral.
+- Glass only over scrolling content; solid cards everywhere else.
+- Tabular numerals everywhere; Cyrillic and Latin both set in Onest.
 
 ## Colors
 
-A cool, mostly neutral palette with one confident blue accent and a warm-cool gradient reserved for the result.
+A warm-neutral greyscale with one light-peach gradient for the result and a single burnt-coral signal colour.
 
 ### Primary
-- **Working Blue** (`accent`): focus rings, links, caret, the brand mark, timeline dots, checkbox fill, the active modelo 130 box. In text roles it is replaced by **Deep Working Blue** (`accent-ink`) for contrast. **Blue Tint** (`accent-soft`) backs current nav links, chips, focus halos, and the "due" tag.
-- **Button Blue** (`button-fill`): the filled primary button only. In light it equals the accent; in dark it stays saturated (`dark-button-fill`) with a white label, because the pale dark-mode accent cannot carry white text.
+- **Burnt Coral** (accent): the only accent. Active nav pill (on Coral Tint), the modelo 130 timeline rail and next-payment dot, input focus ring and border, text caret, checkbox tick, and the 1px focus outline. Never a button fill, never a large area.
+- **Deep Coral Ink** (accent-ink): coral as text: links, the active nav label, text-style actions.
+- **Coral Tint** (accent-soft): the pale wash behind the active nav item, the focus halo around controls, text selection.
 
 ### Secondary
-- **Result Gradient** (`gradient-violet` to `gradient-orchid` at 50% to `gradient-peach`, 140deg): the result hero card, nothing else. White text sits on it at 88-100% opacity; the legend rows sit on a frosted strip (rgba(28,24,70,0.22), 6px blur) so they stay readable over the peach end.
-- **On-gradient data colours** (`on-gradient-irpf` peach, `on-gradient-reta` lilac, plus white and 45% white): the split bar and legend dots inside the hero card. They exist only on the gradient.
-
-### Tertiary
-- **Washes** (`wash-blue`, `wash-lilac`, `wash-peach`; dark: `dark-wash-blue`, `dark-wash-lilac`, `dark-wash-plum`): huge blurred ellipses (blur 90px, opacity 0.55-0.7) fixed behind the page. They tint the glass; they are never used as fills on components.
+- **Result Peach** (peach-light → peach → peach-deep): the stops of the single gradient, `linear-gradient(150deg, peach-light 0%, peach 55%, peach-deep 100%)`, on the result card only. It reads clearly as a gradient, not as a flat tint.
+- **Peach Wash** (wash-peach): one blurred ellipse (46vw × 40vw, blur 90px, opacity 0.4) fixed off the top-left corner of the page.
+- **Hero Ink / Hero Ink Muted** (hero-ink, hero-ink-muted): dark warm brown text on the peach card: the number in Hero Ink, the label, unit and notes in Hero Ink Muted. White text never sits on the gradient.
+- **Split colours** (hero-ink for take-home, split-irpf, split-reta, split-expenses): the segmented bar and legend dots on the result card, read in that order.
 
 ### Neutral
-- **Cool Paper** (`ground`): page background, also the browser `theme-color`.
-- **White Card** (`surface`): input cards, tab panels, controls, selected segments.
-- **Sunken Track** (`surface-sunk`): segmented-control tracks, tab rails, stepper buttons, month cells, neutral chips.
-- **Night Ink** (`ink`): primary text. **Slate Ink** (`ink-muted`): labels, hints, units, secondary figures.
-- **Hairline** (`line`) and **Firm Hairline** (`line-strong`): card borders and table rules; control borders and sum-row rules.
-- **Status** (`ok`, `warn`, `bad` with their `-soft` tints): refund value and good notices; warn notices; amounts to pay, invalid fields, and delete hover.
+- **Warm Grey Ground** (ground): the page background and `theme-color`.
+- **Paper White** (surface): input cards, controls, tab panel, selected segments, notices container.
+- **Sunk Grey** (surface-sunk): segmented-control and tab tracks, chips, stepper buttons, month cells, table tags.
+- **Ink** (ink): all primary text. Neutral near-black with a hint of warmth.
+- **Muted Ink** (ink-muted): labels, hints, units, secondary table cells, unselected options.
+- **Hairline / Strong Hairline** (line, line-strong): card and table borders; control borders and table total rules.
+- **Glass / Glass Line** (glass, glass-line): the frosted fill and edge of the header pill, result panel and mobile dock.
+
+### Status
+- **Ledger Green** (ok, ok-soft): refunds and good-news notices.
+- **Ochre** (warn, warn-soft): warning notices.
+- **Brick** (bad): amounts to pay at Renta, invalid controls, the delete-icon hover.
 
 ### Named Rules
-**The One Gradient Rule.** The violet-orchid-peach gradient appears once, on the result card. No buttons, headers, or badges borrow it.
+**The No Blue Rule.** No blue, indigo or violet hue appears anywhere: not in accents, data, washes, shadows or focus states. Neutrals are warm-grey, not slate or navy.
 
-**The Two Blues Rule.** `accent` marks and focuses; `button-fill` fills. Never put a white label on the dark-mode accent.
+**The Signal-Only Coral Rule.** Burnt Coral marks location, sequence and interaction (active nav, timeline, links, focus, caret) at small sizes. Buttons, chips and info icons are neutral (ink, Muted Ink, Sunk Grey).
+
+**The One Gradient Rule.** The light-peach gradient belongs to the result card alone. No other surface gets a gradient, and the card has no coloured glow.
+
+**The One Wash Rule.** A single faint peach wash sits behind the page. No extra blobs, orbs or decorative shapes.
 
 ## Typography
 
-**Display Font:** Onest Variable (self-hosted via @fontsource; fallback system-ui, -apple-system, Segoe UI, sans-serif)
-**Body Font:** Onest Variable, same stack
-**Label/Mono Font:** none; labels use Onest at the small step.
+**Display Font:** Onest Variable (self-hosted via @fontsource-variable/onest, with Onest, system-ui, -apple-system, Segoe UI, sans-serif)
+**Body Font:** the same family
+**Label/Mono Font:** the same family; numbers use tabular figures, not a mono face
 
-**Character:** One geometric-humanist sans that renders Cyrillic and Latin with equal care. Hierarchy comes from size and weight (400 / 500 / 600 / 650 / 700) and tight negative tracking on large sizes, never from a second family.
+**Character:** One humanist grotesque for everything, with weight and size doing the hierarchy. It handles Cyrillic and Latin equally well, and tabular numerals on `body` keep columns of euros aligned.
 
 ### Hierarchy
-The ramp runs on fixed steps: 0.8125 / 0.9375 / 1.0625 / 1.25 / 1.75 / 3.25rem.
-- **Display** (700, 3.25rem, 1.05, -0.035em): the monthly take-home figure in the result card only.
-- **Headline** (700, fluid 1.6-2.25rem, 1.15): the page h1.
-- **Section headline** (700, 1.75rem): the "where the numbers come from" section heading.
-- **Title** (700, 1.25rem): card headings; also the mobile dock figure.
-- **Value** (650, 1.0625rem): figures in the result panel; input text size.
-- **Body** (400, 0.9375rem, 1.5): default text, buttons, tabs, legend. Prose capped at 70-75ch.
-- **Label** (500, 0.8125rem): field labels, hints, notes, notices, table headers, chips, footer. Sentence case, no tracking.
+- **Display** (700, 3.25rem, 1.05, -0.035em): the monthly take-home figure on the result card only. Settles in (260ms blur-to-sharp) when the value changes.
+- **Headline** (700, clamp 1.6–2.25rem, 1.15, -0.015em): the page h1.
+- **Headline Section** (700, 1.75rem): the "Where these numbers come from" section heading.
+- **Title** (700, 1.25rem): card headings (Income, About you, Expenses).
+- **Value** (650, 1.0625rem): the result-panel figures; also the input text size.
+- **Body** (400, 0.9375rem, 1.5): default text; ledes cap at 70ch, tab-panel prose and lists at 75ch.
+- **Label** (500, 0.8125rem): field labels, hints, notes, chips, table headers (600), notices, footer. Sentence case, never uppercase.
+- **Micro** (0.75rem): timeline dates and table tags.
 
 ### Named Rules
-**The Receipt Figures Rule.** `font-variant-numeric: tabular-nums` is set on body and inherited everywhere. Amounts are never set in proportional figures.
+**The Tabular Figures Rule.** `font-variant-numeric: tabular-nums` is set on the body and inherited everywhere. People compare these numbers with payment receipts.
 
-**The Sentence Case Rule.** No uppercase or letterspaced label styles; the only all-caps text is the two-letter language codes.
+**The Name-in-Type Rule.** The product name is set in Onest (Title-ish 1.0625rem bold) with a Label-size subtitle. No logo mark, monogram or glyph sits beside it.
 
 ## Layout
 
-A centered shell (max 1320px) with 16px side padding, 40px from 900px, safe-area aware. The calculator is a two-column grid from 1000px: fluid inputs left, a fixed 400px result column right, 24px gap, with the hero card and glass panel pinned (sticky, top 88px). Below 1000px the result column moves above the inputs (result first on mobile) and the glass dock appears at the bottom once the hero scrolls away.
+The shell is centred at max 1320px with 16px side gutters (40px from 900px), and both respect safe-area insets. From 1000px wide the layout is two columns, `minmax(0, 1fr) 400px`, with a 24px gap. The result column (result card + panel) sticks at `top: 88px` under the header pill. Below 1000px the result column moves above the inputs, and a glass dock slides up from the bottom once the result card scrolls away.
 
-Input cards stack at 16px gaps; paired cards sit in two columns from 640px. Inside cards, fields sit at 16px gaps and a label-to-control gap of 6px. The page head opens with 36px above and 24px below. Sections are separated by 48px (details), the footer by 56px, and the shell ends with 64px. Below 640px the persona control becomes a 2x2 grid and the tab rail wraps to a 3-over-2 grid; below 720px the header nav and brand subtitle hide.
+Inputs stack in 16px gaps; paired cards split into two columns from 640px. Inside cards, fields sit on a 16px gap with a 6px gap between label, control and hint. The details section starts 48px below the calculator and the footer 56px below that, above a hairline. The page head has 36px above it and 24px below. Below 720px the header nav and brand subtitle are hidden. Below 640px the persona switch becomes a 2×2 grid and the detail tabs a 3-column grid.
 
 ## Elevation & Depth
 
-A hybrid: soft ambient shadows on solid surfaces, plus real translucency on the few surfaces that float. Depth reads as paper on a lit, tinted table, with glass panes above it.
+This is a hybrid: solid surfaces with soft neutral shadows, plus glass only where content passes underneath. All shadows use the ink hue (29, 27, 26) at low alpha. None are coloured or glowing.
 
 ### Shadow Vocabulary
-- **Rest** (`0 1px 2px rgba(20,26,46,0.05), 0 8px 24px rgba(40,50,110,0.06)`): cards, tab panel, glass surfaces. Dark: `0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.25)`.
-- **Lift** (`0 2px 4px rgba(40,50,110,0.08), 0 18px 40px rgba(53,70,200,0.22)`): the result hero only, a blue-tinted glow under the gradient. Dark: `0 18px 40px rgba(0,0,0,0.45)`.
-- **Raised chip** (`0 1px 3px rgba(20,26,46,0.12)`): the selected option in segmented controls, tabs, and the language switch.
-- **Lit edge** (`inset 0 1px 0 rgba(255,255,255,0.75)`, dark 0.08): an inner top highlight stacked with Rest on every glass surface.
+- **Rest** (`0 1px 2px rgba(29,27,26,.05), 0 8px 24px rgba(29,27,26,.06)`): input cards, tab panel, header, panel, dock, the empty result card.
+- **Lift** (`0 2px 4px rgba(29,27,26,.06), 0 12px 28px rgba(29,27,26,.1)`): the filled result card only.
+- **Glass highlight** (`inset 0 1px 0 rgba(255,255,255,.75)` stacked on Rest): header pill, result panel, mobile dock, with `backdrop-filter: blur(20px) saturate(160–170%)`.
+- **Selected segment** (`0 1px 3px rgba(29,27,26,.12)`): the white chip of a selected segment, tab or language.
 
 ### Named Rules
-**The Glass Where It Moves Rule.** `backdrop-filter: blur(20px) saturate(160-170%)` is reserved for surfaces content scrolls beneath: the header pill, the pinned result panel, and the mobile dock. Input cards stay solid.
-
-**The Lit Edge Rule.** Every glass surface carries the inset top highlight and a `glass-line` border.
+**The Glass-Over-Motion Rule.** Glass is reserved for elements that content scrolls under (header, sticky result panel, dock). Static cards are solid white.
 
 ## Shapes
 
-Soft, generous rounding that steps down as elements nest: hero 22px, cards and glass panel 18px, tab rail and comparison tiles 14px, controls, buttons, and notices 12px, inner items (tab buttons, icon buttons, add button, month cells) 10px, segment options 9px, small inline inputs and the brand mark 8px. Pills (999px) are for the header, nav links, language switch, chips, tags, and the year toggle. Borders are 1px hairlines; the add-client button uses a dashed firm hairline; skipped timeline dots are dashed rings. The brand mark is a plain rounded accent square, with no glyph.
+Soft rounded rectangles throughout, with pills for navigation. Cards use 18px corners and the result card 22px. Controls, buttons, notices, box rows and the segmented track use 12px; the options inside segments and tabs use 10px; small inner pieces such as month inputs and box numbers use 8px. The header pill, nav links, language switch, year switch, chips, tags and the split bar are fully round (999px). Borders are 1px hairlines; the only heavier strokes are the 2px rule above table totals and the 3px timeline dot rings. The add-row button uses a dashed hairline.
 
 ## Components
 
 ### Buttons
-Quiet and solid; one filled button per view.
-- **Shape:** gently rounded (12px), 11px 16px, weight 600, 16px lucide icon with 8px gap.
-- **Primary:** `button-fill` with a white label ("share this calculation"). Hover brightens (`filter: brightness(1.08)`).
-- **Secondary:** white surface, firm hairline; hover turns the border to accent and the label to `accent-ink`.
-- **Link button:** text-only `accent-ink`, weight 600, underline on hover ("start over").
-- **Icon button:** 40px square, 10px radius, hairline; hover turns red (`bad`) for delete.
-- **Add button:** dashed firm hairline, accent-ink label; hover fills with `accent-soft`.
-
-### Segmented controls
-The system's main choice control (persona, simple/detailed, client type, yes/no, expenses mode).
-- **Track:** `surface-sunk`, hairline, 3px padding, 12px radius (pill variant for the year toggle, wide variant stretches options).
-- **Option:** muted ink, weight 500, 7px 14px; hover darkens text.
-- **Selected:** white surface, full ink, Raised chip shadow. Transitions 160ms ease-out. Focus shows the 2px accent outline on the option.
+Neutral and quiet; the interface has no filled accent button.
+- **Shape:** gently rounded (12px).
+- **Default:** Paper White fill, Strong Hairline border, ink label at 600, 11px 16px padding, lucide icon at 16px with an 8px gap (Share, Apply).
+- **Icon button:** 40px square, 10px radius, hairline border, Muted Ink icon; the remove action turns Brick on hover.
+- **Text action:** a borderless 600-weight label (Start over, toggles inside cards).
+- **Stepper:** a joined pair of Sunk Grey 40×42 buttons around a 600-weight value.
 
 ### Chips
-- **Style:** pill, label size, `accent-soft` with `accent-ink`; neutral variant uses `surface-sunk` with muted ink. Used for derived facts ("no Spanish IVA") and source status.
+- **Style:** Sunk Grey pill, Muted Ink Label text, 4px 10px. Informational only (IVA / withholding facts, source status). Never coral.
 
 ### Cards / Containers
 - **Corner Style:** 18px.
-- **Background:** `surface`, solid.
+- **Background:** Paper White.
 - **Shadow Strategy:** Rest.
-- **Border:** 1px `line`.
-- **Internal Padding:** 22px 24px (tab panel 20px 22px), 16px internal gap; title-size h2.
+- **Border:** 1px Hairline.
+- **Internal Padding:** 22px 24px (tab panel 20px 22px); 16px internal gap.
 
 ### Inputs / Fields
-- **Style:** 46px min height, white, 1px `line-strong`, 12px radius, value-size text, trailing unit in muted ink; selects carry a 16px chevron.
-- **Hover:** border darkens to `ink-muted`.
-- **Focus:** border turns accent with a 3px `accent-soft` halo (160ms).
-- **Error:** border turns `bad`. Checkboxes use the native control tinted with accent at 18px.
-- **Stepper:** bordered 12px group, 40x42px sunken buttons, centered weight-600 count.
+- **Style:** 46px-min control, Paper White, 1px Strong Hairline, 12px radius, Value-size text, Muted Ink unit suffix (EUR, €, %). Selects carry a 16px chevron.
+- **Hover:** border goes to Muted Ink.
+- **Focus:** border goes to Burnt Coral with a 3px Coral Tint halo; caret is coral.
+- **Error:** border goes to Brick (`aria-invalid`).
+- **Empty:** fields start blank or with a muted `0` placeholder; there are no sample amounts.
+
+### Segmented Controls
+- **Style:** Sunk Grey track with a 3px inset and a hairline border; options in Muted Ink 500; the selected option is a Paper White chip with ink text and the selected-segment shadow. A pill variant is used for the year switch and language switch.
+- **Focus:** 2px coral outline on the option.
 
 ### Navigation
-- **Header:** sticky glass pill (999px), brand mark plus name and subtitle, nav links as pills in muted ink (weight 500), current page in `accent-soft` / `accent-ink`. Language switch is a pill track with a raised current code.
-- **Tabs (details):** sunken rail (14px), equal-width buttons (weight 600, 10px radius); selected is raised white. Wraps to a grid on mobile.
+- **Header:** a sticky glass pill (8px padding, 20px gap) with the name in type on the left, two nav links, and the language switch pushed right.
+- **Links:** Muted Ink 500 pills (8px 14px). The active page uses a Coral Tint fill with Deep Coral Ink text. That is the only coral fill in the interface.
+- **Mobile:** nav links hidden below 720px; the language switch stays.
 
-### Result Hero (signature)
-The gradient card with the Lift shadow: a body-size lead-in sentence, the Display figure plus a "per month" suffix, a label-size note, a 10px rounded split bar on a 22% white track, and a legend of figures. The figure settles on every change (260ms, opacity 0.55 and 3px blur to sharp, `cubic-bezier(0.16,1,0.3,1)`); split segments animate width over 220ms.
+### Result Card (signature)
+The answer to the page. It uses the light-peach gradient at 22px radius and 24px padding, all text in dark warm Hero Ink with no white type, and the Lift shadow with no glow. From top: a sentence label (Body, Hero Ink Muted), the Display figure with a Value-size "per month" unit, a Label-size note, a 10px split bar (take-home / income tax / social security / expenses on a 10% hero-ink track), then a legend above a faint hero-ink hairline. **Empty state:** the same gradient with the Rest shadow, a label and one Value-size instruction sentence (max 34ch). No placeholder figures.
 
-### Glass Result Panel (signature)
-Stacked rows (14px 18px) divided by hairlines: label, value (650), and meta. The next-payment row holds the modelo 130 timeline: four dots on a 35% accent line, done dots grey, the next one filled, skipped ones dashed.
+### Result Panel and Timeline
+A glass panel of rows divided by hairlines: next payment, set-aside, and Renta outcome (Ledger Green for a refund, Brick for an amount to pay). The next-payment row holds the modelo 130 timeline: four dates on a 35%-opacity coral rail, with past dots in Strong Hairline, the next dot filled coral, and skipped quarters dashed.
 
 ### Notices
-12px rounded, label size, 16px lucide icon. Info is white with a hairline and accent icon; warn and good drop the border onto their soft tints.
+One Paper White container (12px radius, hairline border, overflow hidden) holds every notice, divided by hairlines. Each row has a 16px lucide icon and Label text. Info rows are neutral with a Muted Ink icon; warnings get a Warn Tint row with an Ochre icon; good news gets an OK Tint row with a Green icon.
 
-### Mobile Dock
-Fixed bottom glass bar with the headline sentence and the title-size figure; slides in (220ms) only after the hero leaves the viewport; hidden from 1000px.
+### Detail Tabs and Tables
+A Sunk Grey tab track (14px radius) above one solid panel. Tables use hairline row rules, Muted Ink 600 Label headers, right-aligned tabular amounts, Muted Ink for subtracted lines, and bold totals above a 2px strong rule.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep input surfaces solid white (`surface`) with the Rest shadow and a 1px hairline.
-- **Do** reserve backdrop-filter glass, with the lit inner top edge, for surfaces content scrolls beneath.
-- **Do** keep tabular figures on every amount.
-- **Do** show choice as a raised white option in a sunken track (Raised chip shadow).
-- **Do** use `accent-ink` for blue text and `button-fill` for filled buttons, in both themes.
-- **Do** step corner radii down as surfaces nest (22 / 18 / 14 / 12 / 10px).
+- **Do** keep the site light only: `color-scheme: light`, ground `#f6f5f4`, no dark-mode tokens or media queries.
+- **Do** limit Burnt Coral to small signals: active nav, timeline, links, focus ring and border, caret, checkbox.
+- **Do** keep buttons, chips and info icons neutral: Paper White or Sunk Grey with ink or Muted Ink.
+- **Do** give the result card the visible light-peach gradient with dark warm Hero Ink text and the neutral Lift shadow.
+- **Do** put all notices in one container with hairline dividers, tinting only the warn and good rows.
+- **Do** open the calculator empty, with the result card explaining what will appear once income is entered.
+- **Do** set the product name in type, with a Label-size subtitle.
+- **Do** use tabular numerals and Onest for every script.
+- **Do** write UI copy only in Ukrainian or English, with Spanish form terms (modelo 130, RETA, tarifa plana) alongside.
 
 ### Don't:
-- **Don't** add a second gradient; the blue-violet-rose gradient belongs to the result card.
-- **Don't** make input cards translucent or blurred.
-- **Don't** turn the light working tool into a dark, heavy dashboard; dark mode mirrors the light world.
-- **Don't** use Foru, Hacienda, coat-of-arms, or other official-service cues.
-- **Don't** add uppercase, letterspaced labels above headings; headings and labels stay in sentence case.
-- **Don't** set amounts in proportional figures.
+- **Don't** use blue, indigo or violet anywhere, including washes, data colours and focus states.
+- **Don't** add a dark theme.
+- **Don't** fill buttons with coral or tint chips and info icons coral.
+- **Don't** use navy or slate inks, or cream or beige grounds; neutrals stay warm-grey.
+- **Don't** add a second gradient, a coloured glow on the result card, or white text on the peach.
+- **Don't** add decorative blobs, orbs or extra washes beyond the single peach wash.
+- **Don't** add a logo, monogram or icon mark beside the name.
+- **Don't** pre-fill the calculator with invented example amounts.
+- **Don't** render notices as separate floating cards.
+- **Don't** use Russian or words shared with Russian in names or copy.
+- **Don't** use glass on static cards; it belongs only to elements that content scrolls under.
+- **Don't** imitate an official or government service (no Foru, Hacienda or coat-of-arms cues).
