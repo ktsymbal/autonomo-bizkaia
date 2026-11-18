@@ -23,6 +23,7 @@ const hrefFor = (l: Lang) => `${base}/${l}/${page === 'how' ? 'how-we-calculate/
   <body>
     <div class="washes" aria-hidden="true"><i></i></div>
     <div class="shell">
+      <div class="topband">
       <header class="topbar">
         <a class="brand" href={`${base}/${lang}/`}>
           <span><b>{t(lang, 'brand.name')}</b><small>{t(lang, 'brand.sub')}</small></span>
@@ -37,6 +38,7 @@ const hrefFor = (l: Lang) => `${base}/${l}/${page === 'how' ? 'how-we-calculate/
           ))}
         </nav>
       </header>
+      </div>
       <slot />
       <footer class="foot">
         <p>{t(lang, 'privacy')}</p>

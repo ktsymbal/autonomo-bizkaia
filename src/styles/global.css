@@ -161,7 +161,7 @@ input[type='checkbox'] { accent-color: var(--accent); width: 18px; height: 18px;
 .monthcell.actual { background: var(--surface); border-color: var(--ink-2); }
 .monthcell .tag { font-size: var(--step--2); }
 
-details.more { border-top: 1px solid var(--line); padding-top: 14px; }
+details.more { }
 details.more summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
 details.more summary::-webkit-details-marker { display: none; }
 details.more[open] summary svg { transform: rotate(90deg); }
@@ -329,3 +329,15 @@ p { text-wrap: pretty; }
 .notes .notice + .notice { border-top: 1px solid var(--line); }
 .notes .notice.warn { background: var(--warn-soft); }
 .notes .notice.good { background: var(--ok-soft); }
+
+/* Phone fixes (owner screenshots) */
+/* 1. Header: a painted band behind the sticky pill so content never shows above or around it */
+.topband { position: sticky; top: 0; z-index: 20; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: max(10px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(var(--bg) 75%, rgba(246, 245, 244, 0)); }
+@media (min-width: 900px) { .topband { margin: 0 calc(-1 * max(40px, env(safe-area-inset-left, 0px))); padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px)); } }
+.topband .topbar { position: static; margin-top: 4px; }
+/* 2. Controls never wider than their card */
+.control { min-width: 0; width: 100%; }
+.control select { width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.field, .card, .client, .inputs > * { max-width: 100%; }
+/* 3. Equal-width segmented options */
+.seg.wide span { padding-left: 8px; padding-right: 8px; }

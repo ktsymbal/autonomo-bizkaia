@@ -68,6 +68,7 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
       </div>
       <Seg
         name={`entry-${idx}`}
+        wide
         label={t(lang, 'client.entry')}
         value={mode}
         options={(['monthly', 'hourly', 'byMonth'] as const).map((v) => ({ value: v, label: t(lang, `client.entry.${v}`) }))}
