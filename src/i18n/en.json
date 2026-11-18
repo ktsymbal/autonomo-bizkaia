@@ -323,5 +323,8 @@
  "aid.upcoming": "Applications from {from} to {to}",
  "aid.link": "Official page",
  "aid.checked": "Checked on {date}",
- "aid.unverified": "secondary source"
+ "aid.unverified": "secondary source",
+ "res.emptyTitle": "What you keep",
+ "res.empty": "Enter your monthly income and you'll see here what's left after tax and contributions, how much to set aside, and when to pay.",
+ "income.placeholder": "e.g. 3,000"
 }

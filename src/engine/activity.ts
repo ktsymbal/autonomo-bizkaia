@@ -22,7 +22,7 @@ export function defaultInput(asOf: string): CalcInput {
     asOf,
     persona: 'abroad',
     alta: { year: defaultYear(asOf), month: 1 },
-    clients: [defaultClient()],
+    clients: [defaultClient('non_eu_company', 0)],
     expenseMode: 'pct',
     expensePct: 5,
     expenses: [],

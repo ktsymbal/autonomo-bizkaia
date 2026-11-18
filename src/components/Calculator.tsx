@@ -53,10 +53,17 @@ export default function Calculator({ lang }: { lang: Lang }) {
   }, [input]);
 
   const avgIncome = useMemo(() => input.clients.reduce((s, c) => s + c.months.reduce((a, m) => a + m.amount * (input.fx[c.currency] ?? 1), 0), 0) / 12, [input]);
-  const factor = useMemo(() => (reverse && target && target > 0 && avgIncome > 0 ? solveIncomeFor(target, input) : null), [reverse, target, input, avgIncome]);
-  const solved = factor !== null ? factor * avgIncome : null;
+  // With no income entered yet, solve from a neutral €1,000/month on the first client.
+  const solveBase = useMemo(
+    () => (avgIncome > 0 ? input : { ...input, clients: (input.clients.length ? input.clients : defaultInput(input.asOf).clients).map((c, k) => (k === 0 ? { ...c, months: c.months.map((m) => ({ ...m, amount: 1000 / (input.fx[c.currency] ?? 1) })) } : c)) }),
+    [input, avgIncome],
+  );
+  const baseIncome = avgIncome > 0 ? avgIncome : 1000;
+  const factor = useMemo(() => (reverse && target && target > 0 ? solveIncomeFor(target, solveBase) : null), [reverse, target, solveBase]);
+  const solved = factor !== null ? factor * baseIncome : null;
 
   const set = (fn: (i: CalcInput) => CalcInput) => setInput((i) => fn(i));
+  const hasIncome = r.annual.income > 0 || r.annual.salaryGross > 0;
   const checked = rawParams(2026)['irpf.scale'].checked;
 
   return (
@@ -120,10 +127,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
             target={target}
             setTarget={setTarget}
             solved={solved}
-            applySolved={() =>
-              factor !== null &&
-              set((i) => ({ ...i, clients: i.clients.map((c) => ({ ...c, months: c.months.map((m) => ({ ...m, amount: Math.round(m.amount * factor) })) })) }))
-            }
+            applySolved={() => factor !== null && setInput({ ...solveBase, clients: solveBase.clients.map((c) => ({ ...c, months: c.months.map((m) => ({ ...m, amount: Math.round(m.amount * factor) })) })) })}
           />
           {input.salary ? <SalaryCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
           <div class="cols">
@@ -133,16 +137,29 @@ export default function Calculator({ lang }: { lang: Lang }) {
           {detailed ? <SettingsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
         </div>
         <aside class="results" aria-label={t(lang, 'res.headline', { year: r.year })}>
-          <div class="results-pin">
-            <Hero lang={lang} r={r} heroRef={heroRef} />
-            <Panel lang={lang} r={r} />
-          </div>
-          <Notices lang={lang} r={r} />
+          {hasIncome ? (
+            <>
+              <div class="results-pin">
+                <Hero lang={lang} r={r} heroRef={heroRef} />
+                <Panel lang={lang} r={r} />
+              </div>
+              <Notices lang={lang} r={r} />
+            </>
+          ) : (
+            <div class="hero empty" ref={heroRef}>
+              <p class="k">{t(lang, 'res.emptyTitle')}</p>
+              <p class="emptytext">{t(lang, 'res.empty')}</p>
+            </div>
+          )}
           <p class="fine">{t(lang, 'checked', { year: r.year, date: date(lang, checked) })}</p>
         </aside>
       </div>
-      <Details lang={lang} r={r} />
-      <Dock lang={lang} r={r} target={heroRef} />
+      {hasIncome ? (
+        <>
+          <Details lang={lang} r={r} />
+          <Dock lang={lang} r={r} target={heroRef} />
+        </>
+      ) : null}
     </>
   );
 }

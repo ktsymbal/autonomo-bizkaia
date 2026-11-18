@@ -75,7 +75,7 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
       />
       {mode === 'monthly' ? (
         <Field label={t(lang, 'income.amount')} hint={t(lang, 'income.amountHint')}>
-          <NumberInput lang={lang} value={c.months[0]?.amount ?? 0} min={0} unit={c.currency} onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
+          <NumberInput lang={lang} value={c.months[0]?.amount || null} placeholder={t(lang, 'income.placeholder')} min={0} unit={c.currency} onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
         </Field>
       ) : null}
       {mode === 'hourly' ? (
@@ -157,7 +157,8 @@ export function IncomeCard(p: P & { reverse: boolean; setReverse: (v: boolean) =
                   lang={lang}
                   min={0}
                   label={t(lang, 'income.amount')}
-                  value={c0 ? entryAmount(c0) : 0}
+                  placeholder={t(lang, 'income.placeholder')}
+                  value={c0 && entryAmount(c0) ? entryAmount(c0) : null}
                   onChange={(v) => set((i) => ({ ...i, clients: [{ ...(i.clients[0] ?? defaultClient()), entry: { mode: 'monthly' }, months: monthsOf(v ?? 0, i.clients[0]?.months) }, ...i.clients.slice(1)] }))}
                 />
                 <select
@@ -298,7 +299,7 @@ export function AboutCard({ lang, input, set, detailed }: P) {
         )}
       </div>
       <Field label={t(lang, 'about.rent')} hint={t(lang, 'about.rentHint')}>
-        <NumberInput lang={lang} min={0} value={input.rentMonthly} unit="€" onChange={(v) => set((i) => ({ ...i, rentMonthly: v ?? 0 }))} />
+        <NumberInput lang={lang} min={0} value={input.rentMonthly || null} placeholder="0" unit="€" onChange={(v) => set((i) => ({ ...i, rentMonthly: v ?? 0 }))} />
       </Field>
       <div style="display:grid;gap:16px">
         <div class="field">
