@@ -17,7 +17,7 @@ function fromB64url(s: string): string {
 
 /** Everything except asOf goes into the fragment (never sent to a server). */
 export function encode(input: CalcInput): string {
-  const { asOf: _asOf, ...d } = input;
+  const { asOf: _asOf, fx: _fx, fxDate: _fxDate, fxByMonth: _fxm, ...d } = input; // rates always come fresh from the build
   return PREFIX + toB64url(JSON.stringify({ v: VERSION, d }));
 }
 
@@ -45,6 +45,9 @@ export function decode(hash: string, asOf: string): CalcInput {
   try {
     const parsed = JSON.parse(fromB64url(hash.slice(PREFIX.length)));
     if (parsed?.v !== VERSION || typeof parsed.d !== 'object') return def;
+    delete parsed.d.fx;
+    delete parsed.d.fxDate;
+    delete parsed.d.fxByMonth;
     const out = merge(def, parsed.d);
     // nullable objects: accept a stored object even though the default is null
     if ('alta' in parsed.d) out.alta = parsed.d.alta && typeof parsed.d.alta.year === 'number' ? { year: parsed.d.alta.year, month: Number(parsed.d.alta.month) || 1 } : null;

@@ -24,7 +24,7 @@
  "income.amountHint": "Before tax, without IVA.",
  "income.clients": "Where your clients are",
  "income.currency": "Currency",
- "income.fx": "ECB rate on {date}: €1 = {rates}",
+ "income.fx": "ECB rates: past months use that month's average, later months the rate on {date}: €1 = {rates}. Updated daily.",
  "client.non_eu_company": "Company outside the EU",
  "client.eu_company": "Company in the EU (with a VAT number)",
  "client.es_company": "Company or autónomo in Spain",

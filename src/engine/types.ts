@@ -19,8 +19,9 @@ export type CalcInput = {
   expenseMode: 'none' | 'pct' | 'itemized';
   expensePct: number; // e.g. 5 = 5 %
   expenses: Expense[];
-  fx: Record<Currency, number>; // EUR per 1 unit of currency
+  fx: Record<Currency, number>; // EUR per 1 unit of currency, latest ECB rate (future months)
   fxDate: string;
+  fxByMonth: Record<string, Partial<Record<Currency, number>>>; // 'YYYY-MM' → EUR per unit, ECB monthly average (complete months only)
   under36: boolean;
   rentMonthly: number;
   leaseFrom2026: boolean;

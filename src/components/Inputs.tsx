@@ -2,7 +2,7 @@ import { ChevronRight, Plus, Trash2 } from 'lucide-preact';
 import { defaultClient, effectiveAlta } from '../engine/activity';
 import type { CalcInput, Client, ClientType, Currency, Expense } from '../engine/types';
 import { CURRENCIES } from '../engine/types';
-import { eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
+import { date, eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
 import { salaryWithholdingPct } from '../engine/employment';
 import { getParams } from '../params';
 import { Check, Field, NumberInput, Seg, Select, Stepper } from './ui';
@@ -37,7 +37,7 @@ function FxNote({ lang, input }: { lang: Lang; input: CalcInput }) {
   const used = [...new Set(input.clients.map((c) => c.currency))].filter((c) => c !== 'EUR');
   if (!used.length) return null;
   const rates = used.map((c) => `${(1 / input.fx[c]).toFixed(4)} ${c}`).join(', ');
-  return <p class="note">{t(lang, 'income.fx', { date: input.fxDate, rates })}</p>;
+  return <p class="note">{t(lang, 'income.fx', { date: date(lang, input.fxDate), rates })}</p>;
 }
 
 function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput; set: Setter; idx: number }) {

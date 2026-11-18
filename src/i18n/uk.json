@@ -24,7 +24,7 @@
  "income.amountHint": "До податків, без IVA.",
  "income.clients": "Де ваші клієнти",
  "income.currency": "Валюта",
- "income.fx": "Курс ЄЦБ на {date}: 1 € = {rates}",
+ "income.fx": "Курс ЄЦБ: за минулі місяці — середній за місяць, далі — на {date}: 1 € = {rates}. Оновлюється щодня.",
  "client.non_eu_company": "Компанія поза ЄС",
  "client.eu_company": "Компанія в ЄС (з VAT-номером)",
  "client.es_company": "Компанія або автономо в Іспанії",

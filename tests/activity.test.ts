@@ -14,7 +14,7 @@ describe('activityLedger', () => {
   it('non-EU USD invoice converts at the stated rate, no IVA, no retención', () => {
     const rows = activityLedger(input({
       clients: [{ name: 'A', type: 'non_eu_company', currency: 'USD', months: flat(5000), newcomer7: false }],
-      fx: { EUR: 1, USD: 0.9, GBP: 1.2, PLN: 0.23 },
+      fx: { EUR: 1, USD: 0.9, GBP: 1.2, PLN: 0.23 }, fxByMonth: {},
     }), p());
     expect(rows[0].income).toBeCloseTo(4500);
     expect(rows[0].ivaOut).toBe(0);
@@ -81,5 +81,11 @@ describe('activityLedger', () => {
     const rows = activityLedger(input({ clients: [{ name: 'A', type: 'eu_company', currency: 'EUR', months, newcomer7: false }] }), p());
     expect(rows[0].forecast).toBe(false);
     expect(rows[1].forecast).toBe(true);
+  });
+  it('past months use their monthly ECB average; later months the latest rate', () => {
+    const c: Client = { name: 'A', type: 'non_eu_company', currency: 'USD', months: flat(1000), newcomer7: false };
+    const rows = activityLedger(input({ clients: [c], fx: { EUR: 1, USD: 0.9, GBP: 1, PLN: 1 }, fxByMonth: { '2026-01': { USD: 0.95 } } }), p());
+    expect(rows[0].income).toBeCloseTo(950);
+    expect(rows[1].income).toBeCloseTo(900);
   });
 });

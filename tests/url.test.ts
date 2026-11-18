@@ -36,4 +36,8 @@ describe('URL fragment state', () => {
     expect(defaultInput(asOf).alta).toEqual({ year: 2026, month: 1 });
     expect(defaultInput(asOf).year).toBe(2026);
   });
+  it('exchange rates are never restored from a link', () => {
+    const i = { ...defaultInput(asOf), fx: { EUR: 1, USD: 5, GBP: 5, PLN: 5 } };
+    expect(decode(encode(i), asOf).fx).toEqual(defaultInput(asOf).fx);
+  });
 });
