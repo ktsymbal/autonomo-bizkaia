@@ -151,7 +151,10 @@ export default function Calculator({ lang }: { lang: Lang }) {
               <p class="emptytext">{t(lang, 'res.empty')}</p>
             </div>
           )}
-          <p class="fine">{t(lang, 'checked', { year: r.year, date: date(lang, checked) })}</p>
+          <p class="fine">
+            {t(lang, 'checked', { year: r.year, date: date(lang, checked) })} ·{' '}
+            <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/${lang}/how-we-calculate/`}>{t(lang, 'nav.how')}</a>
+          </p>
         </aside>
       </div>
       {hasIncome ? (

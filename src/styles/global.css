@@ -78,7 +78,7 @@ input { caret-color: var(--accent); }
 .topnav a { padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-weight: 500; }
 .topnav a[aria-current='page'] { background: var(--accent-soft); color: var(--accent-ink); }
 .topbar .langs { margin-left: auto; }
-@media (max-width: 720px) { .topnav { display: none; } .brand small { display: none; } }
+@media (max-width: 720px) { .topnav a[aria-current='page'] { display: none; } .topnav a { padding: 6px 10px; font-size: var(--step--1); } .brand small { display: none; } }
 
 /* Segmented control (radio group) */
 .seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
