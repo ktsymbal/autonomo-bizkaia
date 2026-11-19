@@ -73,7 +73,7 @@ function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { 
           {row.type === 'es_company' && yearsIn(input) <= 2 ? <Check checked={row.newcomer7} onChange={(v) => onChange({ ...row, newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
           <Chips lang={lang} input={input} type={row.type} newcomer7={row.newcomer7} amount={row.amount} />
         </>
-      ) : !first ? <p class="note">{t(lang, 'income.zeroNote')}</p> : null}
+      ) : null}
     </div>
   );
 }
@@ -156,7 +156,6 @@ function MonthGrid({ lang, input, set, idx }: P & { idx: number }) {
           </button>
         ) : null}
       </div>
-      {past.length && rest.length ? <p class="note">{t(lang, 'client.pastNote', { month: tList(lang, 'months.long')[rest[0]] })}</p> : null}
       <div class="monthgrid">
         {c.months.map((m, k) => (
           <div class={`monthcell${isPast(input, k) ? ' past' : ''}${isActive(input, k) ? '' : ' off'}`}>
@@ -196,7 +195,7 @@ export function IncomeCard(p: P & { reverse: boolean; setReverse: (v: boolean) =
     <section class="card" aria-labelledby="h-income">
       <div>
         <h2 id="h-income">{t(lang, 'income.title')}</h2>
-        <p class="note">{t(lang, input.income.mode === 'periods' ? 'income.hint' : 'income.amountHint')}</p>
+        <p class="note">{t(lang, 'income.amountHint')}</p>
       </div>
       {input.income.mode === 'periods' ? <Periods lang={lang} input={input} set={set} /> : <ByMonth lang={lang} input={input} set={set} />}
       <Check checked={!!input.salary} onChange={(v) => set((i) => ({ ...i, salary: v ? i.salary ?? { grossMonthly: 0, withheldMonthly: null, shortContract: false } : null }))}>{t(lang, 'salary.toggle')}</Check>
@@ -242,7 +241,7 @@ function SalaryFields({ lang, input, set }: P) {
 
 /* ---------- Registration and expenses ---------- */
 
-export function StatusCard({ lang, input, set, r }: P & { r: CalcResult }) {
+export function StatusCard({ lang, input, set }: P & { r?: CalcResult }) {
   const long = tList(lang, 'months.long');
   const a = effectiveAlta(input);
   const monthFromIncome = !!input.alta && input.alta.year === input.year && input.income.mode === 'periods';
@@ -263,12 +262,7 @@ export function StatusCard({ lang, input, set, r }: P & { r: CalcResult }) {
           <Field label={t(lang, 'about.altaYear')}>
             <Select value={input.alta.year} label={t(lang, 'about.altaYear')} options={years.map((y) => ({ value: y, label: String(y) }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, year: v } }))} />
           </Field>
-          {monthFromIncome ? (
-            <div class="field">
-              <span class="lbl">{t(lang, 'about.altaMonth')}</span>
-              <span class="note">{t(lang, 'about.altaFromIncome', { month: long[input.alta.month - 1] })}</span>
-            </div>
-          ) : (
+          {monthFromIncome ? null : (
             <Field label={t(lang, 'about.altaMonth')}>
               <Select value={input.alta.month} label={t(lang, 'about.altaMonth')} options={long.map((l, k) => ({ value: k + 1, label: l }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, month: v } }))} />
             </Field>
@@ -277,27 +271,8 @@ export function StatusCard({ lang, input, set, r }: P & { r: CalcResult }) {
       ) : (
         <p class="note">{t(lang, 'about.notYetNote', { month: `${long[a.month - 1]} ${a.year}` })}</p>
       )}
-      <StatusFacts lang={lang} input={input} r={r} />
     </section>
   );
-}
-
-/** What the registration date changes this year, stated as facts. */
-function StatusFacts({ lang, input, r }: { lang: Lang; input: CalcInput; r: CalcResult }) {
-  const a = effectiveAlta(input);
-  const yi = yearsIn(input);
-  if (yi < 0) return null;
-  const facts: string[] = [];
-  const tier = fpct(lang, r.annual.tier, 0);
-  if (yi === 0) facts.push(t(lang, 'about.factFirst', { tier }));
-  else if (input.priorD !== null) facts.push(t(lang, 'about.factTierEntered', { n: yi + 1, tier, prior: eur(lang, input.priorD) }));
-  else facts.push(t(lang, 'about.factTier', { n: yi + 1, tier, prior: eur(lang, r.annual.priorD ?? 0) }));
-  if (input.tpEligible) {
-    const end = ymAdd(a, 11);
-    if (end.year >= input.year) facts.push(t(lang, 'about.factTp', { from: ymText(lang, a), to: ymText(lang, end) }));
-    else facts.push(t(lang, 'about.factTpOver', { to: ymText(lang, end) }));
-  }
-  return <ul class="facts">{facts.map((f) => <li>{f}</li>)}</ul>;
 }
 
 export function ExpensesCard({ lang, input, set }: P) {
@@ -450,7 +425,7 @@ export function MoreSections({ lang, input, set }: P & { r: CalcResult }) {
             <br />
             <span class="note">{t(lang, 'about.tpHint')}</span>
           </Check>
-        ) : <p class="note">{t(lang, 'about.tpGone')}</p>}
+        ) : null}
         {yi <= 1 ? (
           <Check checked={input.startup.claim} onChange={(v) => upd({ startup: { ...input.startup, claim: v } })}>
             {t(lang, 'about.startup')}

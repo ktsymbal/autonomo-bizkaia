@@ -449,6 +449,3 @@ details.sec[open] > summary > svg { transform: rotate(90deg); }
 details.sec > summary > span { display: grid; gap: 2px; }
 details.sec > summary .note { margin: 0; }
 .sec-body { display: grid; gap: 14px; margin-top: 16px; }
-
-/* Registration: what the date changes this year */
-.facts { margin: 0; padding: 12px 14px; list-style: none; display: grid; gap: 6px; background: var(--surface-2); border-radius: var(--radius-sm); font-size: var(--step--1); color: var(--ink-2); }
