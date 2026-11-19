@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { compute, solveIncomeFor } from '../engine/compute';
 import { defaultInput } from '../engine/activity';
 import type { CalcInput } from '../engine/types';
-import { scaleStreams, streamsToClients } from '../engine/periods';
+import { applyPeriods, scaleStreams } from '../engine/periods';
 import { decode, encode } from '../state/url';
 import { date, t, type Lang } from '../i18n/t';
 import { rawParams } from '../params';
@@ -14,8 +14,7 @@ import { Seg } from './ui';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-/** In periods mode the per-client months are always rebuilt from the periods. */
-const derive = (i: CalcInput): CalcInput => (i.income.mode === 'periods' ? { ...i, clients: streamsToClients(i.income.streams) } : i);
+const derive = applyPeriods;
 
 export default function Calculator({ lang }: { lang: Lang }) {
   const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
@@ -107,7 +106,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
             }}
           />
           <div class="cols">
-            <StatusCard lang={lang} input={input} set={set} />
+            <StatusCard lang={lang} input={input} set={set} r={r} />
             <ExpensesCard lang={lang} input={input} set={set} />
           </div>
         </div>
@@ -132,7 +131,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
         </aside>
         <div class="inputs more">
           {hasIncome ? <Notices lang={lang} r={r} /> : null}
-          <MoreSections lang={lang} input={input} set={set} />
+          <MoreSections lang={lang} input={input} set={set} r={r} />
         </div>
       </div>
       {hasIncome ? (

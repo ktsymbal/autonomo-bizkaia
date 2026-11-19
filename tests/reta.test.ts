@@ -33,10 +33,11 @@ describe('RETA', () => {
     expect(y2.months.slice(0, 6).every((m) => m.regime === 'tp')).toBe(true);
     expect(y2.months.slice(6).every((m) => m.regime === 'tramo')).toBe(true);
   });
-  it('year 2 at €60k income, €840 expenses → tramo 11 minimum, 6,547.07', () => {
+  it('year 2 at €60k income, €840 expenses, 20 % tier → SS income after the % → tramo ≤ 4,050 minimum', () => {
+    // (59,160 − cuotas) × 0.8 + cuotas, ×0.93/12 ≈ 3,762 → general 10 (index 12), min base 1,601.31
     const r = run(inp({ year: 2027 }));
-    expect(r.tramo?.index).toBe(13); // 0-based: reduced 1–3, general 1–12 → general 11 = index 13
-    expect(r.total).toBeCloseTo(545.59 * 12, 2); // 6,547.08
+    expect(r.tramo?.index).toBe(12);
+    expect(r.total).toBeCloseTo(504.41 * 12, 2);
   });
   it('tramo 12 cuota at its minimum base = 607.35', () => {
     const p = getParams(2026);
@@ -55,13 +56,22 @@ describe('RETA', () => {
   });
   it('chosen base below the real tramo minimum → regularisation due', () => {
     const r = run(inp({ year: 2027, retaBase: 1000 }));
-    expect(r.regularisation).toBeCloseTo((1732.03 - 1000) * 0.315 * 12, 2);
+    expect(r.regularisation).toBeCloseTo((1601.31 - 1000) * 0.315 * 12, 2);
   });
-  it('reading B uses income after the simplificada %', () => {
-    // 2,000/month, no expenses: A → 2000*.93=1860 (gen 6); B → (24000−cuotas)*.8+cuotas … lower tramo
+  // Resolved 2026-11-19 (reading B): Bizkaia reports the "rendimiento neto previo atribuido"
+  // (https://www.bizkaia.eus/es/nuevo-sistema-cotizacion-seguridad-social-autonomos), and Gure Gida 2025 Id 4014 puts
+  // "RENDIMIENTO PREVIO" after the 20/15/10 % coeficiente and before the start-up reduction. LGSS 308.1.c r. 1ª;
+  // RD 2064/1995 art. 46.1 (rendimiento neto under each Administración's IRPF rules). The old R2 setting is ignored.
+  it('SS income is taken after the simplificada %, whatever the old R2 setting says', () => {
     const i = inp({ year: 2027, expenses: [], clients: [{ name: 'A', type: 'non_eu_company', months: flat(2000), newcomer7: false }] });
-    const a = run(i);
+    const a = run({ ...i, settings: { ...i.settings, r2: 'A' } });
     const b = run({ ...i, settings: { ...i.settings, r2: 'B' } });
-    expect(b.tramo!.index).toBeLessThan(a.tramo!.index);
+    expect(a).toEqual(b);
+    // 24,000/yr: (24,000 − c) × 0.8 + c with c = 12 × 960.78 × 0.315 → ×0.93/12 ≈ 1,544 → general 3 (index 5)
+    expect(a.tramo!.index).toBe(5);
+  });
+  it('the start-up reduction does not lower the SS income', () => {
+    const i = inp({ year: 2027 });
+    expect(run({ ...i, startup: { claim: true, sex: 'w' } })).toEqual(run(i));
   });
 });

@@ -7,7 +7,8 @@ import type { CalcInput } from '../src/engine/types';
 const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a }));
 const all2026 = { paramsFor: () => getParams(2026) };
 
-/** Spec §8.1: €5,000/month non-EU B2B, alta 1 Jan, under 36, rent €700/month, expenses €840/yr, reading A. */
+/** Spec §8.1: €5,000/month non-EU B2B, alta 1 Jan, under 36, rent €700/month, expenses €840/yr.
+ *  SS income after the 20/15/10 % (reading B, resolved 2026-11-19: Gure Gida Id 4014 + bizkaia.eus "rendimiento neto previo atribuido"). */
 function nomad(year: 2026 | 2027): CalcInput {
   return {
     ...defaultInput('2026-11-18'),
@@ -35,23 +36,24 @@ describe('golden: the abroad nomad, years 1–3 (2026 parameters)', () => {
   it('year 2', () => {
     const r = compute(shift(nomad(2026), 1), all2026);
     expect(r.yi).toBe(1);
-    expect(r.annual.reta).toBeCloseTo(6547, 0);
+    // SS income (59,160 − 6,052.92) × 0.85 + 6,052.92 = 51,193.94 → ×0.93/12 = 3,967.53 → tramo ≤ 4,050, min 1,601.31
+    expect(r.annual.reta).toBeCloseTo(6052.92, 2);
     expect(r.annual.tier).toBe(0.15);
-    expect(r.annual.irpf.cl).toBeCloseTo(7802, 0);
-    expect(r.annual.prepaid).toBeCloseTo(10523, 0);
-    expect(r.annual.renta).toBeCloseTo(-2720, 0);
-    expect(r.keptMonthly).toBeCloseTo(3734, 0);
+    expect(r.annual.irpf.cl).toBeCloseTo(7949, 0);
+    expect(r.annual.prepaid).toBeCloseTo(10621, 0);
+    expect(r.annual.renta).toBeCloseTo(-2672, 0);
+    expect(r.keptMonthly).toBeCloseTo(3763, 0);
   });
   it('year 3: 130 = 5 % × RN of year 1', () => {
     const r = compute(shift(nomad(2026), 2), all2026);
     expect(r.q130[0].regime).toBe('general');
     expect(r.annual.prepaid).toBeCloseTo(9296, 0);
-    expect(r.annual.renta).toBeCloseTo(-1493, 0);
+    expect(r.annual.renta).toBeCloseTo(-1346, 0);
     expect(r.warnings.map((w) => w.id)).toContain('W3');
   });
   it('next-year card from year 1 shows the drop once the tarifa plana ends', () => {
     const r = compute(nomad(2026), all2026);
-    expect(r.nextYear!.keptMonthly).toBeCloseTo(3734, 0);
+    expect(r.nextYear!.keptMonthly).toBeCloseTo(3763, 0);
     expect(r.nextYear!.tpEndsThisYear).toBe(true);
     expect(r.compare!.noTarifaPlanaMonthly).toBeLessThan(r.keptMonthly);
   });
@@ -89,8 +91,25 @@ describe('compute: other cases', () => {
   });
   it('unverified params raise W16 and are listed', () => {
     const r = compute(nomad(2026));
-    expect(r.unverified).toContain('irpf.firstYearTier');
+    expect(r.unverified).toContain('reta.tarifaPlana'); // €80 has no 2026 legal text (RDL 13/2022 DT 5ª defers to an LPGE)
     expect(r.warnings.map((w) => w.id)).toContain('W16');
+  });
+  // Instrucción bizkaia.eus 900004921: "el rendimiento neto previo del ejercicio anterior no se eleva al año en los
+  // supuestos de inicio de actividad". Alta Oct 2026 at €5,000/mo: 2026 D ≈ 15k (≈ 60k annualised) → 2027 tier 20 %, not 15 %.
+  // https://www.bizkaia.eus/ogasuna/guregida/noticia.asp?Idioma=ca&idregistro=900004921
+  it('part-year start year is not annualised for the next year\'s tier', () => {
+    const r = compute({ ...nomad(2027), alta: { year: 2026, month: 10 } }, all2026);
+    expect(r.annual.tier).toBe(0.2);
+  });
+  it('old share links: the deprecated settings r2 / s1 / s2 do not change the result', () => {
+    const i = shift(nomad(2026), 1);
+    const base = compute(i, all2026);
+    for (const settings of [{ r2: 'B', s1: '15', s2: true }, { r2: 'A', s1: 'tier', s2: false }] as const) {
+      const r = compute({ ...i, settings: { ...settings } }, all2026);
+      expect(r.keptMonthly).toBe(base.keptMonthly);
+      expect(r.q130).toEqual(base.q130);
+      expect(r.annual.reta).toBe(base.annual.reta);
+    }
   });
   it('Spanish company client: retención reduces the cash and is credited', () => {
     const r = compute({ ...nomad(2026), clients: [{ name: 'ES', type: 'es_company', months: flat(3000), newcomer7: true }] });

@@ -28,10 +28,15 @@ describe('params', () => {
     expect(r['reta.tramos'].status).toBe('P');
     expect(r['irpf.scale'].status).toBe('P');
   });
+  // RD 126/2026 arts. 1 and 3 (BOE-A-2026-3815): €1,221/month, "cuantía anual inferior a 17 094 euros".
+  it('SMI 2026 verified at €17,094', () => {
+    expect(getParams(2026).get('smi')).toBe(17094);
+    expect(rawParams(2026).smi.status).toBe('V');
+  });
   it('tracks which params were used', () => {
     const p = getParams(2026);
-    p.get('irpf.minoracion'); p.get('smi');
-    expect(p.used()).toEqual(['irpf.minoracion', 'smi']);
-    expect(p.unverifiedUsed()).toEqual(['smi']);
+    p.get('irpf.minoracion'); p.get('reta.tarifaPlana');
+    expect(p.used()).toEqual(['irpf.minoracion', 'reta.tarifaPlana']);
+    expect(p.unverifiedUsed()).toEqual(['reta.tarifaPlana']);
   });
 });

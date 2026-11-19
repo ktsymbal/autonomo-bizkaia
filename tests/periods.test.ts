@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { clientsToStreams, streamsToClients, type IncomeRow } from '../src/engine/periods';
+import { applyPeriods, clientsToStreams, streamsToClients, type IncomeRow } from '../src/engine/periods';
+import { defaultInput } from '../src/engine/activity';
 
 const row = (from: number, amount: number, type: IncomeRow['type'] = 'non_eu_company'): IncomeRow => ({ from, amount, type, newcomer7: false });
 const amounts = (c: { months: { amount: number }[] }) => c.months.map((m) => m.amount);
@@ -31,5 +32,13 @@ describe('income periods', () => {
   it('round trip from per-client months', () => {
     const cs = streamsToClients([[row(0, 3000), row(4, 3800), row(8, 0)]]);
     expect(clientsToStreams(cs)).toEqual([[row(0, 3000), row(4, 3800), row(8, 0)]]);
+  });
+  it('registered this year: the first income month is the registration month', () => {
+    const i = { ...defaultInput('2026-11-19'), income: { mode: 'periods' as const, streams: [[row(5, 3000)]] } };
+    expect(applyPeriods(i).alta).toEqual({ year: 2026, month: 6 });
+  });
+  it('registered in an earlier year: income rows leave the registration date alone', () => {
+    const i = { ...defaultInput('2026-11-19'), alta: { year: 2023, month: 3 }, income: { mode: 'periods' as const, streams: [[row(5, 3000)]] } };
+    expect(applyPeriods(i).alta).toEqual({ year: 2023, month: 3 });
   });
 });

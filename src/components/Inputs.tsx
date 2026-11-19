@@ -3,7 +3,8 @@ import { useState } from 'preact/hooks';
 import { ChevronRight, Plus, Trash2 } from 'lucide-preact';
 import { defaultClient, effectiveAlta, isActive, isPast } from '../engine/activity';
 import { clientsToStreams, emptyRow, sortRows, streamsToClients, type IncomeRow } from '../engine/periods';
-import type { CalcInput, Client, ClientType, Expense } from '../engine/types';
+import type { CalcInput, Client, ClientType, Expense, YM } from '../engine/types';
+import type { CalcResult } from '../engine/compute';
 import { eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
 import { salaryWithholdingPct } from '../engine/employment';
 import { getParams } from '../params';
@@ -20,6 +21,11 @@ function startMonth(input: CalcInput): number {
   const a = effectiveAlta(input);
   return a.year === input.year ? a.month - 1 : a.year > input.year ? 12 : 0;
 }
+/** The earliest month a first income row may start: free when you registered this year (the row sets the alta month). */
+const rowFloor = (input: CalcInput) => (input.alta && input.alta.year === input.year ? 0 : Math.min(11, startMonth(input)));
+const yearsIn = (input: CalcInput) => input.year - effectiveAlta(input).year;
+const ymAdd = (ym: YM, n: number): YM => { const z = ym.year * 12 + ym.month - 1 + n; return { year: Math.floor(z / 12), month: (z % 12) + 1 }; };
+const ymText = (lang: Lang, ym: YM) => `${tList(lang, 'months.long')[ym.month - 1]} ${ym.year}`;
 
 function Chips({ lang, input, type, newcomer7, amount }: { lang: Lang; input: CalcInput; type: ClientType; newcomer7: boolean; amount: number }) {
   const yi = input.year - effectiveAlta(input).year;
@@ -40,7 +46,7 @@ function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { 
   const [pick, setPick] = useState(false);
   const sameClient = !first && prev.type === row.type && prev.newcomer7 === row.newcomer7;
   const long = tList(lang, 'months.long');
-  const start = Math.min(11, startMonth(input));
+  const start = rowFloor(input);
   const from = Math.max(row.from, first ? start : 0);
   return (
     <div class="prow">
@@ -64,7 +70,7 @@ function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { 
           <Field label={t(lang, 'income.clients')}>
             <Select value={row.type} label={t(lang, 'income.clients')} options={typeOptions(lang)} onChange={(v) => onChange({ ...row, type: v })} />
           </Field>
-          {row.type === 'es_company' ? <Check checked={row.newcomer7} onChange={(v) => onChange({ ...row, newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
+          {row.type === 'es_company' && yearsIn(input) <= 2 ? <Check checked={row.newcomer7} onChange={(v) => onChange({ ...row, newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
           <Chips lang={lang} input={input} type={row.type} newcomer7={row.newcomer7} amount={row.amount} />
         </>
       ) : !first ? <p class="note">{t(lang, 'income.zeroNote')}</p> : null}
@@ -75,7 +81,7 @@ function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { 
 function Periods({ lang, input, set }: P) {
   const streams = input.income.streams;
   const setStreams = (fn: (s: IncomeRow[][]) => IncomeRow[][]) => set((i) => ({ ...i, income: { ...i.income, streams: fn(i.income.streams) } }));
-  const start = Math.min(11, startMonth(input));
+  const start = rowFloor(input);
   return (
     <>
       {streams.map((rows, si) => {
@@ -164,7 +170,7 @@ function MonthGrid({ lang, input, set, idx }: P & { idx: number }) {
           {t(lang, 'client.fillAvg', { amount: eur(lang, pastAvg) })}
         </button>
       ) : null}
-      {c.type === 'es_company' ? <Check checked={c.newcomer7} onChange={(v) => upd({ newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
+      {c.type === 'es_company' && yearsIn(input) <= 2 ? <Check checked={c.newcomer7} onChange={(v) => upd({ newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
       <Chips lang={lang} input={input} type={c.type} newcomer7={c.newcomer7} amount={avg} />
     </div>
   );
@@ -236,9 +242,10 @@ function SalaryFields({ lang, input, set }: P) {
 
 /* ---------- Registration and expenses ---------- */
 
-export function StatusCard({ lang, input, set }: P) {
+export function StatusCard({ lang, input, set, r }: P & { r: CalcResult }) {
   const long = tList(lang, 'months.long');
   const a = effectiveAlta(input);
+  const monthFromIncome = !!input.alta && input.alta.year === input.year && input.income.mode === 'periods';
   const years = Array.from({ length: 13 }, (_, k) => 2015 + k);
   return (
     <section class="card" aria-labelledby="h-about">
@@ -253,18 +260,44 @@ export function StatusCard({ lang, input, set }: P) {
       </Field>
       {input.alta ? (
         <div class="cols2">
-          <Field label={t(lang, 'about.altaMonth')}>
-            <Select value={input.alta.month} label={t(lang, 'about.altaMonth')} options={long.map((l, k) => ({ value: k + 1, label: l }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, month: v } }))} />
-          </Field>
           <Field label={t(lang, 'about.altaYear')}>
             <Select value={input.alta.year} label={t(lang, 'about.altaYear')} options={years.map((y) => ({ value: y, label: String(y) }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, year: v } }))} />
           </Field>
+          {monthFromIncome ? (
+            <div class="field">
+              <span class="lbl">{t(lang, 'about.altaMonth')}</span>
+              <span class="note">{t(lang, 'about.altaFromIncome', { month: long[input.alta.month - 1] })}</span>
+            </div>
+          ) : (
+            <Field label={t(lang, 'about.altaMonth')}>
+              <Select value={input.alta.month} label={t(lang, 'about.altaMonth')} options={long.map((l, k) => ({ value: k + 1, label: l }))} onChange={(v) => set((i) => ({ ...i, alta: { ...i.alta!, month: v } }))} />
+            </Field>
+          )}
         </div>
       ) : (
         <p class="note">{t(lang, 'about.notYetNote', { month: `${long[a.month - 1]} ${a.year}` })}</p>
       )}
+      <StatusFacts lang={lang} input={input} r={r} />
     </section>
   );
+}
+
+/** What the registration date changes this year, stated as facts. */
+function StatusFacts({ lang, input, r }: { lang: Lang; input: CalcInput; r: CalcResult }) {
+  const a = effectiveAlta(input);
+  const yi = yearsIn(input);
+  if (yi < 0) return null;
+  const facts: string[] = [];
+  const tier = fpct(lang, r.annual.tier, 0);
+  if (yi === 0) facts.push(t(lang, 'about.factFirst', { tier }));
+  else if (input.priorD !== null) facts.push(t(lang, 'about.factTierEntered', { n: yi + 1, tier, prior: eur(lang, input.priorD) }));
+  else facts.push(t(lang, 'about.factTier', { n: yi + 1, tier, prior: eur(lang, r.annual.priorD ?? 0) }));
+  if (input.tpEligible) {
+    const end = ymAdd(a, 11);
+    if (end.year >= input.year) facts.push(t(lang, 'about.factTp', { from: ymText(lang, a), to: ymText(lang, end) }));
+    else facts.push(t(lang, 'about.factTpOver', { to: ymText(lang, end) }));
+  }
+  return <ul class="facts">{facts.map((f) => <li>{f}</li>)}</ul>;
 }
 
 export function ExpensesCard({ lang, input, set }: P) {
@@ -343,14 +376,14 @@ function Section({ id, title, hint, open, children }: { id: string; title: strin
 
 const yesNo = (lang: Lang) => [{ value: 'y' as const, label: t(lang, 'yes') }, { value: 'n' as const, label: t(lang, 'no') }];
 
-export function MoreSections({ lang, input, set }: P) {
+export function MoreSections({ lang, input, set }: P & { r: CalcResult }) {
   const upd = (patch: Partial<CalcInput>) => set((i) => ({ ...i, ...patch }));
-  const st = input.settings;
   const home = input.rentMonthly > 0 || input.purchaseAnnual > 0 || input.under36;
   const family = input.partner || input.kidsUnder6 + input.kids6to30 > 0 || input.largeFamily || input.ascendants > 0 || input.widow;
   const personal = input.disability > 0 || input.age65 !== 'no' || input.carer !== 'none' || input.womenReturnYears > 0 || input.menChildcare;
-  const history = !input.tpEligible || input.startup.claim || input.priorD !== null || input.epsv > 0;
-  const settings = st.r2 !== 'A' || st.s1 !== 'off' || st.s2 || input.retaBase !== null;
+  const yi = yearsIn(input);
+  const tpPossible = yi >= 0 && ymAdd(effectiveAlta(input), 23).year >= input.year; // 12 months, 24 with the extension
+  const history = (tpPossible && !input.tpEligible) || input.startup.claim || input.priorD !== null || input.epsv > 0 || input.retaBase !== null;
   return (
     <div class="more-list">
       <h2 class="more-title">{t(lang, 'more.title')}</h2>
@@ -411,17 +444,21 @@ export function MoreSections({ lang, input, set }: P) {
       </Section>
 
       <Section id="s-history" title={t(lang, 'sec.history')} hint={t(lang, 'sec.historyHint')} open={history}>
-        <Check checked={input.tpEligible} onChange={(v) => upd({ tpEligible: v })}>
-          {t(lang, 'about.tp')}
-          <br />
-          <span class="note">{t(lang, 'about.tpHint')}</span>
-        </Check>
-        <Check checked={input.startup.claim} onChange={(v) => upd({ startup: { ...input.startup, claim: v } })}>
-          {t(lang, 'about.startup')}
-          <br />
-          <span class="note">{t(lang, 'about.startupHint')}</span>
-        </Check>
-        {input.startup.claim ? (
+        {tpPossible ? (
+          <Check checked={input.tpEligible} onChange={(v) => upd({ tpEligible: v })}>
+            {t(lang, 'about.tp')}
+            <br />
+            <span class="note">{t(lang, 'about.tpHint')}</span>
+          </Check>
+        ) : <p class="note">{t(lang, 'about.tpGone')}</p>}
+        {yi <= 1 ? (
+          <Check checked={input.startup.claim} onChange={(v) => upd({ startup: { ...input.startup, claim: v } })}>
+            {t(lang, 'about.startup')}
+            <br />
+            <span class="note">{t(lang, 'about.startupHint')}</span>
+          </Check>
+        ) : null}
+        {input.startup.claim && yi <= 1 ? (
           <Seg name="sex" label={t(lang, 'about.startup')} value={input.startup.sex} options={[{ value: 'w', label: t(lang, 'about.sex.w') }, { value: 'm', label: t(lang, 'about.sex.m') }]} onChange={(v) => upd({ startup: { ...input.startup, sex: v } })} />
         ) : null}
         <div class="cols">
@@ -432,20 +469,11 @@ export function MoreSections({ lang, input, set }: P) {
             <NumberInput lang={lang} min={0} value={input.epsv} unit="€" onChange={(v) => upd({ epsv: v ?? 0 })} />
           </Field>
         </div>
-      </Section>
-
-      <Section id="s-settings" title={t(lang, 'settings.title')} hint={t(lang, 'settings.lede')} open={settings}>
-        <Field label={t(lang, 'settings.r2')}>
-          <Select value={st.r2} label={t(lang, 'settings.r2')} options={[{ value: 'A', label: t(lang, 'settings.r2.A') }, { value: 'B', label: t(lang, 'settings.r2.B') }]} onChange={(v) => upd({ settings: { ...st, r2: v } })} />
-        </Field>
-        <Field label={t(lang, 'settings.s1')}>
-          <Select value={st.s1} label={t(lang, 'settings.s1')} options={(['off', 'tier', '15'] as const).map((v) => ({ value: v, label: t(lang, `settings.s1.${v}`) }))} onChange={(v) => upd({ settings: { ...st, s1: v } })} />
-        </Field>
-        <Check checked={st.s2} onChange={(v) => upd({ settings: { ...st, s2: v } })}>{t(lang, 'settings.s2')}</Check>
         <Field label={t(lang, 'settings.retaBase')} hint={t(lang, 'settings.retaBaseHint')}>
           <NumberInput lang={lang} min={0} value={input.retaBase} unit="€" onChange={(v) => upd({ retaBase: v })} />
         </Field>
       </Section>
+
     </div>
   );
 }

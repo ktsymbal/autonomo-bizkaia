@@ -9,7 +9,6 @@ export type M130Args = {
   yi: number; // years since alta
   quarters: QuarterAgg[]; // 4; expenses include RETA cuotas of the quarter
   tierPct: number;
-  s1: 'off' | 'tier' | '15';
   rnYm2: number | null; // RN of year−2, annualised if it was the alta year
   incomeYm2: number | null;
   retYm2: number | null;
@@ -22,8 +21,9 @@ export function m130(a: M130Args, p: Params): Q130[] {
   const yearIncome = a.quarters.reduce((s, x) => s + x.income, 0);
   const yearWithRet = a.quarters.reduce((s, x) => s + x.incomeWithRet, 0);
   const waived = yearIncome > 0 && yearWithRet / yearIncome >= r.waiverShare;
-  const s1Factor = a.s1 === 'tier' ? 1 - a.tierPct : a.s1 === '15' ? 0.85 : 1;
-  if (a.s1 !== 'off') p.get('p130.simplificadaInside');
+  // Box 09 = ingresos computables − gastos deducibles of the quarter, without the art. 28 NF % (RIRPF 110.1.a;
+  // 130 instructions casilla 10; FAQs 900001004/900001005). The old user setting S1 no longer changes this.
+  const s1Factor = p.get('p130.simplificadaInside') ? 1 - a.tierPct : 1;
 
   return a.quarters.map((x, i) => {
     const qn = (i + 1) as 1 | 2 | 3 | 4;

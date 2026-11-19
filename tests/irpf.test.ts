@@ -21,9 +21,12 @@ describe('IRPF', () => {
     expect(tier(85000, p())).toBe(0.15);
     expect(tier(85001, p())).toBe(0.10);
   });
-  it('first-year tier is flagged unverified', () => {
-    const q = p(); tier(null, q);
-    expect(q.unverifiedUsed()).toContain('irpf.firstYearTier');
+  // Resolved 2026-11-19: NF 13/2013 art. 28.1.b gives 20 % when the prior year's difference "no haya superado" €35,000;
+  // with no prior activity that difference is nil. https://www.bizkaia.eus/documents/880307/27501802/ca_13_2013.pdf
+  it('first year (no prior year) → 20 % tier, verified', () => {
+    const q = p();
+    expect(tier(null, q)).toBe(0.2);
+    expect(q.unverifiedUsed()).not.toContain('irpf.firstYearTier');
   });
   it('golden year 1: D 58,097 → RN 46,478 → CL ≈ 8,417 (rent 700/mo, under 36)', () => {
     const i = inp({ under36: true, rentMonthly: 700 });
@@ -48,9 +51,12 @@ describe('IRPF', () => {
     r = annualIRPF({ rnAct: 40000, rnTrab: 0, input: inp({ rentMonthly: 700, largeFamily: true }), p: p() });
     expect(r.deductions.rent).toBe(2800);
   });
-  it('negative D: no % applied (S2 off), and it does not offset work income', () => {
+  // Resolved 2026-11-19: the coeficiente applies to a positive difference only. Gure Gida 2025 Id 4014 (Hacienda Foral
+  // de Bizkaia): "COEFICIENTE DE GASTOS (20, 15 o 10 por ciento de la diferencia positiva anterior)".
+  // https://www.bizkaia.eus/Ogasuna/GureGida/test_descarga/servir_documento.asp?hash=0C7C51735C554654674653&idioma=CA
+  it('negative D: no % applied (even with the old S2 setting on), and it does not offset work income', () => {
     expect(activityRN(-5000, 0.2, inp(), p(), 0)).toBe(-5000);
-    expect(activityRN(-5000, 0.2, inp({ settings: { r2: 'A', s1: 'off', s2: true } }), p(), 0)).toBe(-4000);
+    expect(activityRN(-5000, 0.2, inp({ settings: { r2: 'A', s1: 'off', s2: true } }), p(), 0)).toBe(-5000);
     const r = annualIRPF({ rnAct: -5000, rnTrab: 20000, input: inp(), p: p() });
     expect(r.bl).toBe(20000);
   });

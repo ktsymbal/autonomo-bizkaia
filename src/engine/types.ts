@@ -44,6 +44,11 @@ export type CalcInput = {
   salary: { grossMonthly: number; withheldMonthly: number | null; shortContract: boolean } | null;
   retaBase: number | null; // null = minimum of forecast tramo
   tpEligible: boolean; // no RETA in the last 2 years (3 if had tarifa plana before)
+  /**
+   * Deprecated (2026-11-19): kept so old share links still parse, but none of these change the result any more.
+   * R2 → param 'reta.ssIncomeReading'; S1 → param 'p130.simplificadaInside'; S2 → no % on a negative difference.
+   * See docs/research/disputed-rules-resolution.md.
+   */
   settings: { r2: 'A' | 'B'; s1: 'off' | 'tier' | '15'; s2: boolean };
 };
 

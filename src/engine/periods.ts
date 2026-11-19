@@ -1,4 +1,4 @@
-import type { Client, ClientType } from './types';
+import type { CalcInput, Client, ClientType } from './types';
 
 /** From month `from` (0 = January) until the next row of the same stream: `amount` a month from this kind of client. */
 export type IncomeRow = { from: number; amount: number; type: ClientType; newcomer7: boolean };
@@ -46,3 +46,15 @@ export function clientsToStreams(clients: Client[], start = 0): IncomeRow[][] {
 }
 
 export const scaleStreams = (streams: IncomeRow[][], f: number): IncomeRow[][] => streams.map((rows) => rows.map((r) => ({ ...r, amount: Math.round(r.amount * f) })));
+
+/** In periods mode the per-client months are rebuilt from the periods, and when you registered this year
+ *  the registration month is the first month with income (one question, not two). */
+export function applyPeriods(i: CalcInput): CalcInput {
+  if (i.income.mode !== 'periods') return i;
+  const out = { ...i, clients: streamsToClients(i.income.streams) };
+  if (i.alta && i.alta.year === i.year) {
+    const first = Math.min(...i.income.streams.map((rows) => Math.min(...rows.map((r) => r.from))));
+    if (Number.isFinite(first) && first + 1 !== i.alta.month) out.alta = { ...i.alta, month: first + 1 };
+  }
+  return out;
+}

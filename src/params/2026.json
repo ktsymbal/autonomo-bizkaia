@@ -65,9 +65,9 @@
  },
  "irpf.firstYearTier": {
   "value": 0.2,
-  "source": "Common gestoría practice; RIRPF art. 28.1.b refers only to the prior year — no text for year 1",
-  "status": "?",
-  "checked": "2026-11-18"
+  "source": "NF 13/2013 art. 28.1.b: 20 % when the prior year's difference 'no haya superado' €35,000 (no prior activity = nil difference); Instrucción bizkaia.eus 900004921: the prior year's figure 'no se eleva al año' in a start year",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "irpf.startup": {
   "value": {
@@ -146,9 +146,9 @@
  },
  "p130.simplificadaInside": {
   "value": false,
-  "source": "OF 636/2014 casilla 09 'ingresos computables − gastos deducibles'; no box for the art. 28 %",
-  "status": "?",
-  "checked": "2026-11-18"
+  "source": "RIRPF Bizkaia (DF 47/2014) art. 110.1.a: 20 % of 'la diferencia entre los ingresos computables y los gastos deducibles' of the quarter; modelo 130 instructions (130CasInst.pdf) casilla 10; FAQs 900001004/900001005/900004384 — no art. 28 NF % in the 130",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "retencion": {
   "value": {
@@ -179,9 +179,9 @@
  },
  "reta.tarifaPlana": {
   "value": 80,
-  "source": "LETA (Ley 20/2007) art. 38 ter; RDL 13/2022 DT 5ª — 2026 amount not set by a budget",
-  "status": "?",
-  "checked": "2026-11-18"
+  "source": "LETA art. 38 ter.1; RDL 13/2022 DT 5ª (€80 for 2023–2025; from 2026 'fijado por la LPGE'). No 2026 LPGE; RDL 3/2026 and Orden PJC/297/2026 are silent. €80 is TGSS practice (Import@ss guide)",
+  "status": "P",
+  "checked": "2026-11-19"
  },
  "reta.tarifaPlanaMeiBase": {
   "value": 950.98,
@@ -278,16 +278,16 @@
   "checked": "2026-11-18"
  },
  "reta.ssIncomeReading": {
-  "value": "A",
-  "source": "bizkaia.eus 'rendimiento neto previo' wording — before the 20/15/10 %; not confirmed",
-  "status": "?",
-  "checked": "2026-11-18"
+  "value": "B",
+  "source": "LGSS art. 308.1.c regla 1ª + RD 2064/1995 art. 46.1 (rendimiento neto under each Administración's IRPF rules); bizkaia.eus 'nuevo sistema de cotización': Bizkaia reports the 'rendimiento neto previo atribuido'; Gure Gida 2025 Id 4014: RENDIMIENTO PREVIO = difference − coeficiente 20/15/10 % (positive difference only), before the art. 25.5 start-up reduction",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "smi": {
   "value": 17094,
-  "source": "RD 126/2026 (BOE-A-2026-3815)",
-  "status": "S",
-  "checked": "2026-11-18"
+  "source": "RD 126/2026, de 18 de febrero, arts. 1 and 3 (BOE-A-2026-3815): €1,221/month, annual not below €17,094",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "pluriRefund": {
   "value": {
@@ -872,15 +872,15 @@
  },
  "irpf.womenReturn": {
   "value": 1500,
-  "source": "NF 13/2013 IRPF Bizkaia art. 83 ter — €1,500 per year away from work; multiples and carry-forward not verified",
-  "status": "?",
-  "checked": "2026-11-18"
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 ter.1 (consolidated 01/01/2026): €1,500 per year away, +50 % multiple births, pro rata by days, halved between cohabiting parents, 5-year carry-forward; Manual Renta 2025",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "irpf.menChildcare": {
   "value": 200,
-  "source": "NF 13/2013 IRPF Bizkaia art. 83 quater — up to €200/year; conditions not verified",
-  "status": "?",
-  "checked": "2026-11-18"
+  "source": "NF 13/2013 IRPF Bizkaia art. 83 quater.1 (consolidated 01/01/2026): up to €200 per year of pause (child < 4) or reduced hours ≤ 67 % (prorated), +50 % multiple births, pro rata by days; Manual Renta 2025",
+  "status": "V",
+  "checked": "2026-11-19"
  },
  "irpf.jointReduction": {
   "value": 4896,

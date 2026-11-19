@@ -35,9 +35,6 @@ const show = (v: unknown): string => {
       <h2>{t(lang, 'how.open')}</h2>
       <p class="note">{t(lang, 'how.openLede')}</p>
       <ul class="list">
-        <li>{t(lang, 'settings.r2')}: {t(lang, 'settings.r2.A')} / {t(lang, 'settings.r2.B')}</li>
-        <li>{t(lang, 'settings.s1')}: {t(lang, 'settings.s1.off')} / {t(lang, 'settings.s1.tier')} / {t(lang, 'settings.s1.15')}</li>
-        <li>{t(lang, 'settings.s2')}</li>
         {open.map((k) => <li>{t(lang, `param.${k}`)}: {raw[k].source}</li>)}
       </ul>
     </section>

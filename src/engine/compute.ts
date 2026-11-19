@@ -21,6 +21,7 @@ export type YearCore = {
   retencion: number;
   D: number;
   tierPct: number;
+  priorD: number | null; // last year's income − expenses that set the tier; null = first year
   rnAct: number;
   activeMonths: number;
 };
@@ -39,7 +40,7 @@ export type CalcResult = {
   activeMonths: number;
   forecastMonths: number;
   annual: {
-    income: number; expenses: number; reta: number; retaRegime: string; tier: number; D: number; rnAct: number;
+    income: number; expenses: number; reta: number; retaRegime: string; tier: number; priorD: number | null; D: number; rnAct: number;
     salaryGross: number; salarySS: number; salaryWithheld: number; salaryWithholdingPct: number | null; rnTrab: number; workBonif: number;
     irpf: AnnualIRPF; prepaid130: number; retencion: number; prepaid: number; renta: number;
   };
@@ -84,7 +85,7 @@ function core(input: CalcInput, year: number, paramsFor: (y: number) => Params, 
   const expenses = sum(ledger, (r) => r.expenses);
   const D = income - expenses - reta.total;
   return {
-    year, yi, p, ledger, reta, income, expenses, D, tierPct,
+    year, yi, p, ledger, reta, income, expenses, D, tierPct, priorD,
     retencion: sum(ledger, (r) => r.retencion),
     rnAct: activityRN(D, tierPct, yInput, p, yi),
     activeMonths: ledger.filter((r) => r.active).length,
@@ -116,7 +117,7 @@ function q130For(input: CalcInput, c: YearCore, paramsFor: (y: number) => Params
     incomeYm2 = c2.income;
     retYm2 = c2.retencion;
   }
-  return m130({ year: c.year, yi: c.yi, quarters: quarterAggs(c), tierPct: c.tierPct, s1: input.settings.s1, rnYm2, incomeYm2, retYm2 }, c.p);
+  return m130({ year: c.year, yi: c.yi, quarters: quarterAggs(c), tierPct: c.tierPct, rnYm2, incomeYm2, retYm2 }, c.p);
 }
 
 const QUARTER_PAY_MONTH = [3, 6, 9]; // Apr, Jul, Oct (0-based); Q4 is paid in January of the next year
@@ -224,7 +225,7 @@ export function compute(rawInput: CalcInput, opts: CalcOptions = {}): CalcResult
     year, asOf: input.asOf, alta, yi: c.yi, keptMonthly, denominator: denom || 1, activeMonths: c.activeMonths,
     forecastMonths: c.ledger.filter((r) => r.forecast).length,
     annual: {
-      income: c.income, expenses: c.expenses, reta: c.reta.total, retaRegime: regimeSummary(c.reta), tier: c.tierPct, D: c.D, rnAct: c.rnAct,
+      income: c.income, expenses: c.expenses, reta: c.reta.total, retaRegime: regimeSummary(c.reta), tier: c.tierPct, priorD: c.priorD, D: c.D, rnAct: c.rnAct,
       salaryGross, salarySS, salaryWithheld, salaryWithholdingPct: salaryWithholdingPctV, rnTrab: work.rn, workBonif: work.bonif,
       irpf, prepaid130, retencion: c.retencion, prepaid, renta,
     },

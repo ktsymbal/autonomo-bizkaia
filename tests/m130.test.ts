@@ -5,21 +5,24 @@ import { getParams } from '../src/params';
 const p = () => getParams(2026);
 const q = (income: number, expenses: number, retencion = 0, incomeWithRet = 0): QuarterAgg => ({ income, expenses, retencion, incomeWithRet, active: true });
 const none: QuarterAgg = { income: 0, expenses: 0, retencion: 0, incomeWithRet: 0, active: false };
-const base = { year: 2026, yi: 0, tierPct: 0.2, s1: 'off' as const, rnYm2: null, incomeYm2: null, retYm2: null };
+const base = { year: 2026, yi: 0, tierPct: 0.2, rnYm2: null, incomeYm2: null, retYm2: null };
 
 describe('modelo 130 (Bizkaia)', () => {
-  it('start regime Q1 I 15,000 G 900: off → 2,820; tier 20 % → 2,256; 15 % → 2,397', () => {
+  // Resolved 2026-11-19: no art. 28 NF % inside the 130. RIRPF Bizkaia art. 110.1.a ("el 20 por 100 de la diferencia
+  // entre los ingresos computables y los gastos deducibles, devengados en cada trimestre natural"); 130CasInst.pdf
+  // casilla 10; FAQs 900001004 / 900001005. https://www.bizkaia.eus/fitxategiak/05/ogasuna/ereduak/Argitaratu/130CasInst.pdf
+  it('start regime Q1 I 15,000 G 900 → box 09 14,100, pay 2,820 (no simplificada %)', () => {
     const quarters = [q(15000, 900), none, none, none];
-    expect(m130({ ...base, quarters }, p())[0].pay).toBeCloseTo(2820, 2);
-    expect(m130({ ...base, quarters, s1: 'tier' }, p())[0].pay).toBeCloseTo(2256, 2);
-    expect(m130({ ...base, quarters, s1: '15' }, p())[0].pay).toBeCloseTo(2397, 2);
     const r = m130({ ...base, quarters }, p())[0];
+    expect(r.pay).toBeCloseTo(2820, 2);
     expect(r.boxes).toMatchObject({ '09': 14100, '10': 2820, '11': 0, '12': 2820, '28': 2820 });
     expect(r.due).toBe('2026-04-25');
+    // the tier % never reaches box 09, whatever the prior year's tier
+    expect(m130({ ...base, tierPct: 0.1, quarters }, p())[0].boxes['09']).toBe(14100);
   });
-  it('quarter with S1 at 15 %: 20 % × (12,000 − 400) × 0.85 = 1,972.00', () => {
-    const r = m130({ ...base, s1: '15', quarters: [none, none, q(12000, 400), none] }, p());
-    expect(r[2].pay).toBeCloseTo(1972, 2);
+  it('Q3 I 12,000 G 400 → 20 % × 11,600 = 2,320.00', () => {
+    const r = m130({ ...base, quarters: [none, none, q(12000, 400), none] }, p());
+    expect(r[2].pay).toBeCloseTo(2320, 2);
     expect(r[2].due).toBe('2026-10-25');
   });
   it('loss quarter → pay 0, box 28 = 0, no carry into the next quarter', () => {

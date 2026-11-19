@@ -39,7 +39,7 @@ function addMonths(ym: YM, n: number): YM {
 }
 
 /**
- * RETA for the input's year. `tierPct` is the simplificada % (used only for reading B).
+ * RETA for the input's year. `tierPct` is the simplificada % (art. 28 NF), applied to a positive D for the SS income.
  * Alta is assumed on the 1st of the month; tarifa plana = 12 months from the alta month.
  */
 export function retaYear(input: CalcInput, p: Params, ledger: MonthRow[], tierPct: number): RetaYear {
@@ -61,13 +61,17 @@ export function retaYear(input: CalcInput, p: Params, ledger: MonthRow[], tierPc
   const regimes = ledger.map((r) => regimeOf(r.m));
   const tramoMonths = regimes.filter((r) => r === 'tramo').length;
 
-  // Fixed point: under reading B the cuotas enter the income figure.
+  // Fixed point: the cuotas are expenses inside D, so the income figure depends on them.
+  // Bizkaia sends the TGSS the "rendimiento neto previo atribuido" (bizkaia.eus, nuevo sistema de cotización);
+  // Gure Gida Id 4014 places "RENDIMIENTO PREVIO" after the 20/15/10 % coeficiente (on a positive difference only)
+  // and before the art. 25.5 start-up reduction → reading B. The old user setting R2 no longer changes this.
+  const reading = p.get('reta.ssIncomeReading');
   let tramo: (Tramo & { index: number }) | null = null;
   let rendSSMonthly = 0;
   let cuotas = 0;
   for (let pass = 0; pass < 10; pass++) {
     const D = income - expenses - cuotas;
-    const rendSS = input.settings.r2 === 'A' ? D + cuotas : (D > 0 ? D * (1 - tierPct) : D) + cuotas;
+    const rendSS = reading === 'A' ? D + cuotas : (D > 0 ? D * (1 - tierPct) : D) + cuotas;
     rendSSMonthly = activeMonths ? (rendSS * (1 - gen)) / activeMonths : 0;
     tramo = tramoMonths ? tramoFor(rendSSMonthly, p) : null;
     const base = input.retaBase ?? tramo?.minBase ?? 0;

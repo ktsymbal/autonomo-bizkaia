@@ -36,7 +36,9 @@ export function tier(priorD: number | null, p: Params): number {
 
 /** Rendimiento neto of the activity. yi = years since alta (0 = alta year). */
 export function activityRN(D: number, tierPct: number, input: CalcInput, p: Params, yi: number): number {
-  let rn = D > 0 || input.settings.s2 ? D * (1 - tierPct) : D;
+  // The coeficiente applies only to a positive difference: Gure Gida Id 4014, "20, 15 o 10 por ciento de la
+  // diferencia positiva anterior". The old user setting S2 no longer changes this.
+  let rn = D > 0 ? D * (1 - tierPct) : D;
   if (input.startup.claim && yi >= 0 && yi <= 1 && rn > 0) rn *= 1 - p.get('irpf.startup')[input.startup.sex];
   return rn;
 }
