@@ -1,5 +1,6 @@
 import type { Params } from '../params';
 import type { CalcInput, Client, MonthRow, YM } from './types';
+import { emptyRow } from './periods';
 
 const months = (amount: number) => Array.from({ length: 12 }, () => ({ amount }));
 
@@ -17,6 +18,7 @@ export function defaultInput(asOf: string): CalcInput {
     persona: 'abroad',
     alta: { year: defaultYear(asOf), month: 1 },
     clients: [defaultClient('non_eu_company', 0)],
+    income: { mode: 'periods', streams: [[emptyRow()]] },
     expenseMode: 'pct',
     expensePct: 5,
     expenses: [],

@@ -108,8 +108,12 @@ input { caret-color: var(--accent); }
 @media (min-width: 1000px) { .layout { grid-template-columns: minmax(0, 1fr) 400px; } }
 .inputs { display: grid; gap: 16px; min-width: 0; }
 .results { display: grid; gap: 12px; min-width: 0; }
-@media (min-width: 1000px) { .results-pin { position: sticky; top: 88px; z-index: 5; } }
-@media (max-width: 999px) { .results { order: -1; } }
+@media (min-width: 1000px) { .results { position: sticky; top: 88px; align-self: start; max-height: calc(100dvh - 104px); overflow-y: auto; overscroll-behavior: contain; padding-bottom: 8px; } }
+@media (min-width: 1000px) {
+  .layout > .inputs:first-child { grid-column: 1; grid-row: 1; }
+  .layout > .results { grid-column: 2; grid-row: 1 / span 2; }
+  .layout > .inputs.more { grid-column: 1; grid-row: 2; }
+}
 
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
 .linkbtn { background: none; border: 0; padding: 6px 4px; text-align: left; color: var(--ink-2); font-weight: 600; cursor: pointer; border-radius: 8px; }
@@ -296,10 +300,7 @@ td .tag.due { background: var(--surface); color: var(--ink); border: 1px solid v
 
 
 .cols { align-items: start; }
-.persona { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; }
 @media (max-width: 640px) {
-  .persona { grid-template-columns: 1fr 1fr; width: 100%; }
-  .persona span { text-align: center; white-space: normal; }
   .tabs { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
   .tabs button { white-space: normal; padding: 9px 8px; }
 }
@@ -307,12 +308,9 @@ td .tag.due { background: var(--surface); color: var(--ink); border: 1px solid v
 @keyframes settle { from { opacity: 0.55; filter: blur(3px); transform: translateY(2px); } to { opacity: 1; filter: none; transform: none; } }
 
 /* Review round 2 */
-.results { position: relative; }
+@media (max-width: 999px) { .results { position: relative; } }
 .panel { border-color: rgba(255, 255, 255, 0.9); }
 
-.persona label { display: grid; }
-.persona span { height: 100%; display: grid; place-items: center; }
-@media (max-width: 640px) { .persona { grid-auto-rows: 1fr; } }
 
 /* Result card legend: hairline rule above */
 .hero { box-shadow: var(--shadow-lift); }
@@ -433,3 +431,21 @@ td.r, th.r, .ex-ledger b, .box > span:last-child { font-variant-numeric: tabular
 .ex-body:focus { outline: none; }
 
 .stepper { justify-self: start; }
+
+/* Income periods: from which month, how much, from whom */
+.prow { display: grid; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.prow-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.prow-main .iconbtn { margin-bottom: 4px; }
+.linkrow { display: flex; flex-wrap: wrap; gap: 2px 16px; }
+
+/* Optional sections under the result: one line each until opened */
+.more-list { display: grid; gap: 12px; }
+.more-title { font-size: var(--step-1); margin: 8px 0 0; }
+details.sec { display: block; padding-block: 16px; }
+details.sec > summary { list-style: none; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; }
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary > svg { flex: none; margin-top: 3px; transition: transform 160ms ease-out; color: var(--ink-2); }
+details.sec[open] > summary > svg { transform: rotate(90deg); }
+details.sec > summary > span { display: grid; gap: 2px; }
+details.sec > summary .note { margin: 0; }
+.sec-body { display: grid; gap: 14px; margin-top: 16px; }

@@ -1,3 +1,5 @@
+import type { Income } from './periods';
+
 export type ClientType = 'es_company' | 'es_private' | 'eu_company' | 'non_eu_company';
 export type Persona = 'abroad' | 'spain' | 'pluri' | 'plan';
 
@@ -13,7 +15,8 @@ export type CalcInput = {
   asOf: string; // ISO date, "today"
   persona: Persona;
   alta: YM | null; // null = not registered yet → first year starts next month
-  clients: Client[];
+  clients: Client[]; // derived from `income` in periods mode; edited directly in byMonth mode
+  income: Income;
   expenseMode: 'none' | 'pct' | 'itemized';
   expensePct: number; // e.g. 5 = 5 %
   expenses: Expense[];

@@ -7,7 +7,7 @@ const asOf = '2026-11-18';
 
 describe('URL fragment state', () => {
   it('round trip, including Cyrillic names', () => {
-    const i = { ...defaultInput(asOf), rentMonthly: 650, clients: [{ ...defaultInput(asOf).clients[0], name: 'Клієнт №1' }] };
+    const i = { ...defaultInput(asOf), rentMonthly: 650, expenseMode: 'itemized' as const, expenses: [{ name: 'Коворкінг №1', monthly: 120, ivaIncluded: true, foreign: false }] };
     expect(decode(encode(i), asOf)).toEqual(i);
   });
   it('garbage → defaults', () => {
@@ -42,5 +42,22 @@ describe('URL fragment state', () => {
     const out = decode(encode(old), asOf);
     expect('fx' in out).toBe(false);
     expect(out.clients).toEqual(defaultInput(asOf).clients);
+  });
+});
+
+describe('income periods in links', () => {
+  it('periods survive a round trip and rebuild the months', () => {
+    const i = { ...defaultInput(asOf), income: { mode: 'periods' as const, streams: [[{ from: 0, amount: 3000, type: 'non_eu_company' as const, newcomer7: false }, { from: 4, amount: 3800, type: 'non_eu_company' as const, newcomer7: false }]] } };
+    const out = decode(encode(i), asOf);
+    expect(out.income.streams[0]).toHaveLength(2);
+    expect(out.clients[0].months[5].amount).toBe(3800);
+  });
+  it('a link from before periods keeps its income', () => {
+    const old = { ...defaultInput(asOf), clients: [{ name: '', type: 'es_company' as const, newcomer7: false, months: Array.from({ length: 12 }, () => ({ amount: 2000 })) }] } as Record<string, unknown>;
+    delete old.income;
+    const out = decode('#calc=' + btoa(JSON.stringify({ v: 1, d: old })).replace(/=+$/, ''), asOf);
+    expect(out.income.mode).toBe('periods');
+    expect(out.income.streams[0][0]).toMatchObject({ from: 0, amount: 2000, type: 'es_company' });
+    expect(out.clients[0].months[11].amount).toBe(2000);
   });
 });

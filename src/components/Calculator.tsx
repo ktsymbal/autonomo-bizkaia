@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { compute, solveIncomeFor } from '../engine/compute';
 import { defaultInput } from '../engine/activity';
-import type { CalcInput, Persona } from '../engine/types';
+import type { CalcInput } from '../engine/types';
+import { scaleStreams, streamsToClients } from '../engine/periods';
 import { decode, encode } from '../state/url';
 import { date, t, type Lang } from '../i18n/t';
 import { rawParams } from '../params';
-import { AboutCard, DeductionsCard, ExpensesCard, IncomeCard, SalaryCard, SettingsCard } from './Inputs';
+import { ExpensesCard, IncomeCard, MoreSections, StatusCard } from './Inputs';
 import { Dock, Hero, Notices, Panel } from './Results';
 import { Details } from './Details';
 import { Explainer } from './Explainer';
@@ -13,21 +14,11 @@ import { Seg } from './ui';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-function applyPersona(i: CalcInput, p: Persona): CalcInput {
-  const clients = i.clients.length ? i.clients : defaultInput(i.asOf).clients;
-  const first = clients[0];
-  const next: CalcInput = { ...i, persona: p };
-  if (p === 'abroad') return { ...next, salary: null, clients: [{ ...first, type: first.type.startsWith('es_') ? 'non_eu_company' : first.type }, ...clients.slice(1)] };
-  if (p === 'spain') return { ...next, salary: null, clients: [{ ...first, type: 'es_company' }, ...clients.slice(1)] };
-  if (p === 'pluri') return { ...next, salary: i.salary ?? { grossMonthly: 0, withheldMonthly: null, shortContract: false } };
-  return { ...next, salary: null, alta: null };
-}
-
-const looksDetailed = (i: CalcInput) => i.purchaseAnnual > 0 || i.disability > 0 || i.ascendants > 0 || i.age65 !== 'no' || i.widow || i.carer !== 'none' || i.womenReturnYears > 0 || i.menChildcare || i.partnerGross !== null || i.clients.length > 1 || i.expenseMode === 'itemized' || i.kidsUnder6 + i.kids6to30 > 0 || i.startup.claim || i.epsv > 0 || i.priorD !== null;
+/** In periods mode the per-client months are always rebuilt from the periods. */
+const derive = (i: CalcInput): CalcInput => (i.income.mode === 'periods' ? { ...i, clients: streamsToClients(i.income.streams) } : i);
 
 export default function Calculator({ lang }: { lang: Lang }) {
   const [input, setInput] = useState<CalcInput>(() => defaultInput(today()));
-  const [detailed, setDetailed] = useState(false);
   const [reverse, setReverse] = useState(false);
   const [explaining, setExplaining] = useState(false);
   const [target, setTarget] = useState<number | null>(null);
@@ -38,7 +29,6 @@ export default function Calculator({ lang }: { lang: Lang }) {
   useEffect(() => {
     const i = decode(location.hash, today());
     setInput(i);
-    setDetailed(looksDetailed(i));
     ready.current = true;
   }, []);
   // Keep the fragment in sync (never sent to the server).
@@ -64,7 +54,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
   const factor = useMemo(() => (reverse && target && target > 0 ? solveIncomeFor(target, solveBase) : null), [reverse, target, solveBase]);
   const solved = factor !== null ? factor * baseIncome : null;
 
-  const set = (fn: (i: CalcInput) => CalcInput) => setInput((i) => fn(i));
+  const set = (fn: (i: CalcInput) => CalcInput) => setInput((i) => derive(fn(i)));
   const hasIncome = r.annual.income > 0 || r.annual.salaryGross > 0;
   const checked = rawParams(2026)['irpf.scale'].checked;
 
@@ -76,25 +66,7 @@ export default function Calculator({ lang }: { lang: Lang }) {
       </section>
       <div class="layout">
         <div class="inputs">
-          <div class="field">
-            <span class="lbl">{t(lang, 'persona.label')}</span>
-            <Seg
-              name="persona"
-              class="persona"
-              label={t(lang, 'persona.label')}
-              value={input.persona}
-              options={(['abroad', 'spain', 'pluri', 'plan'] as const).map((v) => ({ value: v, label: t(lang, `persona.${v}`) }))}
-              onChange={(p) => set((i) => applyPersona(i, p))}
-            />
-          </div>
           <div class="toolbar">
-            <Seg
-              name="mode"
-              label={t(lang, 'mode.simple')}
-              value={detailed ? 'd' : 's'}
-              options={[{ value: 's', label: t(lang, 'mode.simple') }, { value: 'd', label: t(lang, 'mode.detailed') }]}
-              onChange={(v) => setDetailed(v === 'd')}
-            />
             <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
               {input.alta ? (
                 <Seg
@@ -111,7 +83,6 @@ export default function Calculator({ lang }: { lang: Lang }) {
                 class="linkbtn"
                 onClick={() => {
                   setInput(defaultInput(today()));
-                  setDetailed(false);
                   setReverse(false);
                 }}
               >
@@ -123,21 +94,22 @@ export default function Calculator({ lang }: { lang: Lang }) {
             lang={lang}
             input={input}
             set={set}
-            detailed={detailed}
             reverse={reverse}
             setReverse={setReverse}
             target={target}
             setTarget={setTarget}
             solved={solved}
-            applySolved={() => factor !== null && setInput({ ...solveBase, clients: solveBase.clients.map((c) => ({ ...c, months: c.months.map((m) => ({ ...m, amount: Math.round(m.amount * factor) })) })) })}
+            applySolved={() => {
+              if (factor === null) return;
+              if (input.income.mode === 'periods' && avgIncome > 0) setInput(derive({ ...input, income: { ...input.income, streams: scaleStreams(input.income.streams, factor) } }));
+              else if (input.income.mode === 'periods') setInput(derive({ ...input, income: { ...input.income, streams: input.income.streams.map((rows, k) => (k === 0 ? rows.map((r) => ({ ...r, amount: Math.round(1000 * factor) })) : rows)) } }));
+              else setInput({ ...solveBase, clients: solveBase.clients.map((c) => ({ ...c, months: c.months.map((m) => ({ amount: Math.round(m.amount * factor) })) })) });
+            }}
           />
-          {input.salary ? <SalaryCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
           <div class="cols">
-            <AboutCard lang={lang} input={input} set={set} detailed={detailed} />
-            <ExpensesCard lang={lang} input={input} set={set} detailed={detailed} />
+            <StatusCard lang={lang} input={input} set={set} />
+            <ExpensesCard lang={lang} input={input} set={set} />
           </div>
-          {detailed ? <DeductionsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
-          {detailed ? <SettingsCard lang={lang} input={input} set={set} detailed={detailed} /> : null}
         </div>
         <aside class="results" aria-label={t(lang, 'res.headline', { year: r.year })}>
           {hasIncome ? (
@@ -146,7 +118,6 @@ export default function Calculator({ lang }: { lang: Lang }) {
                 <Hero lang={lang} r={r} heroRef={heroRef} onExplain={() => setExplaining(true)} />
                 <Panel lang={lang} r={r} />
               </div>
-              <Notices lang={lang} r={r} />
             </>
           ) : (
             <div class="hero empty" ref={heroRef}>
@@ -159,6 +130,10 @@ export default function Calculator({ lang }: { lang: Lang }) {
             <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/${lang}/how-we-calculate/`}>{t(lang, 'nav.how')}</a>
           </p>
         </aside>
+        <div class="inputs more">
+          {hasIncome ? <Notices lang={lang} r={r} /> : null}
+          <MoreSections lang={lang} input={input} set={set} />
+        </div>
       </div>
       {hasIncome ? (
         <>

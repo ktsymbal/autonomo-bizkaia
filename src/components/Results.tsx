@@ -185,7 +185,7 @@ export function Dock({ lang, r, target }: R & { target: { current: HTMLElement |
   const io = useRef<IntersectionObserver | null>(null);
   useEffect(() => {
     if (!target.current || typeof IntersectionObserver === 'undefined') return;
-    io.current = new IntersectionObserver(([e]) => setShow(!e.isIntersecting && e.boundingClientRect.top < 0), { threshold: 0 });
+    io.current = new IntersectionObserver(([e]) => setShow(!e.isIntersecting), { threshold: 0 });
     io.current.observe(target.current);
     return () => io.current?.disconnect();
   }, [target.current]);
