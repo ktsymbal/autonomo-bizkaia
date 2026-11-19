@@ -4,7 +4,7 @@ import { defaultInput } from '../src/engine/activity';
 import { getParams } from '../src/params';
 import type { CalcInput } from '../src/engine/types';
 
-const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a, actual: false }));
+const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a }));
 const all2026 = { paramsFor: () => getParams(2026) };
 
 /** Spec §8.1: €5,000/month non-EU B2B, alta 1 Jan, under 36, rent €700/month, expenses €840/yr, reading A. */

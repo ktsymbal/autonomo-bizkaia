@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { activityLedger, defaultInput, effectiveAlta } from '../src/engine/activity';
+import { activityLedger, defaultInput, effectiveAlta, isPast } from '../src/engine/activity';
 import { getParams } from '../src/params';
 import type { CalcInput, Client } from '../src/engine/types';
 
 const p = () => getParams(2026);
-const flat = (amount: number): Client['months'] => Array.from({ length: 12 }, () => ({ amount, actual: false }));
+const flat = (amount: number): Client['months'] => Array.from({ length: 12 }, () => ({ amount }));
 
 function input(over: Partial<CalcInput>): CalcInput {
   return { ...defaultInput('2026-11-18'), alta: { year: 2026, month: 1 }, expenseMode: 'none', ...over };
@@ -69,11 +69,14 @@ describe('activityLedger', () => {
     expect(effectiveAlta({ ...defaultInput('2026-11-18'), alta: null })).toEqual({ year: 2027, month: 1 });
   });
 
-  it('forecast flag follows the month entries', () => {
-    const months = flat(1000);
-    months[0] = { amount: 900, actual: true };
-    const rows = activityLedger(input({ clients: [{ name: 'A', type: 'eu_company', months, newcomer7: false }] }), p());
-    expect(rows[0].forecast).toBe(false);
-    expect(rows[1].forecast).toBe(true);
+  it('months before the current one are real; the current month and later are an estimate', () => {
+    const rows = activityLedger(input({ clients: [{ name: 'A', type: 'eu_company', months: flat(1000), newcomer7: false }] }), p());
+    expect(rows[9].forecast).toBe(false); // October, asOf 18 November
+    expect(rows[10].forecast).toBe(true); // November
+    expect(rows[11].forecast).toBe(true);
+  });
+  it('a past year has no estimated months, a future year only estimates', () => {
+    expect(isPast({ ...defaultInput('2027-03-01'), year: 2026 }, 11)).toBe(true);
+    expect(isPast({ ...defaultInput('2026-11-18'), year: 2027 }, 0)).toBe(false);
   });
 });

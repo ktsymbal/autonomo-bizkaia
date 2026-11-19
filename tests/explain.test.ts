@@ -4,7 +4,7 @@ import { compute } from '../src/engine/compute';
 import { defaultInput } from '../src/engine/activity';
 import type { CalcInput } from '../src/engine/types';
 
-const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a, actual: false }));
+const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a }));
 const base = (o: Partial<CalcInput> = {}): CalcInput => ({
   ...defaultInput('2026-11-18'),
   clients: [{ name: '', type: 'non_eu_company', months: flat(4500), newcomer7: false }],

@@ -2,7 +2,7 @@ export type ClientType = 'es_company' | 'es_private' | 'eu_company' | 'non_eu_co
 export type Persona = 'abroad' | 'spain' | 'pluri' | 'plan';
 
 /** One calendar month of one client. index 0 = January. */
-export type Month = { amount: number; actual: boolean };
+export type Month = { amount: number };
 export type ClientEntry = { mode: 'monthly' | 'hourly' | 'byMonth'; rate?: number; hours?: number; days?: number };
 export type Client = { name: string; type: ClientType; months: Month[]; newcomer7: boolean; entry?: ClientEntry };
 export type Expense = { name: string; monthly: number; ivaIncluded: boolean; foreign: boolean };

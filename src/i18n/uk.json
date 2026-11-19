@@ -42,9 +42,7 @@
  "client.hours": "Годин на день",
  "client.days": "Днів на місяць",
  "client.newcomer7": "Повідомили клієнту про 7 % утримання (перші 3 роки)",
- "client.actual": "Фактично",
- "client.forecast": "Прогноз",
- "client.fillAvg": "Заповнити прогноз середнім фактичним",
+ "client.fillAvg": "Заповнити решту місяців середнім: {amount}",
  "client.add": "Додати клієнта",
  "client.remove": "Видалити клієнта",
  "months.short": [
@@ -504,5 +502,6 @@
  "param.irpf.menChildcare": "Скорочення роботи (батьки)",
  "param.irpf.jointReduction": "Знижка бази при спільній декларації",
  "pk.irpf.womenReturn": "відрахування за повернення до роботи",
- "pk.irpf.menChildcare": "відрахування за скорочення роботи"
+ "pk.irpf.menChildcare": "відрахування за скорочення роботи",
+ "client.pastNote": "Попередні місяці — те, що ви вже заробили. Поточний місяць ({month}) і далі — оцінка."
 }

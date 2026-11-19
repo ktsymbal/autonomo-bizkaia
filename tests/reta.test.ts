@@ -4,7 +4,7 @@ import { activityLedger, defaultInput } from '../src/engine/activity';
 import { getParams } from '../src/params';
 import type { CalcInput } from '../src/engine/types';
 
-const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a, actual: false }));
+const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a }));
 function inp(over: Partial<CalcInput>): CalcInput {
   return {
     ...defaultInput('2026-11-18'), alta: { year: 2026, month: 1 }, expenseMode: 'itemized',

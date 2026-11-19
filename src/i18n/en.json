@@ -42,9 +42,7 @@
  "client.hours": "Hours a day",
  "client.days": "Days a month",
  "client.newcomer7": "I told the client about the 7 % withholding (first 3 years)",
- "client.actual": "Actual",
- "client.forecast": "Forecast",
- "client.fillAvg": "Fill the forecast with the average of actual months",
+ "client.fillAvg": "Fill the remaining months with the average: {amount}",
  "client.add": "Add a client",
  "client.remove": "Remove client",
  "months.short": [
@@ -504,5 +502,6 @@
  "param.irpf.menChildcare": "Reduced work (fathers)",
  "param.irpf.jointReduction": "Joint-filing base reduction",
  "pk.irpf.womenReturn": "the returning-to-work deduction",
- "pk.irpf.menChildcare": "the reduced-work deduction"
+ "pk.irpf.menChildcare": "the reduced-work deduction",
+ "client.pastNote": "Earlier months are what you've already earned. The current month ({month}) and later are an estimate."
 }

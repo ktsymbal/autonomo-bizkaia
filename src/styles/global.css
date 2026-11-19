@@ -112,7 +112,7 @@ input { caret-color: var(--accent); }
 @media (max-width: 999px) { .results { order: -1; } }
 
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
-.linkbtn { background: none; border: 0; padding: 6px 4px; color: var(--ink-2); font-weight: 600; cursor: pointer; border-radius: 8px; }
+.linkbtn { background: none; border: 0; padding: 6px 4px; text-align: left; color: var(--ink-2); font-weight: 600; cursor: pointer; border-radius: 8px; }
 .linkbtn:hover { text-decoration: underline; }
 
 /* Input cards: solid */
@@ -166,8 +166,7 @@ input[type='checkbox'] { accent-color: var(--accent); width: 18px; height: 18px;
 .monthcell.off { opacity: 0.5; }
 .monthcell .mname { font-size: var(--step--1); color: var(--ink-2); display: flex; justify-content: space-between; align-items: center; }
 .monthcell input[type='text'] { width: 100%; border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 8px; background: var(--surface); font-size: var(--step-0); }
-.monthcell.actual { background: var(--surface); border-color: var(--ink-2); }
-.monthcell .tag { font-size: var(--step--2); }
+.monthcell.past { background: var(--surface); border-color: var(--line-strong); }
 
 details.more { }
 details.more summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
@@ -426,7 +425,7 @@ tr[id^='p-']:target td { background: var(--accent-soft); }
 
 /* Typography: Fixel Display for big figures and headings; fixed-width digits only where columns align */
 h1, .hero .big, .ex-amount, .details > header h2 { font-family: var(--font-display); }
-td.r, th.r, .ex-ledger b, .monthgrid input, .box > span:last-child { font-variant-numeric: tabular-nums; }
+td.r, th.r, .ex-ledger b, .box > span:last-child { font-variant-numeric: tabular-nums; }
 
 /* Header on narrow phones: one line each */
 .brand b, .topnav a { white-space: nowrap; }

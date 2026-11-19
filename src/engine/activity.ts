@@ -1,7 +1,7 @@
 import type { Params } from '../params';
 import type { CalcInput, Client, MonthRow, YM } from './types';
 
-const months = (amount: number, actual = false) => Array.from({ length: 12 }, () => ({ amount, actual }));
+const months = (amount: number) => Array.from({ length: 12 }, () => ({ amount }));
 
 export function defaultClient(type: Client['type'] = 'non_eu_company', amount = 0, name = ''): Client {
   return { name, type, months: months(amount), newcomer7: false };
@@ -64,6 +64,13 @@ export function yearIdx(input: CalcInput): number {
   return input.year - effectiveAlta(input).year;
 }
 
+/** Months before the current one have already happened; the current month and later are an estimate. */
+export function isPast(input: CalcInput, m: number): boolean {
+  const y = Number(input.asOf.slice(0, 4));
+  const cur = Number(input.asOf.slice(5, 7)) - 1;
+  return input.year < y || (input.year === y && m < cur);
+}
+
 export function isActive(input: CalcInput, m: number): boolean {
   const a = effectiveAlta(input);
   return input.year > a.year || (input.year === a.year && m + 1 >= a.month);
@@ -81,7 +88,7 @@ export function activityLedger(input: CalcInput, p: Params): MonthRow[] {
         const mo = c.months[m];
         if (!mo) continue;
         const eur = mo.amount;
-        if (mo.amount && !mo.actual) row.forecast = true;
+        if (mo.amount && !isPast(input, m)) row.forecast = true;
         row.income += eur;
         if (c.type === 'es_company' || c.type === 'es_private') row.ivaOut += eur * iva;
         if (c.type === 'es_company') {

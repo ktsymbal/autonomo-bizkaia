@@ -1,5 +1,5 @@
 import { ChevronRight, Plus, Trash2 } from 'lucide-preact';
-import { defaultClient, effectiveAlta } from '../engine/activity';
+import { defaultClient, effectiveAlta, isActive, isPast } from '../engine/activity';
 import type { CalcInput, Client, ClientType, Expense } from '../engine/types';
 import { date, eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
 import { salaryWithholdingPct } from '../engine/employment';
@@ -11,7 +11,7 @@ type P = { lang: Lang; input: CalcInput; set: Setter; detailed: boolean };
 
 const CLIENT_TYPES: ClientType[] = ['non_eu_company', 'eu_company', 'es_company', 'es_private'];
 
-const monthsOf = (amount: number, prev?: Client['months']) => Array.from({ length: 12 }, (_, m) => ({ amount, actual: prev?.[m]?.actual ?? false }));
+const monthsOf = (amount: number, prev?: Client['months']) => Array.from({ length: 12 }, (_, m) => ({ amount }));
 
 function entryAmount(c: Client): number {
   const e = c.entry;
@@ -36,7 +36,10 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
   const mode = c.entry?.mode ?? 'monthly';
   const upd = (patch: Partial<Client>) => set((i) => ({ ...i, clients: i.clients.map((x, k) => (k === idx ? { ...x, ...patch } : x)) }));
   const short = tList(lang, 'months.short');
-  const actuals = c.months.filter((m) => m.actual);
+  const past = c.months.map((_, k) => k).filter((k) => isActive(input, k) && isPast(input, k));
+  const rest = c.months.map((_, k) => k).filter((k) => isActive(input, k) && !isPast(input, k));
+  const pastAvg = past.length ? Math.round(past.reduce((s, k) => s + c.months[k].amount, 0) / past.length) : 0;
+  const firstEstimate = rest.length ? rest[0] : null;
   return (
     <div class="client">
       <div class="client-head">
@@ -87,37 +90,23 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
       ) : null}
       {mode === 'byMonth' ? (
         <>
+          {past.length && firstEstimate !== null ? <p class="note">{t(lang, 'client.pastNote', { month: tList(lang, 'months.long')[firstEstimate] })}</p> : null}
           <div class="monthgrid">
             {c.months.map((m, k) => (
-              <div class={`monthcell${m.actual ? ' actual' : ''}`}>
-                <span class="mname">
-                  {short[k]}
-                  <label class="tag" title={t(lang, m.actual ? 'client.actual' : 'client.forecast')}>
-                    <input
-                      type="checkbox"
-                      style="width:14px;height:14px;vertical-align:-2px"
-                      checked={m.actual}
-                      aria-label={`${short[k]}: ${t(lang, 'client.actual')}`}
-                      onChange={(e) => upd({ months: c.months.map((x, j) => (j === k ? { ...x, actual: (e.target as HTMLInputElement).checked } : x)) })}
-                    />{' '}
-                    {t(lang, m.actual ? 'client.actual' : 'client.forecast')}
-                  </label>
-                </span>
-                <NumberInput compact lang={lang} min={0} label={short[k]} value={m.amount} onChange={(v) => upd({ months: c.months.map((x, j) => (j === k ? { ...x, amount: v ?? 0 } : x)) })} />
+              <div class={`monthcell${isPast(input, k) ? ' past' : ''}`}>
+                <span class="mname">{short[k]}</span>
+                <NumberInput compact lang={lang} min={0} label={short[k]} value={m.amount} onChange={(v) => upd({ months: c.months.map((x, j) => (j === k ? { amount: v ?? 0 } : x)) })} />
               </div>
             ))}
           </div>
-          {actuals.length ? (
+          {pastAvg > 0 && rest.length ? (
             <button
               type="button"
               class="linkbtn"
               style="justify-self:start"
-              onClick={() => {
-                const avg = actuals.reduce((s, m) => s + m.amount, 0) / actuals.length;
-                upd({ months: c.months.map((m) => (m.actual ? m : { ...m, amount: Math.round(avg) })) });
-              }}
+              onClick={() => upd({ months: c.months.map((x, k) => (rest.includes(k) ? { amount: pastAvg } : x)) })}
             >
-              {t(lang, 'client.fillAvg')}
+              {t(lang, 'client.fillAvg', { amount: eur(lang, pastAvg) })}
             </button>
           ) : null}
         </>
