@@ -458,3 +458,4 @@ details.sec > summary .note { margin: 0; }
   .client-foot .until { grid-column: 1; }
   .client-foot .linkbtn { margin-bottom: 0; }
 }
+.linkbtn:disabled { opacity: 0.4; cursor: default; text-decoration: none; }

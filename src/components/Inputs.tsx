@@ -82,9 +82,14 @@ function ClientCard({ lang, input, rows, idx, count, setRowsOf, remove }: { lang
         </div>
       ))}
       <div class="client-foot">
-        {last.from < 11 && (v.until === null || last.from < v.until) ? (
-          <button type="button" class="linkbtn" onClick={() => setRowsOf(setRows(rows, [...v.rows, { ...last, from: last.from + 1 }]))}>{t(lang, 'income.changed')}</button>
-        ) : <span />}
+        <button
+          type="button"
+          class="linkbtn"
+          disabled={!(last.from < 11 && (v.until === null || last.from < v.until))}
+          onClick={() => setRowsOf(setRows(rows, [...v.rows, { ...last, from: last.from + 1 }]))}
+        >
+          {t(lang, 'income.changed')}
+        </button>
         <label class="until">
           <span class="lbl">{t(lang, 'income.until')}</span>
           <Select
