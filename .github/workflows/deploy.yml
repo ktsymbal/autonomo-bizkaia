@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '30 16 * * 1-5' # after the ECB publishes (~16:00 CET): rebuild with fresh rates
   workflow_dispatch:
 
 permissions:
@@ -26,8 +24,6 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Refresh ECB exchange rates (keeps the stored file on failure)
-        run: node scripts/update-fx.mjs || echo 'fx update failed; using stored rates'
       - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3

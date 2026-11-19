@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { encode, decode } from '../src/state/url';
 import { defaultInput } from '../src/engine/activity';
+import type { CalcInput } from '../src/engine/types';
 
 const asOf = '2026-11-18';
 
@@ -36,8 +37,10 @@ describe('URL fragment state', () => {
     expect(defaultInput(asOf).alta).toEqual({ year: 2026, month: 1 });
     expect(defaultInput(asOf).year).toBe(2026);
   });
-  it('exchange rates are never restored from a link', () => {
-    const i = { ...defaultInput(asOf), fx: { EUR: 1, USD: 5, GBP: 5, PLN: 5 } };
-    expect(decode(encode(i), asOf).fx).toEqual(defaultInput(asOf).fx);
+  it('links made before currencies were removed still open', () => {
+    const old = { ...defaultInput(asOf), fx: { EUR: 1, USD: 5 }, fxDate: '2026-11-18' } as unknown as CalcInput;
+    const out = decode(encode(old), asOf);
+    expect('fx' in out).toBe(false);
+    expect(out.clients).toEqual(defaultInput(asOf).clients);
   });
 });

@@ -21,10 +21,8 @@
  "reset": "Start over",
  "income.title": "Income",
  "income.amount": "Income a month",
- "income.amountHint": "Before tax, without IVA.",
+ "income.amountHint": "Before tax, without IVA, in euros.",
  "income.clients": "Where your clients are",
- "income.currency": "Currency",
- "income.fx": "ECB rates: past months use that month's average, later months the rate on {date}: €1 = {rates}. Updated daily.",
  "client.non_eu_company": "Company outside the EU",
  "client.eu_company": "Company in the EU (with a VAT number)",
  "client.es_company": "Company or autónomo in Spain",
@@ -292,7 +290,8 @@
   "IVA-exempt activities and OSS for sales to EU consumers.",
   "Cars and investment deductions.",
   "Tax residency and double taxation.",
-  "Working through a company (SL)."
+  "Working through a company (SL).",
+  "Income in other currencies: enter the euro amount from your invoice."
  ],
  "how.open": "Unsettled rules",
  "how.openLede": "Here there's no official text or it's ambiguous. In the calculator these are settings; the default is the most literal reading of the law.",

@@ -9,7 +9,7 @@ function inp(over: Partial<CalcInput>): CalcInput {
   return {
     ...defaultInput('2026-11-18'), alta: { year: 2026, month: 1 }, expenseMode: 'itemized',
     expenses: [{ name: 'gestoría', monthly: 70, ivaIncluded: false, foreign: false }],
-    clients: [{ name: 'A', type: 'non_eu_company', currency: 'EUR', months: flat(5000), newcomer7: false }], ...over,
+    clients: [{ name: 'A', type: 'non_eu_company', months: flat(5000), newcomer7: false }], ...over,
   };
 }
 const run = (i: CalcInput) => { const p = getParams(2026); return retaYear(i, p, activityLedger(i, p), 0.2); };
@@ -47,7 +47,7 @@ describe('RETA', () => {
     expect(r.months.every((m) => m.regime === 'tramo')).toBe(true);
   });
   it('income below SMI → extension eligible and applied in months 13–24', () => {
-    const low = inp({ clients: [{ name: 'A', type: 'non_eu_company', currency: 'EUR', months: flat(1200), newcomer7: false }] });
+    const low = inp({ clients: [{ name: 'A', type: 'non_eu_company', months: flat(1200), newcomer7: false }] });
     expect(run(low).extensionEligible).toBe(true);
     const y2 = run({ ...low, year: 2027 });
     expect(y2.months.every((m) => m.regime === 'tpExt')).toBe(true);
@@ -59,7 +59,7 @@ describe('RETA', () => {
   });
   it('reading B uses income after the simplificada %', () => {
     // 2,000/month, no expenses: A → 2000*.93=1860 (gen 6); B → (24000−cuotas)*.8+cuotas … lower tramo
-    const i = inp({ year: 2027, expenses: [], clients: [{ name: 'A', type: 'non_eu_company', currency: 'EUR', months: flat(2000), newcomer7: false }] });
+    const i = inp({ year: 2027, expenses: [], clients: [{ name: 'A', type: 'non_eu_company', months: flat(2000), newcomer7: false }] });
     const a = run(i);
     const b = run({ ...i, settings: { ...i.settings, r2: 'B' } });
     expect(b.tramo!.index).toBeLessThan(a.tramo!.index);

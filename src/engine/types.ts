@@ -1,12 +1,10 @@
-export type Currency = 'EUR' | 'USD' | 'GBP' | 'PLN';
-export const CURRENCIES: Currency[] = ['EUR', 'USD', 'GBP', 'PLN'];
 export type ClientType = 'es_company' | 'es_private' | 'eu_company' | 'non_eu_company';
 export type Persona = 'abroad' | 'spain' | 'pluri' | 'plan';
 
 /** One calendar month of one client. index 0 = January. */
 export type Month = { amount: number; actual: boolean };
 export type ClientEntry = { mode: 'monthly' | 'hourly' | 'byMonth'; rate?: number; hours?: number; days?: number };
-export type Client = { name: string; type: ClientType; currency: Currency; months: Month[]; newcomer7: boolean; entry?: ClientEntry };
+export type Client = { name: string; type: ClientType; months: Month[]; newcomer7: boolean; entry?: ClientEntry };
 export type Expense = { name: string; monthly: number; ivaIncluded: boolean; foreign: boolean };
 export type YM = { year: number; month: number }; // month 1..12
 
@@ -19,9 +17,6 @@ export type CalcInput = {
   expenseMode: 'none' | 'pct' | 'itemized';
   expensePct: number; // e.g. 5 = 5 %
   expenses: Expense[];
-  fx: Record<Currency, number>; // EUR per 1 unit of currency, latest ECB rate (future months)
-  fxDate: string;
-  fxByMonth: Record<string, Partial<Record<Currency, number>>>; // 'YYYY-MM' → EUR per unit, ECB monthly average (complete months only)
   under36: boolean;
   rentMonthly: number;
   leaseFrom2026: boolean;

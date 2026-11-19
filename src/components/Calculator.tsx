@@ -54,10 +54,10 @@ export default function Calculator({ lang }: { lang: Lang }) {
     }
   }, [input]);
 
-  const avgIncome = useMemo(() => input.clients.reduce((s, c) => s + c.months.reduce((a, m) => a + m.amount * (input.fx[c.currency] ?? 1), 0), 0) / 12, [input]);
+  const avgIncome = useMemo(() => input.clients.reduce((s, c) => s + c.months.reduce((a, m) => a + m.amount, 0), 0) / 12, [input]);
   // With no income entered yet, solve from a neutral €1,000/month on the first client.
   const solveBase = useMemo(
-    () => (avgIncome > 0 ? input : { ...input, clients: (input.clients.length ? input.clients : defaultInput(input.asOf).clients).map((c, k) => (k === 0 ? { ...c, months: c.months.map((m) => ({ ...m, amount: 1000 / (input.fx[c.currency] ?? 1) })) } : c)) }),
+    () => (avgIncome > 0 ? input : { ...input, clients: (input.clients.length ? input.clients : defaultInput(input.asOf).clients).map((c, k) => (k === 0 ? { ...c, months: c.months.map((m) => ({ ...m, amount: 1000 })) } : c)) }),
     [input, avgIncome],
   );
   const baseIncome = avgIncome > 0 ? avgIncome : 1000;

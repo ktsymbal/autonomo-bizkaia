@@ -57,7 +57,7 @@
 
 ## 2. Income model: month-by-month, actual and forecast
 
-Each client is a row of 12 months, and each month holds an amount and a currency.
+Each client is a row of 12 months, and each month holds an amount in euros.
 - **Months already past** take what was **actually received** (`actual`).
 - **Future months** take the **forecast** (`forecast`). By default the forecast is the average of the actual months so far, or what the user entered in simple mode.
 - **Months before the alta** are ignored, with a note.
@@ -77,7 +77,7 @@ Why not per invoice: the 130 and 303 settle by quarter, so the date within a qua
 ### 3.2 Simple mode
 | ID | Control | Type and default | Notes |
 |---|---|---|---|
-| I1 | Income per month, before tax, without IVA | money; EUR/USD/GBP/PLN | ECB rate on the stated date (F1) |
+| I1 | Income per month, before tax, without IVA | money, EUR | Euros only (F1) |
 | I2 | Where the clients are | Spanish company/autónomo · private people in Spain · EU company · non-EU company (default for `abroad`) | Drives IVA, withholding and the 130 waiver |
 | E0 | Expenses | almost none (0) · about X% (default 5%, no IVA) · itemized | Same as avtonomo |
 | P1 | Already an autónomo? | not yet (calculate the first year from the next month) · yes, since month/year | Drives tarifa plana, the 130 regime, 7% withholding and the start-up years |
@@ -89,7 +89,7 @@ Why not per invoice: the 130 and 303 settle by quarter, so the date within a qua
 ### 3.3 Detailed mode adds
 | ID | Control | Notes |
 |---|---|---|
-| I3 | Several clients, each with name, type, currency and entry mode, by month as actual or forecast (§2) | Max ~10 rows, like avtonomo |
+| I3 | Several clients, each with name, type and entry mode, by month as actual or forecast (§2) | Max ~10 rows, like avtonomo |
 | I4 | (Spanish company) 7% withholding communicated to the client? | Only in years S, S+1, S+2 |
 | E1 | Itemized monthly expenses: name, amount, "price includes Spanish IVA" | IVA is recovered via the 303 only if the expense is work-only and has a factura in your name |
 | E2 | Supplier is EU or non-EU (SaaS) | Reverse charge, net IVA effect 0. If an EU supplier charged its own VAT, warn |
@@ -156,9 +156,7 @@ Why not per invoice: the 130 and 303 settle by quarter, so the date within a qua
 Notation: Y = tax year, S = start year, q = quarter, m = month, D = activity income − activity expenses.
 
 ### F1 Currency
-```
-base_eur_m = amount_m / ECB_rate(date)        # date: shown to the user, like avtonomo. NFIVA 79.Once says BdE [?]
-```
+Removed (2026-11-19). All amounts are entered in euros. Users paid in another currency enter the euro amount from their invoice. The right rate depends on whether an amount is a real invoice or a what-if, and the euro figure on the invoice is the only one that matches the books.
 
 ### F2 Client treatment (per client)
 ```

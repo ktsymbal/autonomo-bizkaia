@@ -13,7 +13,7 @@ function nomad(year: 2026 | 2027): CalcInput {
     ...defaultInput('2026-11-18'),
     year,
     alta: { year: 2026, month: 1 },
-    clients: [{ name: 'Client', type: 'non_eu_company', currency: 'EUR', months: flat(5000), newcomer7: false }],
+    clients: [{ name: 'Client', type: 'non_eu_company', months: flat(5000), newcomer7: false }],
     expenseMode: 'itemized',
     expenses: [{ name: 'gestoría', monthly: 70, ivaIncluded: false, foreign: false }],
     under36: true,
@@ -61,7 +61,7 @@ describe('compute: other cases', () => {
   it('pluri: €40k salary + €2k/month freelance → bonificación forced to €3,000 and a Renta bill', () => {
     const r = compute({
       ...nomad(2026), persona: 'pluri', rentMonthly: 0, under36: false, tpEligible: false,
-      clients: [{ name: 'C', type: 'non_eu_company', currency: 'EUR', months: flat(2000), newcomer7: false }],
+      clients: [{ name: 'C', type: 'non_eu_company', months: flat(2000), newcomer7: false }],
       salary: { grossMonthly: 40000 / 12, withheldMonthly: null, shortContract: false },
     });
     expect(r.annual.salaryWithheld).toBeCloseTo(6800, 0);
@@ -93,7 +93,7 @@ describe('compute: other cases', () => {
     expect(r.warnings.map((w) => w.id)).toContain('W16');
   });
   it('Spanish company client: retención reduces the cash and is credited', () => {
-    const r = compute({ ...nomad(2026), clients: [{ name: 'ES', type: 'es_company', currency: 'EUR', months: flat(3000), newcomer7: true }] });
+    const r = compute({ ...nomad(2026), clients: [{ name: 'ES', type: 'es_company', months: flat(3000), newcomer7: true }] });
     expect(r.annual.retencion).toBeCloseTo(36000 * 0.07, 2);
     expect(r.q130.filter((q) => q.regime !== 'none').every((q) => q.regime === 'waived')).toBe(true);
     expect(r.iva.quarters[0].status).toBe('pay');

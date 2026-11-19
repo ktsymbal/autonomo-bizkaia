@@ -1,21 +1,10 @@
 import type { Params } from '../params';
-import fxDefault from '../params/fx.json';
-import type { CalcInput, Client, Currency, MonthRow, YM } from './types';
-
-/** ECB rates baked in at build time (scripts/update-fx.mjs, refreshed daily in CI). */
-export function defaultFx(): Pick<CalcInput, 'fx' | 'fxDate' | 'fxByMonth'> {
-  const r = fxDefault.perEur as Record<Exclude<Currency, 'EUR'>, number>;
-  const monthly = (fxDefault as { monthly?: Record<string, Record<string, number>> }).monthly ?? {};
-  const fxByMonth = Object.fromEntries(
-    Object.entries(monthly).map(([ym, m]) => [ym, Object.fromEntries(Object.entries(m).map(([c, v]) => [c, 1 / v]))]),
-  );
-  return { fx: { EUR: 1, USD: 1 / r.USD, GBP: 1 / r.GBP, PLN: 1 / r.PLN }, fxDate: fxDefault.date, fxByMonth };
-}
+import type { CalcInput, Client, MonthRow, YM } from './types';
 
 const months = (amount: number, actual = false) => Array.from({ length: 12 }, () => ({ amount, actual }));
 
 export function defaultClient(type: Client['type'] = 'non_eu_company', amount = 0, name = ''): Client {
-  return { name, type, currency: 'EUR', months: months(amount), newcomer7: false };
+  return { name, type, months: months(amount), newcomer7: false };
 }
 
 const defaultYear = (asOf: string): 2026 | 2027 => (Number(asOf.slice(0, 4)) >= 2027 ? 2027 : 2026);
@@ -31,7 +20,6 @@ export function defaultInput(asOf: string): CalcInput {
     expenseMode: 'pct',
     expensePct: 5,
     expenses: [],
-    ...defaultFx(),
     under36: false,
     rentMonthly: 0,
     leaseFrom2026: true,
@@ -81,19 +69,6 @@ export function isActive(input: CalcInput, m: number): boolean {
   return input.year > a.year || (input.year === a.year && m + 1 >= a.month);
 }
 
-/** Past months: that month's average ECB rate; current and future months: the latest rate. */
-export function rateFor(input: CalcInput, cur: Currency, m: number): number {
-  if (cur === 'EUR') return 1;
-  const key = `${input.year}-${String(m + 1).padStart(2, '0')}`;
-  return input.fxByMonth?.[key]?.[cur] ?? input.fx[cur];
-}
-
-function toEur(input: CalcInput, amount: number, cur: Currency, m: number): number {
-  const rate = rateFor(input, cur, m);
-  if (!(rate > 0)) throw new Error(`No exchange rate for ${cur}`);
-  return amount * rate;
-}
-
 export function activityLedger(input: CalcInput, p: Params): MonthRow[] {
   const iva = p.get('iva.general');
   const ret = p.get('retencion');
@@ -105,7 +80,7 @@ export function activityLedger(input: CalcInput, p: Params): MonthRow[] {
       for (const c of input.clients) {
         const mo = c.months[m];
         if (!mo) continue;
-        const eur = toEur(input, mo.amount, c.currency, m);
+        const eur = mo.amount;
         if (mo.amount && !mo.actual) row.forecast = true;
         row.income += eur;
         if (c.type === 'es_company' || c.type === 'es_private') row.ivaOut += eur * iva;

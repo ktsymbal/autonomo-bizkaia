@@ -1,7 +1,6 @@
 import { ChevronRight, Plus, Trash2 } from 'lucide-preact';
 import { defaultClient, effectiveAlta } from '../engine/activity';
-import type { CalcInput, Client, ClientType, Currency, Expense } from '../engine/types';
-import { CURRENCIES } from '../engine/types';
+import type { CalcInput, Client, ClientType, Expense } from '../engine/types';
 import { date, eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
 import { salaryWithholdingPct } from '../engine/employment';
 import { getParams } from '../params';
@@ -22,22 +21,14 @@ function entryAmount(c: Client): number {
 
 function ClientChips({ lang, c, input }: { lang: Lang; c: Client; input: CalcInput }) {
   const avg = c.months.reduce((s, m) => s + m.amount, 0) / 12;
-  const eurAvg = avg * (input.fx[c.currency] ?? 1);
   const yi = input.year - effectiveAlta(input).year;
   const rate = c.newcomer7 && yi <= 2 ? 0.07 : 0.15;
   const chips: string[] = [];
   if (c.type === 'eu_company') chips.push(t(lang, 'chip.noIvaEu'), t(lang, 'chip.noRet'));
   if (c.type === 'non_eu_company') chips.push(t(lang, 'chip.noIvaNonEu'), t(lang, 'chip.noRet'));
-  if (c.type === 'es_private') chips.push(t(lang, 'chip.iva', { amount: eur(lang, eurAvg * 0.21) }), t(lang, 'chip.noRet'));
-  if (c.type === 'es_company') chips.push(t(lang, 'chip.iva', { amount: eur(lang, eurAvg * 0.21) }), t(lang, 'chip.ret', { rate: fpct(lang, rate, 0), amount: eur(lang, eurAvg * rate) }));
+  if (c.type === 'es_private') chips.push(t(lang, 'chip.iva', { amount: eur(lang, avg * 0.21) }), t(lang, 'chip.noRet'));
+  if (c.type === 'es_company') chips.push(t(lang, 'chip.iva', { amount: eur(lang, avg * 0.21) }), t(lang, 'chip.ret', { rate: fpct(lang, rate, 0), amount: eur(lang, avg * rate) }));
   return <div class="chips">{chips.map((x) => <span class="chip">{x}</span>)}</div>;
-}
-
-function FxNote({ lang, input }: { lang: Lang; input: CalcInput }) {
-  const used = [...new Set(input.clients.map((c) => c.currency))].filter((c) => c !== 'EUR');
-  if (!used.length) return null;
-  const rates = used.map((c) => `${(1 / input.fx[c]).toFixed(4)} ${c}`).join(', ');
-  return <p class="note">{t(lang, 'income.fx', { date: date(lang, input.fxDate), rates })}</p>;
 }
 
 function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput; set: Setter; idx: number }) {
@@ -62,9 +53,6 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
         <Field label={t(lang, 'income.clients')}>
           <Select value={c.type} label={t(lang, 'income.clients')} options={CLIENT_TYPES.map((v) => ({ value: v, label: t(lang, `client.${v}`) }))} onChange={(v) => upd({ type: v })} />
         </Field>
-        <Field label={t(lang, 'income.currency')}>
-          <Select<Currency> value={c.currency} label={t(lang, 'income.currency')} options={CURRENCIES.map((v) => ({ value: v, label: v }))} onChange={(v) => upd({ currency: v })} />
-        </Field>
       </div>
       <Seg
         name={`entry-${idx}`}
@@ -76,7 +64,7 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
       />
       {mode === 'monthly' ? (
         <Field label={t(lang, 'income.amount')} hint={t(lang, 'income.amountHint')}>
-          <NumberInput lang={lang} value={c.months[0]?.amount || null} min={0} unit={c.currency} onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
+          <NumberInput lang={lang} value={c.months[0]?.amount || null} min={0} unit="€" onChange={(v) => upd({ months: monthsOf(v ?? 0, c.months) })} />
         </Field>
       ) : null}
       {mode === 'hourly' ? (
@@ -87,7 +75,7 @@ function ClientEditor({ lang, input, set, idx }: { lang: Lang; input: CalcInput;
                 lang={lang}
                 min={0}
                 value={c.entry?.[k] ?? null}
-                unit={k === 'rate' ? c.currency : undefined}
+                unit={k === 'rate' ? '€' : undefined}
                 onChange={(v) => {
                   const entry = { ...c.entry, mode: 'hourly' as const, [k]: v ?? 0 };
                   upd({ entry, months: monthsOf(entryAmount({ ...c, entry }), c.months) });
@@ -152,24 +140,13 @@ export function IncomeCard(p: P & { reverse: boolean; setReverse: (v: boolean) =
         <>
           <div class="cols">
             <Field label={t(lang, 'income.amount')} hint={t(lang, 'income.amountHint')}>
-              <span class="control">
-                <NumberInput
-                  compact
-                  lang={lang}
-                  min={0}
-                  label={t(lang, 'income.amount')}
-                                    value={c0 && entryAmount(c0) ? entryAmount(c0) : null}
-                  onChange={(v) => set((i) => ({ ...i, clients: [{ ...(i.clients[0] ?? defaultClient()), entry: { mode: 'monthly' }, months: monthsOf(v ?? 0, i.clients[0]?.months) }, ...i.clients.slice(1)] }))}
-                />
-                <select
-                  aria-label={t(lang, 'income.currency')}
-                  style="flex:none;width:auto;font-size:var(--step-0);color:var(--ink-2);padding-right:0"
-                  value={c0?.currency ?? 'EUR'}
-                  onChange={(e) => set((i) => ({ ...i, clients: i.clients.map((x, k) => (k === 0 ? { ...x, currency: (e.target as HTMLSelectElement).value as Currency } : x)) }))}
-                >
-                  {CURRENCIES.map((v) => <option value={v}>{v}</option>)}
-                </select>
-              </span>
+              <NumberInput
+                lang={lang}
+                min={0}
+                unit="€"
+                value={c0 && entryAmount(c0) ? entryAmount(c0) : null}
+                onChange={(v) => set((i) => ({ ...i, clients: [{ ...(i.clients[0] ?? defaultClient()), entry: { mode: 'monthly' }, months: monthsOf(v ?? 0, i.clients[0]?.months) }, ...i.clients.slice(1)] }))}
+              />
             </Field>
             <Field label={t(lang, 'income.clients')}>
               <Select
@@ -193,7 +170,6 @@ export function IncomeCard(p: P & { reverse: boolean; setReverse: (v: boolean) =
           ) : null}
         </>
       )}
-      <FxNote lang={lang} input={input} />
       <Check checked={p.reverse} onChange={p.setReverse}>{t(lang, 'reverse.toggle')}</Check>
       {p.reverse ? (
         <div class="cols">

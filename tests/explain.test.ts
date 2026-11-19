@@ -7,7 +7,7 @@ import type { CalcInput } from '../src/engine/types';
 const flat = (a: number) => Array.from({ length: 12 }, () => ({ amount: a, actual: false }));
 const base = (o: Partial<CalcInput> = {}): CalcInput => ({
   ...defaultInput('2026-11-18'),
-  clients: [{ name: '', type: 'non_eu_company', currency: 'EUR', months: flat(4500), newcomer7: false }],
+  clients: [{ name: '', type: 'non_eu_company', months: flat(4500), newcomer7: false }],
   rentMonthly: 700, under36: true, ...o,
 });
 
@@ -43,7 +43,7 @@ describe('explainer steps', () => {
     expect(titles).not.toContain('Minus work expenses');
   });
   it('rent lost above €68k for a lease from 2026 shows a ✗', () => {
-    const i = base({ clients: [{ name: '', type: 'non_eu_company', currency: 'EUR', months: flat(9000), newcomer7: false }] });
+    const i = base({ clients: [{ name: '', type: 'non_eu_company', months: flat(9000), newcomer7: false }] });
     const rent = explain('en', i, compute(i)).find((x) => x.title === 'Minus rent')!;
     const checks = rent.viz!.find((v) => v.kind === 'checks');
     expect(checks && checks.kind === 'checks' && checks.items.some((x) => x.mark === '✗')).toBe(true);
