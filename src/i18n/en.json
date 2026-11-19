@@ -481,8 +481,7 @@
  "pk.irpf.womenReturn": "the returning-to-work deduction",
  "pk.irpf.menChildcare": "the reduced-work deduction",
  "income.from": "From",
- "income.changed": "Income changed",
- "income.parallel": "+ Another client at the same time",
+ "income.changed": "+ Amount changed",
  "income.toMonths": "Different every month",
  "income.toPeriods": "Enter as periods",
  "income.removeRow": "Remove row",
@@ -496,5 +495,8 @@
  "sec.personalHint": "65 or older, disability, caring for someone, returning to work.",
  "sec.history": "Your autónomo history",
  "sec.historyHint": "Tarifa plana, start-up reduction, last year's income, EPSV.",
- "income.otherClient": "Different client?"
+ "income.clientType": "Client",
+ "income.until": "Until",
+ "income.ongoing": "Still working",
+ "income.addClient": "+ Add a client"
 }

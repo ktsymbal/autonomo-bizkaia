@@ -1,8 +1,7 @@
 import type { ComponentChildren } from 'preact';
-import { useState } from 'preact/hooks';
 import { ChevronRight, Plus, Trash2 } from 'lucide-preact';
 import { defaultClient, effectiveAlta, isActive, isPast } from '../engine/activity';
-import { clientsToStreams, emptyRow, sortRows, streamsToClients, type IncomeRow } from '../engine/periods';
+import { clientView, clientsToStreams, emptyRow, setClient, setRows, setUntil, streamsToClients, type IncomeRow } from '../engine/periods';
 import type { CalcInput, Client, ClientType, Expense, YM } from '../engine/types';
 import type { CalcResult } from '../engine/compute';
 import { eur, pct as fpct, t, tList, type Lang } from '../i18n/t';
@@ -40,40 +39,64 @@ function Chips({ lang, input, type, newcomer7, amount }: { lang: Lang; input: Ca
 
 /* ---------- Income as periods ---------- */
 
-function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { lang: Lang; input: CalcInput; row: IncomeRow; prev: IncomeRow | null; canRemove: boolean; onChange: (r: IncomeRow) => void; onRemove: () => void }) {
-  const first = prev === null;
-  // A raise with the same client needs only month and amount; the client picker opens on request.
-  const [pick, setPick] = useState(false);
-  const sameClient = !first && prev.type === row.type && prev.newcomer7 === row.newcomer7;
+function ClientCard({ lang, input, rows, idx, count, setRowsOf, remove }: { lang: Lang; input: CalcInput; rows: IncomeRow[]; idx: number; count: number; setRowsOf: (rows: IncomeRow[]) => void; remove: () => void }) {
+  const v = clientView(rows);
   const long = tList(lang, 'months.long');
-  const start = rowFloor(input);
-  const from = Math.max(row.from, first ? start : 0);
+  const floor = rowFloor(input);
+  const short = tList(lang, 'months.short');
+  const months = (min: number, names = long) => names.map((l, k) => ({ value: k, label: l })).filter((o) => o.value >= min);
+  const firstFrom = Math.max(v.rows[0].from, floor);
+  const last = v.rows[v.rows.length - 1];
+  const paid = v.rows.some((r) => r.amount > 0);
+  const avg = v.rows.reduce((s, r) => s + r.amount, 0) / v.rows.length;
+  const editRow = (k: number, r: IncomeRow) => setRowsOf(setRows(rows, v.rows.map((x, n) => (n === k ? r : x))));
   return (
-    <div class="prow">
-      <div class="prow-main">
-        <Field label={t(lang, 'income.from')}>
-          <Select value={from} label={t(lang, 'income.from')} options={long.map((l, k) => ({ value: k, label: l })).filter((o) => o.value >= start)} onChange={(v) => onChange({ ...row, from: v })} />
-        </Field>
-        <Field label={t(lang, 'income.amount')}>
-          <NumberInput lang={lang} min={0} unit="€" value={row.amount || null} placeholder="0" onChange={(v) => onChange({ ...row, amount: v ?? 0 })} />
-        </Field>
-        {canRemove ? (
-          <button type="button" class="iconbtn" aria-label={t(lang, 'income.removeRow')} onClick={onRemove}>
+    <div class="client">
+      <div class="client-head">
+        <span style="flex:1">
+          <Select value={v.type} label={t(lang, 'income.clientType')} options={typeOptions(lang)} onChange={(ty) => setRowsOf(setClient(rows, ty, v.newcomer7))} />
+        </span>
+        {count > 1 ? (
+          <button type="button" class="iconbtn" aria-label={t(lang, 'client.remove')} onClick={remove}>
             <Trash2 size={18} aria-hidden="true" />
           </button>
         ) : null}
       </div>
-      {row.amount > 0 && sameClient && !pick ? (
-        <button type="button" class="linkbtn" style="justify-self:start" onClick={() => setPick(true)}>{t(lang, 'income.otherClient')}</button>
-      ) : row.amount > 0 ? (
-        <>
-          <Field label={t(lang, 'income.clients')}>
-            <Select value={row.type} label={t(lang, 'income.clients')} options={typeOptions(lang)} onChange={(v) => onChange({ ...row, type: v })} />
-          </Field>
-          {row.type === 'es_company' && yearsIn(input) <= 2 ? <Check checked={row.newcomer7} onChange={(v) => onChange({ ...row, newcomer7: v })}>{t(lang, 'client.newcomer7')}</Check> : null}
-          <Chips lang={lang} input={input} type={row.type} newcomer7={row.newcomer7} amount={row.amount} />
-        </>
-      ) : null}
+      {v.rows.map((r, k) => (
+        <div class="prow-main">
+          <div class="p-from">
+            <Field label={t(lang, 'income.from')}>
+              <Select value={k === 0 ? firstFrom : r.from} label={t(lang, 'income.from')} options={months(k === 0 ? floor : v.rows[k - 1].from + 1, short)} onChange={(m) => editRow(k, { ...r, from: m })} />
+            </Field>
+          </div>
+          <div class="p-amount">
+            <Field label={t(lang, 'income.amount')}>
+              <NumberInput lang={lang} min={0} unit="€" value={r.amount || null} placeholder="0" onChange={(x) => editRow(k, { ...r, amount: x ?? 0 })} />
+            </Field>
+          </div>
+          {v.rows.length > 1 ? (
+            <button type="button" class="iconbtn p-del" aria-label={t(lang, 'income.removeRow')} onClick={() => setRowsOf(setRows(rows, v.rows.filter((_, n) => n !== k)))}>
+              <Trash2 size={18} aria-hidden="true" />
+            </button>
+          ) : null}
+        </div>
+      ))}
+      <div class="client-foot">
+        {last.from < 11 && (v.until === null || last.from < v.until) ? (
+          <button type="button" class="linkbtn" onClick={() => setRowsOf(setRows(rows, [...v.rows, { ...last, from: last.from + 1 }]))}>{t(lang, 'income.changed')}</button>
+        ) : <span />}
+        <label class="until">
+          <span class="lbl">{t(lang, 'income.until')}</span>
+          <Select
+            value={v.until === null ? -1 : v.until}
+            label={t(lang, 'income.until')}
+            options={[{ value: -1, label: t(lang, 'income.ongoing') }, ...months(firstFrom)]}
+            onChange={(u) => setRowsOf(setUntil(rows, u === -1 ? null : u))}
+          />
+        </label>
+      </div>
+      {v.type === 'es_company' && yearsIn(input) <= 2 ? <Check checked={v.newcomer7} onChange={(x) => setRowsOf(setClient(rows, v.type, x))}>{t(lang, 'client.newcomer7')}</Check> : null}
+      {paid ? <Chips lang={lang} input={input} type={v.type} newcomer7={v.newcomer7} amount={avg} /> : null}
     </div>
   );
 }
@@ -81,52 +104,28 @@ function PeriodRow({ lang, input, row, prev, canRemove, onChange, onRemove }: { 
 function Periods({ lang, input, set }: P) {
   const streams = input.income.streams;
   const setStreams = (fn: (s: IncomeRow[][]) => IncomeRow[][]) => set((i) => ({ ...i, income: { ...i.income, streams: fn(i.income.streams) } }));
-  const start = rowFloor(input);
+  const floor = rowFloor(input);
+  // A new client starts the month after the last one ended, if any ended.
+  const nextStart = () => {
+    const ends = streams.map((rows) => clientView(rows).until).filter((u): u is number => u !== null);
+    return ends.length === streams.length ? Math.min(11, Math.max(floor, ...ends.map((u) => u + 1))) : floor;
+  };
   return (
     <>
-      {streams.map((rows, si) => {
-        const sorted = sortRows(rows);
-        const last = sorted[sorted.length - 1];
-        const body = (
-          <>
-            {sorted.map((row, k) => (
-              <PeriodRow
-                lang={lang}
-                input={input}
-                row={row}
-                prev={k === 0 ? null : sorted[k - 1]}
-                canRemove={sorted.length > 1}
-                onChange={(r) => setStreams((s) => s.map((x, j) => (j === si ? sortRows(x).map((y, n) => (n === k ? r : y)) : x)))}
-                onRemove={() => setStreams((s) => s.map((x, j) => (j === si ? sortRows(x).filter((_, n) => n !== k) : x)))}
-              />
-            ))}
-            {last.from < 11 ? (
-              <button
-                type="button"
-                class="addbtn"
-                onClick={() => setStreams((s) => s.map((x, j) => (j === si ? [...x, { ...last, from: Math.min(11, Math.max(last.from + 1, start)) }] : x)))}
-              >
-                <Plus size={16} aria-hidden="true" /> {t(lang, 'income.changed')}
-              </button>
-            ) : null}
-          </>
-        );
-        if (streams.length === 1) return body;
-        return (
-          <div class="client">
-            <div class="client-head">
-              <b style="flex:1">{t(lang, 'client.namePh', { n: si + 1 })}</b>
-              <button type="button" class="iconbtn" aria-label={t(lang, 'client.remove')} onClick={() => setStreams((s) => s.filter((_, j) => j !== si))}>
-                <Trash2 size={18} aria-hidden="true" />
-              </button>
-            </div>
-            {body}
-          </div>
-        );
-      })}
+      {streams.map((rows, si) => (
+        <ClientCard
+          lang={lang}
+          input={input}
+          rows={rows}
+          idx={si}
+          count={streams.length}
+          setRowsOf={(r) => setStreams((s) => s.map((x, j) => (j === si ? r : x)))}
+          remove={() => setStreams((s) => s.filter((_, j) => j !== si))}
+        />
+      ))}
       <div class="linkrow">
         {streams.length < 6 ? (
-          <button type="button" class="linkbtn" onClick={() => setStreams((s) => [...s, [emptyRow(start)]])}>{t(lang, 'income.parallel')}</button>
+          <button type="button" class="linkbtn" onClick={() => setStreams((s) => [...s, [emptyRow(nextStart())]])}>{t(lang, 'income.addClient')}</button>
         ) : null}
         <button type="button" class="linkbtn" onClick={() => set((i) => ({ ...i, clients: streamsToClients(i.income.streams), income: { ...i.income, mode: 'byMonth' } }))}>{t(lang, 'income.toMonths')}</button>
       </div>
@@ -181,7 +180,7 @@ function ByMonth({ lang, input, set }: P) {
       {input.clients.map((_, k) => <MonthGrid lang={lang} input={input} set={set} idx={k} />)}
       <div class="linkrow">
         {input.clients.length < 10 ? (
-          <button type="button" class="linkbtn" onClick={() => set((i) => ({ ...i, clients: [...i.clients, defaultClient('non_eu_company', 0)] }))}>{t(lang, 'income.parallel')}</button>
+          <button type="button" class="linkbtn" onClick={() => set((i) => ({ ...i, clients: [...i.clients, defaultClient('non_eu_company', 0)] }))}>{t(lang, 'income.addClient')}</button>
         ) : null}
         <button type="button" class="linkbtn" onClick={() => set((i) => ({ ...i, income: { mode: 'periods', streams: clientsToStreams(i.clients, Math.min(11, startMonth(i))) } }))}>{t(lang, 'income.toPeriods')}</button>
       </div>

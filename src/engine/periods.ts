@@ -38,6 +38,7 @@ export function clientsToStreams(clients: Client[], start = 0): IncomeRow[][] {
     const rows: IncomeRow[] = [];
     for (let m = start; m < 12; m++) {
       const amount = c.months[m]?.amount ?? 0;
+      if (!rows.length && !amount) continue; // a client starts at its first paid month
       if (!rows.length || rows[rows.length - 1].amount !== amount) rows.push({ from: m, amount, type: c.type, newcomer7: c.newcomer7 });
     }
     return rows.length ? rows : [emptyRow(start, c.type)];
@@ -55,6 +56,51 @@ export function applyPeriods(i: CalcInput): CalcInput {
   if (i.alta && i.alta.year === i.year) {
     const first = Math.min(...i.income.streams.map((rows) => Math.min(...rows.map((r) => r.from))));
     if (Number.isFinite(first) && first + 1 !== i.alta.month) out.alta = { ...i.alta, month: first + 1 };
+  }
+  return out;
+}
+
+/* ---------- One client as the form shows it ---------- */
+
+/** A client card: who pays, the amounts from each month, and the last month (null = still working). A trailing zero row stores the end. */
+export function clientView(rows: IncomeRow[]): { type: ClientType; newcomer7: boolean; rows: IncomeRow[]; until: number | null } {
+  const sorted = sortRows(rows);
+  const tail = sorted[sorted.length - 1];
+  const ended = sorted.length > 1 && tail.amount === 0;
+  return { type: sorted[0].type, newcomer7: sorted[0].newcomer7, rows: ended ? sorted.slice(0, -1) : sorted, until: ended ? tail.from - 1 : null };
+}
+
+export function setUntil(rows: IncomeRow[], until: number | null): IncomeRow[] {
+  const v = clientView(rows);
+  const kept = v.rows.filter((r) => until === null || r.from <= until);
+  const base = kept.length ? kept : [v.rows[0]];
+  return until === null || until >= 11 ? base : [...base, { ...base[0], from: until + 1, amount: 0 }];
+}
+
+export const setClient = (rows: IncomeRow[], type: ClientType, newcomer7: boolean): IncomeRow[] => rows.map((r) => ({ ...r, type, newcomer7 }));
+
+/** Replace the visible rows of a client, keeping its end month. */
+export function setRows(rows: IncomeRow[], visible: IncomeRow[]): IncomeRow[] {
+  const v = clientView(rows);
+  return setUntil(sortRows(visible), v.until);
+}
+
+/** Links from before client cards could mix client types in one stream; split them into one client per run of the same type. */
+export function splitByClient(streams: IncomeRow[][]): IncomeRow[][] {
+  const out: IncomeRow[][] = [];
+  for (const rows of streams) {
+    let cur: IncomeRow[] = [];
+    for (const r of sortRows(rows)) {
+      const head = cur[0];
+      if (head && r.amount > 0 && (r.type !== head.type || r.newcomer7 !== head.newcomer7)) {
+        const tail = cur[cur.length - 1];
+        if (tail.amount > 0) cur.push({ ...head, from: r.from, amount: 0 });
+        out.push(cur);
+        cur = [];
+      }
+      cur.push(cur[0] && r.amount === 0 ? { ...r, type: cur[0].type, newcomer7: cur[0].newcomer7 } : r);
+    }
+    if (cur.length) out.push(cur);
   }
   return out;
 }

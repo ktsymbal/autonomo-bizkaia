@@ -1,6 +1,6 @@
 import { defaultInput } from '../engine/activity';
 import type { CalcInput, Client, ClientType } from '../engine/types';
-import { clientsToStreams, streamsToClients, type Income, type IncomeRow } from '../engine/periods';
+import { clientsToStreams, splitByClient, streamsToClients, type Income, type IncomeRow } from '../engine/periods';
 
 const PREFIX = '#calc=';
 const VERSION = 1;
@@ -49,7 +49,7 @@ const okRow = (r: any): r is IncomeRow => r && Number.isInteger(r.from) && r.fro
 function readIncome(v: any, clients: Client[]): Income {
   if (v && Array.isArray(v.streams)) {
     const streams = v.streams.filter(Array.isArray).map((rows: any[]) => rows.filter(okRow).map((r) => ({ from: r.from, amount: r.amount, type: r.type, newcomer7: !!r.newcomer7 }))).filter((rows: IncomeRow[]) => rows.length);
-    if (streams.length) return { mode: v.mode === 'byMonth' ? 'byMonth' : 'periods', streams };
+    if (streams.length) return { mode: v.mode === 'byMonth' ? 'byMonth' : 'periods', streams: splitByClient(streams) };
   }
   const streams = clientsToStreams(clients);
   return { mode: streams.some((rows) => rows.length > 3) ? 'byMonth' : 'periods', streams };

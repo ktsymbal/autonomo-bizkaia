@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyPeriods, clientsToStreams, streamsToClients, type IncomeRow } from '../src/engine/periods';
+import { applyPeriods, splitByClient, clientView, clientsToStreams, setUntil, streamsToClients, type IncomeRow } from '../src/engine/periods';
 import { defaultInput } from '../src/engine/activity';
 
 const row = (from: number, amount: number, type: IncomeRow['type'] = 'non_eu_company'): IncomeRow => ({ from, amount, type, newcomer7: false });
@@ -40,5 +40,28 @@ describe('income periods', () => {
   it('registered in an earlier year: income rows leave the registration date alone', () => {
     const i = { ...defaultInput('2026-11-19'), alta: { year: 2023, month: 3 }, income: { mode: 'periods' as const, streams: [[row(5, 3000)]] } };
     expect(applyPeriods(i).alta).toEqual({ year: 2023, month: 3 });
+  });
+  it('a client that ended: Aug–Oct is a row from August and an end in October', () => {
+    const rows = setUntil([row(7, 7100, 'eu_company')], 9);
+    expect(clientView(rows)).toMatchObject({ until: 9, rows: [row(7, 7100, 'eu_company')] });
+    expect(amounts(streamsToClients([rows])[0]).slice(7)).toEqual([7100, 7100, 7100, 0, 0]);
+    expect(clientView(setUntil(rows, null)).until).toBeNull();
+  });
+  it('two clients one after the other, the second with a half first month', () => {
+    const a = setUntil([row(7, 7100, 'eu_company')], 9);
+    const b = [row(10, 4791.66), row(11, 9583.33)];
+    const cs = streamsToClients([a, b]);
+    expect(cs.map((c) => c.months.reduce((s, m) => s + m.amount, 0))).toEqual([21300, 14374.99]);
+  });
+  it('months before a client starts are not a period', () => {
+    const cs = streamsToClients([[row(10, 9000)]]);
+    expect(clientsToStreams(cs)).toEqual([[row(10, 9000)]]);
+  });
+  it('an old link with two kinds of client in one list becomes two clients', () => {
+    const out = splitByClient([[row(7, 7100, 'eu_company'), row(10, 4791.66), row(11, 9583.33)]]);
+    expect(out).toHaveLength(2);
+    expect(clientView(out[0])).toMatchObject({ type: 'eu_company', until: 9 });
+    expect(clientView(out[1]).rows.map((r) => r.amount)).toEqual([4791.66, 9583.33]);
+    expect(streamsToClients(out).map((c) => c.months.reduce((s, m) => s + m.amount, 0))).toEqual([21300, 14374.99]);
   });
 });

@@ -481,8 +481,7 @@
  "pk.irpf.womenReturn": "відрахування за повернення до роботи",
  "pk.irpf.menChildcare": "відрахування за скорочення роботи",
  "income.from": "З якого місяця",
- "income.changed": "Дохід змінився",
- "income.parallel": "+ Ще один клієнт одночасно",
+ "income.changed": "+ Сума змінилась",
  "income.toMonths": "Щомісяця різна сума",
  "income.toPeriods": "Вказати періодами",
  "income.removeRow": "Видалити рядок",
@@ -496,5 +495,8 @@
  "sec.personalHint": "Від 65 років, інвалідність, догляд за кимось, повернення на роботу.",
  "sec.history": "Ваш досвід автономо",
  "sec.historyHint": "Тарифа плана, знижка для нових автономо, дохід минулого року, EPSV.",
- "income.otherClient": "Змінився клієнт?"
+ "income.clientType": "Клієнт",
+ "income.until": "До якого місяця",
+ "income.ongoing": "Досі працюю",
+ "income.addClient": "+ Додати клієнта"
 }

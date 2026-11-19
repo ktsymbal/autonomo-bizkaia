@@ -433,9 +433,11 @@ td.r, th.r, .ex-ledger b, .box > span:last-child { font-variant-numeric: tabular
 .stepper { justify-self: start; }
 
 /* Income periods: from which month, how much, from whom */
-.prow { display: grid; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
-.prow-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
-.prow-main .iconbtn { margin-bottom: 4px; }
+.prow-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px; gap: 10px; align-items: end; }
+.p-del { margin-bottom: 4px; }
+.client-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px; gap: 10px; align-items: end; }
+.client-foot .linkbtn { justify-self: start; padding-inline: 0; margin-bottom: 10px; }
+.client-foot .until { grid-column: 2 / span 2; display: grid; gap: 6px; }
 .linkrow { display: flex; flex-wrap: wrap; gap: 2px 16px; }
 
 /* Optional sections under the result: one line each until opened */
@@ -449,3 +451,10 @@ details.sec[open] > summary > svg { transform: rotate(90deg); }
 details.sec > summary > span { display: grid; gap: 2px; }
 details.sec > summary .note { margin: 0; }
 .sec-body { display: grid; gap: 14px; margin-top: 16px; }
+@media (max-width: 639px) {
+  .client { padding: 12px; }
+  .prow-main { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) 40px; gap: 8px; }
+  .client-foot { grid-template-columns: minmax(0, 1fr); }
+  .client-foot .until { grid-column: 1; }
+  .client-foot .linkbtn { margin-bottom: 0; }
+}

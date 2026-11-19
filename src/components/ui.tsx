@@ -12,10 +12,17 @@ export function Field(p: { label: string; hint?: ComponentChildren; children: Co
   );
 }
 
-const parse = (s: string): number | null => {
-  const clean = s.replace(/\s| | /g, '').replace(',', '.');
-  if (clean === '') return null;
-  const n = Number(clean);
+/**
+ * Read what the user typed, in the convention of the interface language:
+ * English groups with commas (4,791.66); Ukrainian groups with spaces and uses a decimal comma (4 791,66).
+ * A trailing ",dd" with no dot is read as decimals in both, so "4791,66" works in English too.
+ */
+export const parse = (s: string, lang: string): number | null => {
+  let t = s.replace(/[\s\u00a0\u202f]/g, '');
+  if (t === '') return null;
+  const decimalComma = lang === 'uk' ? t.includes(',') && !/,\d*\./.test(t) : !t.includes('.') && /,\d{1,2}$/.test(t);
+  t = decimalComma ? t.replace(/\./g, '').replace(',', '.') : t.replace(/,/g, '');
+  const n = Number(t);
   return Number.isFinite(n) ? n : NaN;
 };
 const show = (n: number | null, lang: string) =>
@@ -30,7 +37,7 @@ export function NumberInput(p: {
   const id = p.id ?? auto;
   const [draft, setDraft] = useState<string | null>(null); // the user's text while the field has focus
   const text = draft ?? show(p.value, p.lang);
-  const n = parse(text);
+  const n = parse(text, p.lang);
   const invalid = Number.isNaN(n) || (n !== null && ((p.min !== undefined && n < p.min) || (p.max !== undefined && n > p.max)));
   const input = (
     <input
@@ -47,7 +54,7 @@ export function NumberInput(p: {
       onInput={(e) => {
         const s = (e.target as HTMLInputElement).value;
         setDraft(s);
-        const v = parse(s);
+        const v = parse(s, p.lang);
         if (v === null || (!Number.isNaN(v) && (p.min === undefined || v >= p.min) && (p.max === undefined || v <= p.max))) p.onChange(v);
       }}
     />
